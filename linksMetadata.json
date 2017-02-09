@@ -1,0 +1,110 @@
+[
+	{
+		"a_endpoint.latitude":25.781603,
+		"a_endpoint.longitude":-80.192841,
+		"a_endpoint.name":"Miami",
+		"description":"AmLight: Chile to Sao Paolo 10GE",
+		"intf":"ethernet2/5",
+		"max_bandwidth":10000000000,
+		"node":"mct02.miami.ampath.net",
+		"z_endpoint.latitude":-33.471949,
+		"z_endpoint.longitude":-70.9107735,
+		"z_endpoint.name":"Chile"
+	},
+	{
+		"a_endpoint.latitude":25.781603,
+		"a_endpoint.longitude":-80.192841,
+		"a_endpoint.name":"Miami",
+		"description":"AmLight: Miami to Sao Paolo 10GE",
+		"intf":"ethernet2/5",
+		"max_bandwidth":10000000000,
+		"node":"mct01.miami.ampath.net",
+		"z_endpoint.latitude":-23.560604,
+		"z_endpoint.longitude":-46.640396,
+		"z_endpoint.name":"Sao Paulo"
+	},
+	{
+		"a_endpoint.latitude":34.048198,
+		"a_endpoint.longitude":-118.256335,
+		"a_endpoint.name":"Los Angeles",
+		"description":"PIREN: Los Angeles to Mauna Lani",
+		"intf":"et-1/1/0.1100",
+		"max_bandwidth":40000000000,
+		"node":"lax-b-bdr1.aarnet.net.au",
+		"z_endpoint.latitude":20.0047222,
+		"z_endpoint.longitude":-155.8130556,
+		"z_endpoint.name":"Mauna Lani"
+	},
+	{
+		"a_endpoint.latitude":47.614457,
+		"a_endpoint.longitude":-122.338413,
+		"a_endpoint.name":"Seattle",
+		"description":"PIREN: Seattle to Oahu 40GE",
+		"intf":"et-1/0/0",
+		"max_bandwidth":40000000000,
+		"node":"sea-a-bb1.aarnet.net.au",
+		"z_endpoint.latitude":21.3539444,
+		"z_endpoint.longitude":-158.1302778,
+		"z_endpoint.name":"Oahu"
+	},
+	{
+		"a_endpoint.latitude":47.614457,
+		"a_endpoint.longitude":-122.338413,
+		"a_endpoint.name":"Seattle",
+		"description":"TransPAC: Seattle to Tokyo 100GE",
+		"intf":"ethernet15/2",
+		"max_bandwidth":100000000000,
+		"node":"sttl-pacwave-switch",
+		"z_endpoint.latitude":35.687872,
+		"z_endpoint.longitude":139.764433,
+		"z_endpoint.name":"Tokyo"
+	},
+	{
+		"a_endpoint.latitude":20.0047222,
+		"a_endpoint.longitude":-155.8130556,
+		"a_endpoint.name":"Mauna Lani",
+		"description":"PIREN: Mauna Lani to Sydney 40GE",
+		"intf":"et-1/2/0",
+		"max_bandwidth":40000000000,
+		"node":"koa-a-pe1.aarnet.net.au",
+		"z_endpoint.latitude":-33.8866667,
+		"z_endpoint.longitude":151.2288889,
+		"z_endpoint.name":"Sydney"
+	},
+	{
+		"a_endpoint.latitude":21.3539444,
+		"a_endpoint.longitude":-158.1302778,
+		"a_endpoint.name":"Oahu",
+		"description":"PIREN: Oahu to Sydney 40GE",
+		"intf":"et-0/0/0",
+		"max_bandwidth":40000000000,
+		"node":"hnl-a-pe1.aarnet.net.au",
+		"z_endpoint.latitude":-33.8866667,
+		"z_endpoint.longitude":151.2288889,
+		"z_endpoint.name":"Sydney"
+	},
+	{
+		"a_endpoint.latitude":-33.471949,
+		"a_endpoint.longitude":-70.9107735,
+		"a_endpoint.name":"Chile",
+		"description":"AmLight: Chile to Sao Paulo 10GE",
+		"intf":"ethernet2/2",
+		"max_bandwidth":10000000000,
+		"node":"andeslight.sdn.amlight.net",
+		"z_endpoint.latitude":-23.560604,
+		"z_endpoint.longitude":-46.640396,
+		"z_endpoint.name":"Sao Paulo"
+	},
+	{
+		"a_endpoint.latitude":38.907192,
+		"a_endpoint.longitude":-77.036871,
+		"a_endpoint.name":"Washington DC",
+		"description":"ACE: Frankfurt to Washington 30GE",
+		"intf":"LAG1",
+		"max_bandwidth":30000000000,
+		"node":"sw.net.wix.internet2.edu",
+		"z_endpoint.latitude":50.1109,
+		"z_endpoint.longitude":8.6821,
+		"z_endpoint.name":"Frankfurt"
+	}
+]

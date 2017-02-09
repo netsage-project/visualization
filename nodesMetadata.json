@@ -1,0 +1,57 @@
+[
+	{
+		"latitude":25.781603,
+		"longitude":-80.192841,
+		"node":"Miami"
+	},
+	{
+		"latitude": -33.471949,
+		"longitude":-70.9107735,
+		"node":"Chile"
+	},
+	{
+		"latitude":-23.560604,
+		"longitude":-46.640396,
+		"node":"Sao Paulo"
+	},
+	{
+		"latitude":34.048198,
+		"longitude":-118.256335,
+		"node":"Los Angeles"
+	},
+	{
+		"latitude":20.0047222,
+		"longitude":-155.8130556,
+		"node":"Mauna Lani"
+	},
+	{
+		"latitude":35.687872,
+		"longitude":139.764433,
+		"node":"Tokyo"
+	},
+	{
+		"latitude":47.614457,
+		"longitude":-122.338413,
+		"node":"Seattle"
+	},
+	{
+		"latitude":21.3539444,
+		"longitude":-158.1302778,
+		"node":"Oahu"
+	},
+	{
+		"latitude":-33.8866667,
+		"longitude":151.2288889,
+		"node":"Sydney"
+	},
+	{
+		"latitude":38.907192,
+		"longitude":-77.036871,
+		"node":"Washington DC"
+	},
+	{
+		"latitude":50.1109,
+		"longitude":8.6821,
+		"node":"Frankfurt"
+	}
+]

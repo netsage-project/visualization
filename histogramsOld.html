@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+#multipleHistogram{
+  font: 10px sans-serif;
+  position: relative;
+  width:590px;
+  height:300px;
+  overflow: scroll;
+}
+
+thead{
+  background-color:rgba(232, 157, 77, 0.9);
+  overflow:hidden; 
+}
+
+.bar rect {
+  fill: rgba(52, 100, 222, 1);
+  shape-rendering: crispEdges;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.col1{
+
+}
+
+</style>
+<body>
+<script src="d3.js"></script>
+<script>
+  
+  function histogram(data,bins,maxValue){
+      //Number of bins
+      var dataLayouts = [];
+      for (j=0;j<data.length;j++){
+        dataLayouts.push(d3.layout.histogram().bins(bins)(data[j]));
+      }
+      // A formatter for counts.
+      //var formatCount = d3.format(",.0f");
+
+      var margin = {top: 4, right: 15, bottom: 16, left: 15, nameLeft:30, histogramLeft: 0},
+          width = 500 - margin.left - margin.right,
+          height = 100 - margin.top - margin.bottom;
+
+      var x = d3.scale.linear()
+          .domain([0, maxValue])
+          .range([0, width]);
+
+      var y = d3.scale.linear()
+          .domain([0, d3.max(dataLayouts[0], function(d) { return d.y; })])
+          .range([height, 0]);
+
+      var xAxis = d3.svg.axis()
+          .scale(x)
+          .orient("bottom");
+
+      var yAxis = d3.svg.axis()
+          .scale(y)
+          .orient("left");
+      
+    var svg=d3.selectAll(".col1").append("svg")
+        .attr({
+          "width": width + margin.left + margin.right,
+          "height": height + margin.top + margin.bottom,
+        })
+      var graph = svg.append("g")
+          .attr("class", "graph")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      var bar = graph.append("g")
+          .attr("class", "histogram")
+          .selectAll(".bar")
+          .data(function(d,i){ 
+            return dataLayouts[i]})
+          .enter().append("g")
+          .attr("class", "bar")
+          .attr("transform", function(d) { 
+            return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+      bar.append("rect")
+          .attr("x", 1)
+          .attr("width", function(d){ 
+            return x(d.dx) - 1})
+          .attr("height", function(d) { return height - y(d.y); });
+      /*bar.append("text")
+          .attr("dy", ".75em")
+          .attr("y", 6)
+          .attr("x", x(dataLayouts[i][0].dx) / 2)
+          .attr("text-anchor", "middle")
+          .text(function(d) { 
+            return formatCount(d.y); });*/
+      graph.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+  }
+
+  function table(columns,elements,MaxValue){
+    d3.select("body").append("div")
+      .attr("id","multipleHistogram");
+    var table = d3.select("#multipleHistogram").append("table")
+      thead = table.append("thead"),
+        tbody = table.append("tbody");
+
+    thead.append("tr")
+       .selectAll("th")
+       .data(columns).enter()
+       .append("th")
+       .text(function(d) { 
+        return d; 
+       });
+
+    var rows = tbody.selectAll("tr")
+          .data(elements)
+          .enter()
+          .append("tr")
+          .attr("id", function(d,i){return i })
+          .style("background-color", function(d,i){
+            return ((i % 2 == 0) ? "rgba(170, 186, 215, 1)" : "rgba(170, 186, 215, 0.5)");});
+
+      var cells = rows.selectAll("td")
+          .data(columns)
+          .enter()
+          .append("td")
+          .attr("class", function(d,i){return "col" + i})
+          .attr("id",function(d,i){ 
+            return this.parentElement.id + "-" +i;})
+      var selector = d3.selectAll(".col0")
+        .append("input")
+        .attr({
+          "type":"checkbox",
+          "name": function(d,i) { return (i)},
+          "value": function(d,i) { return (i)},
+          "checked":"checked"
+        })
+      var names = d3.selectAll(".col0")
+        .append("text")
+        .text(function(d,i){return elements[i]})
+
+      histogram(data,80,maxValue);
+    
+  }
+  function parseQuery(){
+    d3.json("tsdTest.json",function(error,data){
+      //The input and output key is based on the query LOOK FOR THE DIFFERENT QUERIES!
+      /*var input = data.query.split(', ')[2] + "," + data.query.split(',')[3] + "," + data.query.split(',')[4];
+      var output = input.split("input")[0] + "output" + input.split("input")[1];
+      var tsdsObject = {
+        total_raw: data.total_raw,
+        query: data.query,
+        total:data.total,
+        results: {
+          input: data.results[0][input],
+          output: data.results[0][output]
+        }
+      };*/
+      table(["Link","Min/Avg/Max"],["US LHCNet","ASGCNet","TransPAC3","AARNet","TransLight"],data,maxValue)
+    });
+  }
+  //Variable to hold the data from query to TSDS and that will be passed to the different graph functions
+  var tsdsObject = parseQuery();
+   
+   //Auxiliary functions to create test data /////////////////////////
+    function createData(max,min){
+      var array = []; 
+      for(i=0;i<365;i++){
+        array.push(Math.floor(Math.random() * max) + min);
+      }
+      return array;
+    }
+  //END Auxiliary functions to create test data ///////////////////   
+  //Generate test distributions
+  var data = [];
+  var testElements=5;
+  for (j=0;j<testElements;j++){
+    if (j==0) data.push(createData(1500,1000));
+    if (j==1) data.push(createData(1500,500));
+    if (j==2) data.push(createData(1300,500));
+    if (j==3) data.push(createData(1200,300));
+    if (j==4) data.push(createData(1000,100));
+  }
+  var maxValue=2600;
+</script> 

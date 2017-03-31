@@ -166,19 +166,20 @@ function periodicPattern(data,queryMeasure){
 	function calculateWeekData(data){
 		var values = [];
 		var arrayOfValues = [];
-		var weekDaydata = {Mon:{"01":0,"02":0,"03":0,"04":0,"05":0,"06":0,"07":0,"08":0,"09":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"00":0},Tue:{"01":0,"02":0,"03":0,"04":0,"05":0,"06":0,"07":0,"08":0,"09":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"00":0},Wed:{"01":0,"02":0,"03":0,"04":0,"05":0,"06":0,"07":0,"08":0,"09":0,"10":0,"11":0,"12":0,"13":0,"14":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"00":0},Thu:{"01":0,"02":0,"03":0,"04":0,"05":0,"06":0,"07":0,"08":0,"09":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"00":0},Fri:{"01":0,"02":0,"03":0,"04":0,"05":0,"06":0,"07":0,"08":0,"09":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"00":0},Sat:{"01":0,"02":0,"03":0,"04":0,"05":0,"06":0,"07":0,"08":0,"09":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"00":0},Sun:{"01":0,"02":0,"03":0,"04":0,"05":0,"06":0,"07":0,"08":0,"09":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"00":0}};
+		var weekDaydata = {Mon:{"01":0,"02":0,"03":0,"04":0,"05":0,"06":0,"07":0,"08":0,"09":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"00":0,"length":0},Tue:{"01":0,"02":0,"03":0,"04":0,"05":0,"06":0,"07":0,"08":0,"09":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"00":0,"length":0},Wed:{"01":0,"02":0,"03":0,"04":0,"05":0,"06":0,"07":0,"08":0,"09":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"00":0,"length":0},Thu:{"01":0,"02":0,"03":0,"04":0,"05":0,"06":0,"07":0,"08":0,"09":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"00":0,"length":0},Fri:{"01":0,"02":0,"03":0,"04":0,"05":0,"06":0,"07":0,"08":0,"09":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"00":0,"length":0},Sat:{"01":0,"02":0,"03":0,"04":0,"05":0,"06":0,"07":0,"08":0,"09":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"00":0,"length":0},Sun:{"01":0,"02":0,"03":0,"04":0,"05":0,"06":0,"07":0,"08":0,"09":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"00":0,"length":0}};
 		var hoursInDay = ["01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","00"];
 		//Time formats definitions
 		getDayOfWeek=d3.timeFormat('%a');
 		getHour=d3.timeFormat('%H');
 		//Calculate new data for each weekday at each hour
 		for(var i=0; i<data.length; i++){
-			weekDaydata[getDayOfWeek(data[i][0])][getHour(data[i][0])] +=data[i][1];
+			weekDaydata[getDayOfWeek(data[i][0])][getHour(data[i][0])] += data[i][1];
+			weekDaydata[getDayOfWeek(data[i][0])]["length"] +=1;
 		}
 		for(var each in weekDaydata){
 			for(var element in hoursInDay){
-				values.push({"day":each, "hour":hoursInDay[element], "val":weekDaydata[each][hoursInDay[element]]});
-				arrayOfValues.push(weekDaydata[each][hoursInDay[element]]);
+				values.push({"day":each, "hour":hoursInDay[element], "val":(weekDaydata[each][hoursInDay[element]]) / (weekDaydata[each]["length"]/24)}); //We give the avgerage at that hour on that specigfic day. Dividing the lenght in each day calculated in the previous for by 24 hours (I sum +1 fpr every hour in a day), this gives the number of weekdays.
+				arrayOfValues.push((weekDaydata[each][hoursInDay[element]]) / (weekDaydata[each]["length"]/24));
 			}
 		}
 		//Array of values stores all the values in an array without dates, It is easier to extract max from here.
@@ -562,7 +563,8 @@ function periodicPattern(data,queryMeasure){
 			})
 			.on("mouseover", handleMouseOverLatency)
       		.on("mouseout",handleMouseOut);
-      	}createLegend(graph, colorScale,maxValue,w+m[3]/2,queryMeasure);
+      	}
+      	createLegend(graph, colorScale,maxValue,w+m[3]/2,queryMeasure);
 		function addDays(date, days) {
 	    	var result = new Date(date);
 	    	result.setDate(result.getDate() + days);

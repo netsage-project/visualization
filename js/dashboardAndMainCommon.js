@@ -1,10 +1,31 @@
-//Global Variables
+//////************** Global Variables ********************///////
+
 var windowWith = $(window).width();
 var windowHeight = $(window).height();
 var links;
 var results;
 var queryObjects = [];
 var counter=-1;
+//Browser Detection
+// Opera 8.0+
+var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+// Firefox 1.0+
+var isFirefox = typeof InstallTrigger !== 'undefined';
+// Safari 3.0+ "[object HTMLElementConstructor]"
+var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || safari.pushNotification);
+// Internet Explorer 6-11
+var isIE = /*@cc_on!@*/false || !!document.documentMode;
+// Edge 20+
+var isEdge = !isIE && !!window.StyleMedia;
+// Chrome 1+
+var isChrome = !!window.chrome && !!window.chrome.webstore;
+// Blink engine detection
+//var isBlink = (isChrome || isOpera) && !!window.CSS;];
+
+//////************** END Global Variables ********************////////
+
+//We check if browser is Firefox if it is we display an alert saying better to user chrome or IE or Safary
+if(isFirefox) window.alert("We are sorry but the NetSage Project uses features that are currently not supported on Firefox. The NetSage portal has full support on Chrome, but is also supported in Safary and Internet Explorer. Please switch to any of these browsers and then visit this URL again. Sorry for the inconvenience");
 
 //Query Object Prototype
 function Query(query,date,avgOver,queryType,queryMeasure){
@@ -110,22 +131,6 @@ function createDatePickers(startDate,stopDate,isNow){
 	$( "#datePickerEnd" ).datepicker("setDate",StopDateFormated);
 }
 
-//Get Parameters from url
-function getUrlParameter(sParam) {
-    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
-        i;
-
-    for (i = 0; i < sURLVariables.length; i++) {
-        sParameterName = sURLVariables[i].split('=');
-
-        if (sParameterName[0] === sParam) {
-            return sParameterName[1] === undefined ? true : sParameterName[1];
-        }
-    }
-}
-
 //Function to create URL to add to a new tab with the query.
 function getQuery(queryDate,avgOver,queryType,queryName,queryMeasure,queryValue){
 	var urlParam = [];
@@ -162,7 +167,7 @@ function populateFormValues(){
 	else var timeFrames = ["now","today","last 7 days","this month","this year","time frame"];
 }
 
-function drawQueryFormCommon(queryForm,fieldset,queryTypes,queryMeasures,queryValues,timeFrames,day){
+function drawQueryFormCommon(queryForm,fieldset,queryTypes,queryMeasures,queryValues,timeFrames,day,queryFromTab){
 	//Create Query Type Select
 		//Insert svg Circle as bullet for list
 		fieldset.append("svg")
@@ -304,7 +309,7 @@ function drawQueryFormCommon(queryForm,fieldset,queryTypes,queryMeasures,queryVa
 			change: function( event, data ) {
 				var day = new Date();
 				var timeFrames = ["now","today","last 7 days","this month","this year","time frame"];
-				if(data.item.value==="1"){ //Question 1
+				if(data.item.label === "What is the duration and are there any periodic patterns or peak periods "){ //Question 1 I need to do this with labels instead of values because elements move around in the menu depending if it is comming from URL or not.
 					//Enable losse and latency measures when we select question 1
 					$("#measureOption1").attr("disabled",false);
 					$("#measureOption2").attr("disabled",false);
@@ -347,13 +352,23 @@ function drawQueryFormCommon(queryForm,fieldset,queryTypes,queryMeasures,queryVa
 		$("#queryMeasure").selectmenu({
 			width : 'auto'
 		});
-		//On start we disable the other queryValue options until we add the part of the code to process them.
-		$("#measureOption1").attr("disabled",true);
-		$("#measureOption2").attr("disabled",true);
+		//On start we dont allow to select measures for the first question.
+		if(queryFromTab){
+			if(queryFromTab.queryType=="0"){
+				$("#measureOption1").attr("disabled",true);
+				$("#measureOption2").attr("disabled",true);
+			}else{
+				$("#measureOption1").attr("disabled",false);
+				$("#measureOption2").attr("disabled",false);
+			}
+		}else{
+			$("#measureOption1").attr("disabled",true);
+			$("#measureOption2").attr("disabled",true);
+		}
 		$("#queryValue").selectmenu({
 			width : 'auto'
 		});
-		//On start we dont allow to select measures for the first question its not on place jet.
+		//On start we disable the other queryValue options until we add the part of the code to process them.
 		$("#valueOption1").attr("disabled",true);
 		$("#valueOption2").attr("disabled",true);
 		$("#queryTimeFrame").selectmenu({

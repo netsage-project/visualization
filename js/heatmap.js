@@ -206,8 +206,8 @@ function periodicPattern(data,queryMeasure){
 		div.transition()
        	   .duration(500)
            .style("opacity", .9);
-    	if(d[1] !== undefined) div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + d3.format(".2f")(d[1]) + " % of loss</p>" );
-    	//else div.html("<p class ='heatmapTooltipname'>" + String(d[0]).split(" ")[0] + " " + String(d[0]).split(" ")[1] + " " + String(d[0]).split(" ")[2] + " " + String(d[0]).split(" ")[3] + " at " + String(d[0]).split(" ")[4] + "</p><p>" + d3.format(".2f")(d[1]) + " Mb/s</p>");
+    	if(d[1] !== null) div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + d3.format(".2f")(d[1]) + " % of loss</p>" );
+    	else div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + "No test Data for this Period </p>");
         div.style("position","absolute")
            .style("left", (d3.event.pageX + 15) + "px")
            .style("top", (d3.event.pageY ) + "px");
@@ -221,8 +221,8 @@ function periodicPattern(data,queryMeasure){
 		div.transition()
        	   .duration(500)
            .style("opacity", .9);
-    	if(d[1] !== undefined) div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + d3.format(".0f")(d[1]) + " ms</p>" );
-    	//else div.html("<p class ='heatmapTooltipname'>" + String(d[0]).split(" ")[0] + " " + String(d[0]).split(" ")[1] + " " + String(d[0]).split(" ")[2] + " " + String(d[0]).split(" ")[3] + " at " + String(d[0]).split(" ")[4] + "</p><p>" + d3.format(".2f")(d[1]) + " Mb/s</p>");
+    	if(d[1] !== null) div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + d3.format(".0f")(d[1]) + " ms</p>" );
+    	else div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + "No test Data for this Period </p>");
         div.style("position","absolute")
            .style("left", (d3.event.pageX + 15) + "px")
            .style("top", (d3.event.pageY ) + "px");
@@ -371,7 +371,7 @@ function periodicPattern(data,queryMeasure){
 		var dates = [];
 		var values = [];
 		data.forEach(function(d) {
-		    d[1] = +d[1];
+		    //d[1] = +d[1];
 		    dates.push(d[0]);
 		    values.push(d[1]);
 		  });
@@ -482,7 +482,10 @@ function periodicPattern(data,queryMeasure){
 				'width': function(d){return cellWidth},
 				'stroke': function(){ return "black"},
 				'stroke-width': function(){return 0},
-				'fill': function(d){return colorScale(d[1])}
+				'fill': function(d){
+					if(d[1] !== null) return colorScale(d[1])
+					else return "lightGrey"
+				}
 
 			})
 			.on("mouseover", handleMouseOverLosses)
@@ -505,7 +508,10 @@ function periodicPattern(data,queryMeasure){
 				'width': function(d){return cellWidth},
 				'stroke': function(){ return "black"},
 				'stroke-width': function(){return 0},
-				'fill': function(d){return colorScale(d[1])}
+				'fill': function(d){
+					if(d[1] !== null) return colorScale(d[1])
+					else return "lightGrey"
+				}
 
 			})
 			.on("mouseover", handleMouseOver)
@@ -528,7 +534,10 @@ function periodicPattern(data,queryMeasure){
 				'width': function(d){return cellWidth},
 				'stroke': function(){ return "black"},
 				'stroke-width': function(){return 0},
-				'fill': function(d){return colorScale(d[1])}
+				'fill': function(d){
+					if(d[1] !== null) return colorScale(d[1])
+					else return "lightGrey"
+				}
 
 			})
 			.on("mouseover", handleMouseOverLatency)

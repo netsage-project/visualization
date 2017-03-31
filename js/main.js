@@ -9,24 +9,31 @@ function mainQueryForm(){
 	if(getUrlParameter("date")!=undefined) hasParameters = true;
 	else hasParameters = false;
 	//QueryFormVariables Array of Options
-	var queryTypes;
-	var queryMeasures;
-	var queryValues;
-	var timeFrames;
+	var queryTypesOptions = ["What was the min, max, average ","What is the duration and are there any periodic patterns or peak periods ", "More to come... "];
+	var queryMeasuresOptions = ["in Bandwidth use"," in Losses","in Latency"];
+	var queryValuesOptions = ["across the IRNC Network","across the IRNC Links","across the IRNC Nodes"];
+	var timeFramesOptions = ["now","today","last 7 days","this month","this year","time frame"];
+	//Variables we populate to create menus from the available options.
+	var queryTypes = [];
+	var queryMeasures = [];
+	var queryValues = [];
+	var timeFrames = [];
 	var day;
 	var queryFromTab;
+	//If the URL doesnt hace parameters we initialize
 	if(hasParameters===false){
-		queryTypes = ["What was the min, max, average ","What is the duration and are there any periodic patterns or peak periods ", "More to come... "];
-		queryMeasures = ["in Bandwidth use"," in Losses","in Latency"];
-		queryValues = ["across the IRNC Network","across the IRNC Links","across the IRNC Nodes"];
-		timeFrames = ["now","today","last 7 days","this month","this year","time frame"];
+		queryTypes = queryTypesOptions;
+		queryMeasures = queryMeasuresOptions;
+		queryValues = queryValuesOptions;
+		timeFrames = timeFramesOptions;
 		drawQueryForm();
 		//Prefill with the pickers with the now data
 		day = new Date();
 		var threeHoursBefore = new Date(day.getTime() - (3 * 60 * 60 * 1000));
 		createDatePickers(threeHoursBefore,day,true);
+	//If URL has parameters we load the parameters to fill up the menu.
 	}else{
-		//Add Giff image while loading it replaces the text in the button. The giff is replaced back to the text at the end of the query. I do that in the main function (TOP)
+		//Add Giff image while loading it replaces the text in the button. The giff is replaced back to the text at the end of the query.
 		d3.select("#submit").append("span")
 			.append("img")
 			.attrs({
@@ -49,8 +56,20 @@ function mainQueryForm(){
 			"queryMeasure":getUrlParameter("queryMeasure"),
 			"queryValue":getUrlParameter("queryValue")
 		}
-		queryTypes = ["What was the min, max, average ","What is the duration and are there any periodic patterns or peak periods ", "More to come... "];
-		queryMeasures = ["in Bandwidth use"," in Losses","in Latency"];
+		//Fill the first element to be what we got from the queryParameters then omit the element that we put first o that we dont repeat elements. We do this for all options
+		queryTypes.push(queryTypesOptions[queryFromTab.queryType]);
+		queryTypesOptions.forEach(function(option,index){
+			if(index.toString() !== queryFromTab.queryType){
+				queryTypes.push(queryTypesOptions[index]);
+			}
+		})
+		queryMeasures.push(queryMeasuresOptions[queryFromTab.queryMeasure]);
+		queryMeasuresOptions.forEach(function(option,index){
+			if(index.toString() !== queryFromTab.queryMeasure){
+				queryMeasures.push(queryMeasuresOptions[index]);
+			}
+		})
+		//queryMeasures = ["in Bandwidth use"," in Losses","in Latency"];
 		queryValues = ["across the IRNC Network","across the IRNC Links","across the IRNC Nodes"];
 		timeFrames = ["time frame","now","today","last 7 days","this month","this year"];
 		drawQueryForm();
@@ -84,11 +103,6 @@ function mainQueryForm(){
 			  	"class":"ui-icon ui-icon-triangle-1-e arrowGoBack"
 			  })
 			  .on("click",function(){ window.location.href=".html"});
-
-		// var querySelector = d3.select("body").append("div")
-		// 	.attrs({
-		// 		class:"querySelector"
-		// 	});
 		queryForm=querySelector.append("form")
 			.attrs({
 				"id":"queryForm"
@@ -127,6 +141,6 @@ function mainQueryForm(){
 							$("#mainInFoText").remove();
 						}
 					});
-		drawQueryFormCommon(queryForm,fieldset,queryTypes,queryMeasures,queryValues,timeFrames,day);
+		drawQueryFormCommon(queryForm,fieldset,queryTypes,queryMeasures,queryValues,timeFrames,day,queryFromTab);
 	}
 }

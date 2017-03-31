@@ -2,7 +2,7 @@ function sortObjects (arr,property,type){
 	var sort;
 	switch(type){
 		case "dec":
-			sort = arr.sort(function(a, b) {return eval("b" + property /*.data.input.avg*/) - eval("a"+ property)});
+			sort = arr.sort(function(a, b) {return eval("b" + property) - eval("a"+ property)});
 			break;
 		case "inc":
 			sort = arr.sort(function(a, b) {return eval("a"+ property) - eval("b" + property)});

@@ -148,14 +148,14 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 					dataPoint.input[each][1] = precise_round(dataPoint.input[each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
 					inputClean.push(dataPoint.input[each][1]);
 				}else{
-					dataPoint.input[each][1] = 0;
+					dataPoint.input[each][1] = null;
 					//inputClean.push(0);
 				}
 				if(dataPoint.output[each][1]!=null){
 					dataPoint.output[each][1] = precise_round(dataPoint.output[each][1]/1024/1024/1024,2);
 					outputClean.push(dataPoint.output[each][1]);
 				} else{
-					dataPoint.output[each][1] = 0;
+					dataPoint.output[each][1] = null;
 					//outputClean.push(0);
 				}
 				inputValues.push([new Date (dataPoint.input[each][0]*1000),dataPoint.input[each][1]]);
@@ -174,8 +174,8 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 					dataPoint.values[each][1] = dataPoint.values[each][1]*100;
 					dataClean.push(dataPoint.values[each][1]);
 				}else{
-					dataPoint.values[each][1] = 0;
-					dataClean.push(0);
+					dataPoint.values[each][1] = null;
+					//dataClean.push(0);
 				}
 				values.push([new Date (dataPoint.values[each][0]*1000),dataPoint.values[each][1]]);
 			}
@@ -190,8 +190,8 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 					dataPoint.values[each][1] = dataPoint.values[each][1];
 					dataClean.push(dataPoint.values[each][1]);
 				}else{
-					dataPoint.values[each][1] = 0;
-					dataClean.push(0);
+					dataPoint.values[each][1] = null;
+					//dataClean.push(0);
 				}
 				values.push([new Date (dataPoint.values[each][0]*1000),dataPoint.values[each][1]]);
 			}
@@ -277,6 +277,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 		var nodes = [];
 		//Query to retrieve metadata values
 		var url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get node, intf, description, a_endpoint.name, a_endpoint.latitude, a_endpoint.longitude, z_endpoint.name, z_endpoint.latitude, z_endpoint.longitude, max_bandwidth between( "' + date[0] + '", "' + date[1] + '" ) by node, intf from interface where a_endpoint != null and z_endpoint != null'
+		console.log(url);
 		d3.json(url)
 			.on("beforesend", function (request) {request.withCredentials = true;})
 			.get(function(error,data)
@@ -288,6 +289,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 					if (each != links.length-1) url = url + '( node = "' + links[each].node + '" and intf = "' + links[each].intf + '") or ';
 					else url = url + '( node = "' + links[each].node + '" and intf = "' + links[each].intf + '") )';
 				}
+				console.log(url);
 				d3.json(url)
 				.on("beforesend", function (request) {request.withCredentials = true;})
 				.get(function(error,data)
@@ -439,12 +441,17 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 		var avgOver = avgOver;
 		var links;
 		var nodes = [];
-		if (queryMeasure==="1")var url = 'https://netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get source, destination, aggregate(values.loss,3600, average) as values, max(aggregate(values.loss,3600, average)) as max_loss between( "' + date[0] + '", "' + date[1] + '" ) by source, from ps_owamp having max_loss >0 limit 1000 offset 0 ordered by max_loss desc';
-		if(queryMeasure==="2") var url = 'https://netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get source, destination, aggregate(values.latency_avg,3600, average) as values, max(aggregate(values.latency_avg,3600, average)) as max_lat between( "' + date[0] + '", "' + date[1] + '" ) by source, from ps_owamp having max_lat >0 limit 1000 offset 0 ordered by max_lat desc';
+		var idCount = 0;
+		if (queryMeasure==="1")var url = 'https://netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get source, destination, aggregate(values.loss,3600, average) as values, max(aggregate(values.loss,3600, average)) as max_loss between( "' + date[0] + '", "' + date[1] + '" ) by source, destination, from ps_owamp having max_loss >0 limit 1000 offset 0 ordered by source,destination desc';
+		if(queryMeasure==="2") var url = 'https://netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get source, destination, aggregate(values.latency_avg,3600, average) as values, max(aggregate(values.latency_avg,3600, average)) as max_lat between( "' + date[0] + '", "' + date[1] + '" ) by source, destination, from ps_owamp having max_lat >0 limit 1000 offset 0 ordered by source,destination desc';
 		d3.json(url)
 			.on("beforesend", function (request) {request.withCredentials = true;})
 			.get(function(error,data)
 		{
+			data.results.forEach(function(link){
+				link.id = idCount;
+				idCount++;
+			})
 			queryObjects[counter].links = data.results;
 			for (var element in queryObjects[counter].links){
 				//Add the data to the links object
@@ -452,6 +459,8 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 				calculateStatistics(queryObjects[counter].links[element],sizeIntervalSeconds,queryMeasure,date);
 			}
 			queryObjects[counter].links = data.results;
+			//Maybe I should move this call and/or the function and either save both results and toggle or call the function from the render.
+			queryObjects[counter].links = orderPerfsonarTests(queryObjects[counter].links);
 		/*	//Create the nodes from the links
 			nodes = createNodes(nodes,queryObjects[counter].links,queryMeasure);
 			queryObjects[counter].nodes = nodes;
@@ -472,6 +481,55 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 				$("#queryButtonImg").remove();
 			}
 		});
+	}
+	//Function orderPerfsonarTests in order to put A -> B and then B -> A
+	function orderPerfsonarTests(tests){
+		let outputArray = [];
+		let src;
+		let dest;
+		let id;
+		let inArray1;
+		let inArray2 = false;
+		tests.forEach(function(test,index){
+			inArray1 = false;
+			src = test.source;
+			dest = test.destination;
+			id = test.id;
+			//Check if it is in output
+			if(outputArray.length !== 0 ){
+				outputArray.every(function(output){
+					if(output.id === test.id){
+						inArray1 = true;
+						return false;
+					}
+					return true;
+				})
+				if(inArray1 === false){
+					outputArray.push(test);
+				}
+			}else{
+				outputArray.push(test);
+			}
+			tests.forEach(function(test){
+				inArray2 = false;
+				if(test.source === dest){
+					if(test.destination === src){
+						//Check if it is in output
+						outputArray.every(function(output){
+							if(output.id === test.id){
+								inArray2 = true;
+								return false;
+							}
+							return true;
+						})
+						if(inArray2 === false){
+							outputArray.push(test);
+						}
+					}
+				}
+			})
+		})
+		return outputArray;
 	}
 	//#################################### END AUX FUNCTIONS ############################
 	//Check what measurement the user is asking for

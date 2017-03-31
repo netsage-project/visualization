@@ -2,13 +2,13 @@ function periodicPattern(data,queryMeasure){
 	var heatmapData;
 	var dates = [];
 	var minDate,maxDate;
+	var maxWeekDataLinks = [];
+	var maxWeekDataNodes = [];
 	if(queryMeasure==="0"){
 		//First we extract the max value for the color scale. To use the same scale accross all heatmaps. We also need to extract maximun date so that all normal day heatmaps end at the same date and scales are aligned.
 		//We then calculate the weekdata per each element and calculate max values for the scales of weekdata so that all weekheatmaps graphs share the same scale.
 		var maxValueLinks = [];
 		var maxValueNodes = [];
-		var maxWeekDataLinks = [];
-		var maxWeekDataNodes = [];
 		data.links.forEach(function(d){
 			//Extract Normal heatmap Max per each element
 			maxValueLinks.push(d.data.input.max);
@@ -98,10 +98,16 @@ function periodicPattern(data,queryMeasure){
 			d.values.forEach(function(d){
 				dates.push(d[0])
 			})
+			//Calculate Weekday Data per each element
+			d.values.weekData = calculateWeekData(d.values);
+			//Extract Max of each WeekdayData
+			maxWeekDataLinks.push(d3.max(d.values.weekData.arrayOfValues));
 		})
+		//Calculate Max values
 		maxValue = d3.max(maxValue);
 		maxDate = d3.max(dates);
 		minDate = d3.min(dates);
+		maxWeekDataLinks = d3.max(maxWeekDataLinks);
 		var arrayIndex=0;
 		for(var element in data.links){
 			setTimeout(function(){
@@ -109,7 +115,7 @@ function periodicPattern(data,queryMeasure){
 				drawElementText("Link: " + data.links[arrayIndex].source +  " - " + data.links[arrayIndex].destination + ". <b>Max:</b> " + d3.format(".0f")(data.links[arrayIndex].max) + "% <b>Average:</b> " + d3.format(".2f")(data.links[arrayIndex].avg)+ "%");
 				heatmapData = data.links[arrayIndex].values;
 				heatmap(heatmapData,maxValue,maxDate,minDate,queryMeasure);
-				//weekHeatmap(data.links[arrayIndex].weekData,maxWeekDataLinks);
+				weekHeatmap(data.links[arrayIndex].values.weekData,maxWeekDataLinks);
 				arrayIndexLinks++;
 				var end = new Date().getTime();
 				var time = end - start;
@@ -124,10 +130,16 @@ function periodicPattern(data,queryMeasure){
 			d.values.forEach(function(d){
 				dates.push(d[0])
 			})
+			//Calculate Weekday Data per each element
+			d.values.weekData = calculateWeekData(d.values);
+			//Extract Max of each WeekdayData
+			maxWeekDataLinks.push(d3.max(d.values.weekData.arrayOfValues));
 		})
+		//Calculate Max values
 		maxValue = d3.max(maxValue);
 		maxDate = d3.max(dates);
 		minDate = d3.min(dates);
+		maxWeekDataLinks = d3.max(maxWeekDataLinks);
 		var arrayIndex=0;
 		for(var element in data.links){
 			setTimeout(function(){
@@ -135,7 +147,7 @@ function periodicPattern(data,queryMeasure){
 				drawElementText("Link: " + data.links[arrayIndex].source +  " - " + data.links[arrayIndex].destination + " <b>Max:</b> " + d3.format(".0f")(data.links[arrayIndex].max) + " ms" + "<b> Average:</b> " + d3.format(".0f")(data.links[arrayIndex].avg) + " ms");
 				heatmapData = data.links[arrayIndex].values;
 				heatmap(heatmapData,maxValue,maxDate,minDate,queryMeasure);
-				//weekHeatmap(data.links[arrayIndex].weekData,maxWeekDataLinks);
+				weekHeatmap(data.links[arrayIndex].values.weekData,maxWeekDataLinks);
 				arrayIndexLinks++;
 				var end = new Date().getTime();
 				var time = end - start;
@@ -206,8 +218,12 @@ function periodicPattern(data,queryMeasure){
 		div.transition()
        	   .duration(500)
            .style("opacity", .9);
-    	if(d[1] !== null) div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + d3.format(".2f")(d[1]) + " % of loss</p>" );
-    	else div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + "No test Data for this Period </p>");
+    	if(d[1]){
+    		if(d[1] !== null) div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + d3.format(".2f")(d[1]) + " % of loss</p>" );
+    		else div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + "No test Data for this Period </p>");
+    	}else{
+    		div.html("<p class ='heatmapTooltipname'>" + d.day + " at " + d.hour + ":</p><p>" + d3.format(".2f")(d.val) + " % of loss</p>" );
+    	}
         div.style("position","absolute")
            .style("left", (d3.event.pageX + 15) + "px")
            .style("top", (d3.event.pageY ) + "px");
@@ -221,8 +237,12 @@ function periodicPattern(data,queryMeasure){
 		div.transition()
        	   .duration(500)
            .style("opacity", .9);
-    	if(d[1] !== null) div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + d3.format(".0f")(d[1]) + " ms</p>" );
-    	else div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + "No test Data for this Period </p>");
+        if(d[1]){
+        	if(d[1] !== null) div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + d3.format(".0f")(d[1]) + " ms</p>" );
+    		else div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + "No test Data for this Period </p>");
+        }else{
+        	div.html("<p class ='heatmapTooltipname'>" + d.day + " at " + d.hour + ":</p><p>" + d3.format(".2f")(d.val) + " ms</p>" );
+        }
         div.style("position","absolute")
            .style("left", (d3.event.pageX + 15) + "px")
            .style("top", (d3.event.pageY ) + "px");
@@ -625,30 +645,82 @@ function periodicPattern(data,queryMeasure){
 		 	 })
 		     .text("Time of day")
 		//Append Squares
-		graph.append('g')
-			.attrs({
-				'transform': "translate(" + (m[1]+1) + ",0)"
-			})
-			.selectAll("rect")
-			.data(data.values)
-			.enter()
-			.append("rect")
-			.attrs({
-				'id': function(d,i){ return i;},
-				'x': function(d) {
-					return x(d.day)},
-				'y': function(d) {
-					return y(d.hour)},
-				'height': function(d){return cellHeight},
-				'width': function(d){return cellWidth},
-				'stroke': function(){ return "black"},
-				'stroke-width': function(){return 0},
-				'fill': function(d,i){
-					return colorScale(d.val)}
+		if(queryMeasure==="0"){
+			graph.append('g')
+				.attrs({
+					'transform': "translate(" + (m[1]+1) + ",0)"
+				})
+				.selectAll("rect")
+				.data(data.values)
+				.enter()
+				.append("rect")
+				.attrs({
+					'id': function(d,i){ return i;},
+					'x': function(d) {
+						return x(d.day)},
+					'y': function(d) {
+						return y(d.hour)},
+					'height': function(d){return cellHeight},
+					'width': function(d){return cellWidth},
+					'stroke': function(){ return "black"},
+					'stroke-width': function(){return 0},
+					'fill': function(d,i){
+						return colorScale(d.val)}
 
-			})
-			.on("mouseover", handleMouseOver)
-      		.on("mouseout",handleMouseOut);
+				})
+				.on("mouseover", handleMouseOver)
+	      		.on("mouseout",handleMouseOut);
+	    }else if(queryMeasure === "1"){
+	    	graph.append('g')
+				.attrs({
+					'transform': "translate(" + (m[1]+1) + ",0)"
+				})
+				.selectAll("rect")
+				.data(data.values)
+				.enter()
+				.append("rect")
+				.attrs({
+					'id': function(d,i){ return i;},
+					'x': function(d) {
+						return x(d.day)},
+					'y': function(d) {
+						return y(d.hour)},
+					'height': function(d){return cellHeight},
+					'width': function(d){return cellWidth},
+					'stroke': function(){ return "black"},
+					'stroke-width': function(){return 0},
+					'fill': function(d,i){
+						return colorScale(d.val)}
+
+				})
+				.on("mouseover", handleMouseOverLosses)
+	      		.on("mouseout",handleMouseOut);
+	    }else if(queryMeasure === "2"){
+	    	graph.append('g')
+				.attrs({
+					'transform': "translate(" + (m[1]+1) + ",0)"
+				})
+				.selectAll("rect")
+				.data(data.values)
+				.enter()
+				.append("rect")
+				.attrs({
+					'id': function(d,i){ return i;},
+					'x': function(d) {
+						return x(d.day)},
+					'y': function(d) {
+						return y(d.hour)},
+					'height': function(d){return cellHeight},
+					'width': function(d){return cellWidth},
+					'stroke': function(){ return "black"},
+					'stroke-width': function(){return 0},
+					'fill': function(d,i){
+						return colorScale(d.val)}
+
+				})
+				.on("mouseover", handleMouseOverLatency)
+	      		.on("mouseout",handleMouseOut);
+	    }
       	createLegend(graph, colorScale,maxValue,w + m[3]/2,queryMeasure);
 	}
 }

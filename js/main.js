@@ -11,7 +11,7 @@ function mainQueryForm(){
 	//QueryFormVariables Array of Options
 	var queryTypesOptions = ["What was the min, max, average ","What is the duration and are there any periodic patterns or peak periods ", "More to come... "];
 	var queryMeasuresOptions = ["in Bandwidth use"," in Losses","in Latency"];
-	var queryValuesOptions = ["across the IRNC Network","across the IRNC Links","across the IRNC Nodes"];
+	var queryValuesOptions = ["across the IRNC Network","across the main Institutions","across the IRNC Nodes"];
 	var timeFramesOptions = ["now","today","last 7 days","this month","this year","time frame"];
 	//Variables we populate to create menus from the available options.
 	var queryTypes = [];
@@ -70,7 +70,7 @@ function mainQueryForm(){
 			}
 		})
 		//queryMeasures = ["in Bandwidth use"," in Losses","in Latency"];
-		queryValues = ["across the IRNC Network","across the IRNC Links","across the IRNC Nodes"];
+		queryValues = ["across the IRNC Network","across the main Institutions","across the IRNC Nodes"];
 		timeFrames = ["time frame","now","today","last 7 days","this month","this year"];
 		drawQueryForm();
 		//Load the parameters from the URL and execute search

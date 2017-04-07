@@ -135,8 +135,8 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 	}
 
 	//Function to clean data
-	function scaleAndClean(dataPoint,queryMeasure){
-		if(queryMeasure==="0")
+	function scaleAndClean(dataPoint,queryMeasure,queryValue){
+		if(queryMeasure==="0" && queryValue==="0") //SNMP data
 		{
 			var inputClean=[];
 			var outputClean=[];
@@ -171,34 +171,65 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 			var values=[];
 			for(each in dataPoint.values){
 				if(dataPoint.values[each][1]!=null){
-					dataPoint.values[each][1] = dataPoint.values[each][1]*100;
+					dataPoint.values[each][1] = dataPoint.values[each][1]*100; //To show in percentage
 					dataClean.push(dataPoint.values[each][1]);
 				}else{
 					dataPoint.values[each][1] = null;
-					//dataClean.push(0);
 				}
 				values.push([new Date (dataPoint.values[each][0]*1000),dataPoint.values[each][1]]);
 			}
 			//Save the cleaned scaled values in the data
 			dataPoint.histogram = dataClean;
 			dataPoint.values = values;
-		} else if(queryMeasure==="2"){//latency
+		}else if(queryMeasure==="2"){//latency
 			var dataClean=[];
 			var values=[];
 			for(each in dataPoint.values){
 				if(dataPoint.values[each][1]!=null){
-					dataPoint.values[each][1] = dataPoint.values[each][1];
+					dataPoint.values[each][1] = dataPoint.values[each][1]; //Dont change anything value comes in ms.
 					dataClean.push(dataPoint.values[each][1]);
 				}else{
 					dataPoint.values[each][1] = null;
-					//dataClean.push(0);
 				}
 				values.push([new Date (dataPoint.values[each][0]*1000),dataPoint.values[each][1]]);
+			}
+			//Save the cleaned scaled values in the data
+			dataPoint.histogram = dataClean;
+			dataPoint.values = values;
+		}else if(queryMeasure==="0" && queryValue==="1" && queryType === "0"){//Flow Data
+			var dataClean=[];
+			var values=[];
+			for(each in dataPoint.input){
+				if(dataPoint.input[each][1]!=null){
+					dataPoint.input[each][1] = precise_round(dataPoint.input[each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
+					dataClean.push(dataPoint.input[each][1]);
+				}else{
+					dataPoint.input[each][1] = 0;
+				}
+				values.push([new Date (dataPoint.input[each][0]*1000),dataPoint.input[each][1]]);
+			}
+			//I save twice now to simulate input and output that I hope I will get this is temporary
+			dataPoint.input.histogram = dataClean;
+			dataPoint.output.histogram = dataClean;
+			dataPoint.input.values = values;
+			dataPoint.output.values = values;
+		}else if(queryMeasure==="0" && queryValue==="1" && queryType === "1"){
+			var dataClean=[];
+			var values=[];
+			for(each in dataPoint["values.bits"]){
+				if(dataPoint["values.bits"][each][1]!=null){
+					dataPoint["values.bits"][each][1] = precise_round(dataPoint["values.bits"][each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
+					dataClean.push(dataPoint["values.bits"][each][1]);
+				}else{
+					dataPoint["values.bits"][each][1] = null;
+				}
+				values.push([new Date (dataPoint["values.bits"][each][0]*1000),dataPoint["values.bits"][each][1]]);
 			}
 			//Save the cleaned scaled values in the data
 			dataPoint.histogram = dataClean;
 			dataPoint.values = values;
 		}
+
 		//Function to precise round the results so that they are numbers .toFixed() converts them to strings and misbehaves sometimes
 		function precise_round(num,decimals){
 			var t = Math.pow(10, decimals);
@@ -206,8 +237,8 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 		}
 	}
 	//Function to calculate Important Statistical values
-	function calculateStatistics (dataPoint,sizeInterval,queryMeasure,queryDate){
-		if(queryMeasure==="0")
+	function calculateStatistics (dataPoint,sizeInterval,queryMeasure,queryValue,queryDate){
+		if(queryMeasure==="0" && queryObjects[0].queryType === "0")//SNMP data and Flow query 0
 		{
 			//Create other helper Statistical values
 			dataPoint.input.max = d3.max(dataPoint.input.histogram);
@@ -243,7 +274,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 			dataPoint.totalData = [d3.mean(dataPoint.input.histogram)*sizeInterval,d3.mean(dataPoint.output.histogram)*sizeInterval];
 			if(isNaN(dataPoint.totalData[0])) dataPoint.totalData[0]=0;
 			if(isNaN(dataPoint.totalData[1])) dataPoint.totalData[1]=0;
-		}else if(queryMeasure==="1" || queryMeasure==="2"){
+		}else if(queryMeasure==="1" || queryMeasure==="2" || queryMeasure==="0" && queryObjects[0].queryType === "1"){ //PerfSonar and query 1 Flow
 			//Create other helper Statistical values
 			dataPoint.max = d3.max(dataPoint.histogram);
 			dataPoint.min = d3.min(dataPoint.histogram);
@@ -275,10 +306,11 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 		var avgOver = avgOver;
 		var links;
 		var nodes = [];
-		//Query to retrieve metadata values
-		var url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get node, intf, description, a_endpoint.name, a_endpoint.latitude, a_endpoint.longitude, z_endpoint.name, z_endpoint.latitude, z_endpoint.longitude, max_bandwidth between( "' + date[0] + '", "' + date[1] + '" ) by node, intf from interface where a_endpoint != null and z_endpoint != null'
-		console.log(url);
-		d3.json(url)
+		//We see what user wants to visualice
+		if(queryObjects[0].queryValue==="0"){//IRNC LINKS
+			//Query to retrieve metadata values
+			var url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get node, intf, description, a_endpoint.name, a_endpoint.latitude, a_endpoint.longitude, z_endpoint.name, z_endpoint.latitude, z_endpoint.longitude, max_bandwidth between( "' + date[0] + '", "' + date[1] + '" ) by node, intf from interface where a_endpoint != null and z_endpoint != null';
+			d3.json(url)
 			.on("beforesend", function (request) {request.withCredentials = true;})
 			.get(function(error,data)
 			{
@@ -289,7 +321,6 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 					if (each != links.length-1) url = url + '( node = "' + links[each].node + '" and intf = "' + links[each].intf + '") or ';
 					else url = url + '( node = "' + links[each].node + '" and intf = "' + links[each].intf + '") )';
 				}
-				console.log(url);
 				d3.json(url)
 				.on("beforesend", function (request) {request.withCredentials = true;})
 				.get(function(error,data)
@@ -297,18 +328,18 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 					for (var element in queryObjects[counter].links){
 						//Select appropiate data from array and attach it to the proper link
 						var elementResult = data.results.filter(function( obj ) {
-  							return obj.node == queryObjects[counter].links[element].node;
+								return obj.node == queryObjects[counter].links[element].node;
 						});
 						//Add the data to the links object
 						queryObjects[counter].links[element].data = elementResult[0];
-						scaleAndClean(queryObjects[counter].links[element].data,queryMeasure);
-						calculateStatistics(queryObjects[counter].links[element].data,sizeIntervalSeconds,queryMeasure,queryDate);
+						scaleAndClean(queryObjects[counter].links[element].data,queryMeasure,queryObjects[0].queryValue);
+						calculateStatistics(queryObjects[counter].links[element].data,sizeIntervalSeconds,queryMeasure,queryObjects[0].queryValue,queryDate);
 					}
 					//Create the nodes from the links
 					nodes = createNodes(nodes,links,queryMeasure);
 					queryObjects[counter].nodes = nodes;
 					for (var element in queryObjects[counter].nodes){
-						calculateStatistics(queryObjects[counter].nodes[element].data,sizeIntervalSeconds,queryMeasure,queryDate);
+						calculateStatistics(queryObjects[counter].nodes[element].data,sizeIntervalSeconds,queryMeasure,queryObjects[0].queryValue,queryDate);
 					}
 					//Create query text
 					drawQueryText(queryText);
@@ -319,12 +350,31 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 						histogramTableGraph(queryObjects[counter]);
 						//if(window.location.pathname==="/dashboard.html" || window.location.pathname==="/netsage/dashboard.html") lineChart(queryObjects[counter]);
 					}else if(queryObjects[counter].queryType==="1"){//Periodic Patterns
-						periodicPattern(queryObjects[counter],queryMeasure);
+						periodicPattern(queryObjects[counter]);
 					}
-					$("#whiteButtonImg").remove();
-					$("#queryButtonImg").remove();
+					iconClearWaiting();
 				});
 			});
+		}else if(queryObjects[0].queryValue==="1"){//INSTITUTIONS
+			var url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get src_organization, point_of_observation, values.bits, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_organization, point_of_observation from netflow_src_organization where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+			d3.json(url)
+			.on("beforesend", function (request) {request.withCredentials = true;})
+			.get(function(error,data)
+			{
+				links = data.results;
+				queryObjects[counter].links = links;
+				for (var element in queryObjects[counter].links){
+					queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_organization;
+					queryObjects[counter].links[element].data = {};
+					queryObjects[counter].links[element].data.input = queryObjects[counter].links[element]["values.bits"];
+					queryObjects[counter].links[element].data.output = queryObjects[counter].links[element]["values.bits"];
+					scaleAndClean(queryObjects[counter].links[element].data,queryMeasure,queryObjects[0].queryValue);
+					calculateStatistics(queryObjects[counter].links[element].data,sizeIntervalSeconds,queryMeasure,queryObjects[0].queryValue,date);
+				}
+				drawQueryText(queryText);
+				histogramTableGraph(queryObjects[counter]);
+			}
+		)};
 	}
 
 	function drawQueryText(queryText){
@@ -433,7 +483,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 	}
 
 	//Function for TSDS PerfSonar Data
-	function perfSonarTSDSQuery(avgOver,queryMeasure){
+	function perfSonarTSDSQuery(avgOver,queryMeasure,queryValue){
 		//Set up the date
 		var date = queryDate;
 		var interval = { first: new Date(date[0]), second: new Date(date[1]) }
@@ -443,7 +493,8 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 		var nodes = [];
 		var idCount = 0;
 		if (queryMeasure==="1")var url = 'https://netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get source, destination, aggregate(values.loss,3600, average) as values, max(aggregate(values.loss,3600, average)) as max_loss between( "' + date[0] + '", "' + date[1] + '" ) by source, destination, from ps_owamp having max_loss >0 limit 1000 offset 0 ordered by source,destination desc';
-		if(queryMeasure==="2") var url = 'https://netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get source, destination, aggregate(values.latency_avg,3600, average) as values, max(aggregate(values.latency_avg,3600, average)) as max_lat between( "' + date[0] + '", "' + date[1] + '" ) by source, destination, from ps_owamp having max_lat >0 limit 1000 offset 0 ordered by source,destination desc';
+		else if(queryMeasure==="2") var url = 'https://netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get source, destination, aggregate(values.latency_avg,3600, average) as values, max(aggregate(values.latency_avg,3600, average)) as max_lat between( "' + date[0] + '", "' + date[1] + '" ) by source, destination, from ps_owamp having max_lat >0 limit 1000 offset 0 ordered by source,destination desc';
+		else if(queryValue === "1") var url = 'https://netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get%20src_organization,%20point_of_observation,%20values.bits,%20average(values.bits)%20as%20avg_bits%20between("' + date[0] + '", "' + date[1] + '" )%20by%20src_organization,%20point_of_observation%20from%20netflow_src_organization%20where%20point_of_observation%20=%20%22*%22%20limit%201000%20offset%200%20ordered%20by%20avg_bits%20desc';
 		d3.json(url)
 			.on("beforesend", function (request) {request.withCredentials = true;})
 			.get(function(error,data)
@@ -455,12 +506,12 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 			queryObjects[counter].links = data.results;
 			for (var element in queryObjects[counter].links){
 				//Add the data to the links object
-				scaleAndClean(queryObjects[counter].links[element],queryMeasure);
-				calculateStatistics(queryObjects[counter].links[element],sizeIntervalSeconds,queryMeasure,date);
+				scaleAndClean(queryObjects[counter].links[element],queryMeasure,queryObjects[0].queryValue);
+				calculateStatistics(queryObjects[counter].links[element],sizeIntervalSeconds,queryMeasure,queryObjects[0].queryValue,date);
 			}
 			queryObjects[counter].links = data.results;
 			//Maybe I should move this call and/or the function and either save both results and toggle or call the function from the render.
-			queryObjects[counter].links = orderPerfsonarTests(queryObjects[counter].links);
+			if(queryValue!=="1") queryObjects[counter].links = orderPerfsonarTests(queryObjects[counter].links); //We order if it is perfSonar data.
 		/*	//Create the nodes from the links
 			nodes = createNodes(nodes,queryObjects[counter].links,queryMeasure);
 			queryObjects[counter].nodes = nodes;
@@ -470,16 +521,15 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 		*/
 			//Create query text
 			drawQueryText(queryText);
-			if(queryObjects[counter].queryType==="0"){//Bandwith accross links
-				//Create Map
-				mapGraph(queryObjects[counter]);
-				//Create Table
-				histogramTableGraph(queryObjects[counter]);
-			}else if(queryObjects[counter].queryType==="1"){
-				periodicPattern(queryObjects[counter],queryMeasure);
-				$("#whiteButtonImg").remove();
-				$("#queryButtonImg").remove();
-			}
+			// if(queryObjects[counter].queryType==="0"){//Bandwith accross links
+			// 	//Create Map
+			// 	mapGraph(queryObjects[counter]);
+			// 	//Create Table
+			// 	histogramTableGraph(queryObjects[counter]);
+			// }else if(queryObjects[counter].queryType==="1"){
+				periodicPattern(queryObjects[counter]);
+				iconClearWaiting();
+			// }
 		});
 	}
 	//Function orderPerfsonarTests in order to put A -> B and then B -> A
@@ -531,8 +581,12 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 		})
 		return outputArray;
 	}
+	function iconClearWaiting(){
+		$("#whiteButtonImg").remove();
+		$("#queryButtonImg").remove();
+	}
 	//#################################### END AUX FUNCTIONS ############################
 	//Check what measurement the user is asking for
-	if(queryMeasure==="0") snmpTSDSQuery(avgOver);////Loads the data for the snmp query
-	else perfSonarTSDSQuery(avgOver,queryMeasure);////Loads the data for the perfSonar query
+	if(queryType==="0") snmpTSDSQuery(avgOver);////Loads the data for the snmp query
+	else perfSonarTSDSQuery(avgOver,queryMeasure,queryObjects[0].queryValue);////Loads the data for the perfSonar query
 }

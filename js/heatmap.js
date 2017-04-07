@@ -1,10 +1,10 @@
-function periodicPattern(data,queryMeasure){
+function periodicPattern(data){
 	var heatmapData;
 	var dates = [];
 	var minDate,maxDate;
 	var maxWeekDataLinks = [];
 	var maxWeekDataNodes = [];
-	if(queryMeasure==="0"){
+	if(data.queryMeasure==="0" && data.queryValue === "0"){
 		//First we extract the max value for the color scale. To use the same scale accross all heatmaps. We also need to extract maximun date so that all normal day heatmaps end at the same date and scales are aligned.
 		//We then calculate the weekdata per each element and calculate max values for the scales of weekdata so that all weekheatmaps graphs share the same scale.
 		var maxValueLinks = [];
@@ -60,11 +60,11 @@ function periodicPattern(data,queryMeasure){
 				var start = new Date().getTime();
 				drawElementText("Input: " + data.links[arrayIndexLinks].description);
 				heatmapData = data.links[arrayIndexLinks].data.input.values;
-				heatmap(heatmapData,maxValueLinks,maxDate,minDate,queryMeasure);
+				heatmap(heatmapData,maxValueLinks,maxDate,minDate,data.queryMeasure);
 				weekHeatmap(data.links[arrayIndexLinks].data.input.weekData,maxWeekDataLinks);
 				drawElementText("Output: " + data.links[arrayIndexLinks].description);
 				heatmapData = data.links[arrayIndexLinks].data.output.values;
-				heatmap(heatmapData,maxValueLinks,maxDate,minDate,queryMeasure);
+				heatmap(heatmapData,maxValueLinks,maxDate,minDate,data.queryMeasure);
 				weekHeatmap(data.links[arrayIndexLinks].data.output.weekData,maxWeekDataLinks);
 				arrayIndexLinks++;
 				var end = new Date().getTime();
@@ -78,11 +78,11 @@ function periodicPattern(data,queryMeasure){
 					var start = new Date().getTime();
 					drawElementText("Input: " + data.nodes[arrayIndexNodes].node);
 					heatmapData = data.nodes[arrayIndexNodes].data.input.values;
-					heatmap(heatmapData,maxValueNodes,maxDate,minDate,queryMeasure);
+					heatmap(heatmapData,maxValueNodes,maxDate,minDate,data.queryMeasure);
 					weekHeatmap(data.nodes[arrayIndexNodes].data.input.weekData,maxWeekDataNodes);
 					drawElementText("Output: " + data.nodes[arrayIndexNodes].node);
 					heatmapData = data.nodes[arrayIndexNodes].data.output.values;
-					heatmap(heatmapData,maxValueNodes,maxDate,minDate,queryMeasure);
+					heatmap(heatmapData,maxValueNodes,maxDate,minDate,data.queryMeasure);
 					weekHeatmap(data.nodes[arrayIndexNodes].data.output.weekData,maxWeekDataNodes);
 					arrayIndexNodes++;
 					var end = new Date().getTime();
@@ -91,7 +91,7 @@ function periodicPattern(data,queryMeasure){
 				},element*4000)
 			}
 		},(data.links.length*4000)+1000)
-	}else if(queryMeasure==="1"){
+	}else if(data.queryMeasure==="1"){
 		var maxValue =[];
 		data.links.forEach(function(d){
 			maxValue.push(d3.max(d.histogram));
@@ -114,7 +114,7 @@ function periodicPattern(data,queryMeasure){
 				var start = new Date().getTime();
 				drawElementText("Link: " + data.links[arrayIndex].source +  " - " + data.links[arrayIndex].destination + ". <b>Max:</b> " + d3.format(".0f")(data.links[arrayIndex].max) + "% <b>Average:</b> " + d3.format(".2f")(data.links[arrayIndex].avg)+ "%");
 				heatmapData = data.links[arrayIndex].values;
-				heatmap(heatmapData,maxValue,maxDate,minDate,queryMeasure);
+				heatmap(heatmapData,maxValue,maxDate,minDate,data.queryMeasure);
 				weekHeatmap(data.links[arrayIndex].values.weekData,maxWeekDataLinks);
 				arrayIndexLinks++;
 				var end = new Date().getTime();
@@ -123,7 +123,7 @@ function periodicPattern(data,queryMeasure){
 				arrayIndex++;
 			},element*4000)
 		}
-	}else if(queryMeasure==="2"){
+	}else if(data.queryMeasure==="2"){
 		var maxValue =[];
 		data.links.forEach(function(d){
 			maxValue.push(d3.max(d.histogram));
@@ -146,7 +146,39 @@ function periodicPattern(data,queryMeasure){
 				var start = new Date().getTime();
 				drawElementText("Link: " + data.links[arrayIndex].source +  " - " + data.links[arrayIndex].destination + " <b>Max:</b> " + d3.format(".0f")(data.links[arrayIndex].max) + " ms" + "<b> Average:</b> " + d3.format(".0f")(data.links[arrayIndex].avg) + " ms");
 				heatmapData = data.links[arrayIndex].values;
-				heatmap(heatmapData,maxValue,maxDate,minDate,queryMeasure);
+				heatmap(heatmapData,maxValue,maxDate,minDate,data.queryMeasure);
+				weekHeatmap(data.links[arrayIndex].values.weekData,maxWeekDataLinks);
+				arrayIndexLinks++;
+				var end = new Date().getTime();
+				var time = end - start;
+				//console.log('Element: ' + arrayIndex+ ' Execution time: ' + time);
+				arrayIndex++;
+			},element*4000)
+		}
+	}else if(data.queryMeasure === "0" && data.queryValue === "1"){
+		var maxValue =[];
+		data.links.forEach(function(d){
+			maxValue.push(d3.max(d.histogram));
+			d.values.forEach(function(d){
+				dates.push(d[0])
+			})
+			//Calculate Weekday Data per each element
+			d.values.weekData = calculateWeekData(d.values);
+			//Extract Max of each WeekdayData
+			maxWeekDataLinks.push(d3.max(d.values.weekData.arrayOfValues));
+		})
+		//Calculate Max values
+		maxValue = d3.max(maxValue);
+		maxDate = d3.max(dates);
+		minDate = d3.min(dates);
+		//maxWeekDataLinks = d3.max(maxWeekDataLinks);
+		var arrayIndex=0;
+		for(var element in data.links){
+			setTimeout(function(){
+				var start = new Date().getTime();
+				drawElementText("Link: " + data.links[arrayIndex].source +  " - " + data.links[arrayIndex].destination + " <b>Max:</b> " + d3.format(".0f")(data.links[arrayIndex].max) + " ms" + "<b> Average:</b> " + d3.format(".0f")(data.links[arrayIndex].avg) + " ms");
+				heatmapData = data.links[arrayIndex].values;
+				heatmap(heatmapData,maxValue,maxDate,minDate,data.queryMeasure);
 				weekHeatmap(data.links[arrayIndex].values.weekData,maxWeekDataLinks);
 				arrayIndexLinks++;
 				var end = new Date().getTime();

@@ -28,7 +28,7 @@ var isChrome = !!window.chrome && !!window.chrome.webstore;
 if(isFirefox) window.alert("We are sorry but the NetSage Project uses features that are currently not supported on Firefox. The NetSage portal has full support on Chrome, but is also supported in Safary and Internet Explorer. Please switch to any of these browsers and then visit this URL again. Sorry for the inconvenience");
 
 //Query Object Prototype
-function Query(query,date,avgOver,queryType,queryMeasure){
+function Query(query,date,avgOver,queryType,queryMeasure,queryValue){
 	this.queryText = query;
 	this.date = date;
 	this.links = 0;
@@ -36,6 +36,7 @@ function Query(query,date,avgOver,queryType,queryMeasure){
 	this.avgOver = avgOver;
 	this.queryType = queryType;
 	this.queryMeasure = queryMeasure;
+	this.queryValue = queryValue;
 	this.graphs = ({
 		"table" : 	({
 						"links":null,
@@ -169,250 +170,250 @@ function populateFormValues(){
 
 function drawQueryFormCommon(queryForm,fieldset,queryTypes,queryMeasures,queryValues,timeFrames,day,queryFromTab){
 	//Create Query Type Select
-		//Insert svg Circle as bullet for list
-		fieldset.append("svg")
-				.attrs({
-					"class":"bullets",
-					"width":"2em",
-					"height":"2em"
-				})
-				.styles({
-					"top":"2em",
-					"left":"-2em"
-				})
-				.append("circle")
-				.attrs({
-					"cx":20,
-					"cy":20,
-					"r":7
-				})
-		var queryTypeSelect = fieldset.append("div")
-									  .attrs({
-									  	"id":"queryTypeDiv"
-									  })
-									  .append("select")
-									  .attrs({
-										 "name": "queryType",
-							             "id":"queryType"
-									  })
-		for (var i in queryTypes){
-			queryTypeSelect.append("option")
-				.attrs({
-					"value":i,
-					"id":"typeOption"+i
-				})
-				.html(queryTypes[i]);
-		}
-		//Insert svg Circle as bullet for list
-		fieldset.append("svg")
-				.attrs({
-					"class":"bullets",
-					"width":"2em",
-					"height":"2em"
-				})
-				.styles({
-					"left":"-2em",
-					"top":"-0.5em"
-				})
-				.append("circle")
-				.attrs({
-					"cx":20,
-					"cy":20,
-					"r":7
-				})
-		//Create Query Measure Select
-		var queryMeasureSelect = fieldset.append("div")
-									  .attrs({
-									  	"id":"queryMeasureDiv"
-									  })
-									  .append("select")
-									  .attrs({
-										"name": "queryMeasure",
-										"id":"queryMeasure"
-									  });
-		for (var i in queryMeasures){
-			queryMeasureSelect.append("option")
-				.attrs({
-					"value":i,
-					"id":"measureOption" + i
-				})
-				.html(queryMeasures[i]);
-		}
-		//Insert svg Circle as bullet for list
-		fieldset.append("svg")
-				.attrs({
-					"class":"bullets",
-					"width":"2em",
-					"height":"2em"
-				})
-				.styles({
-					"top":"-3em",
-					"left":"-2em"
-				})
-				.append("circle")
-				.attrs({
-					"cx":20,
-					"cy":20,
-					"r":7
-				})
-		//Create Query Values Select
-		var queryValueSelect = fieldset.append("div")
-									  .attrs({
-									  	"id":"queryValueDiv"
-									  })
-									  .append("select")
-									  .attrs({
-									     "name": "queryValue",
-										 "id":"queryValue"
-									  });
-		for (var i in queryValues){
-			queryValueSelect.append("option")
-				.attrs({
-					"value":i,
-					"id": "valueOption" +i
-				})
-				.html(queryValues[i]);
-		}
-		//Insert svg Circle as bullet for list
-		fieldset.append("svg")
-				.attrs({
-					"class":"bullets",
-					"width":"2em",
-					"height":"2em"
-				})
-				.styles({
-					"top":"-5.3em",
-					"left":"-2em"
-				})
-				.append("circle")
-				.attrs({
-					"cx":20,
-					"cy":20,
-					"r":7
-				})
-		//Create queryTimeFrames Select
-		var queryTimeFrame = fieldset.append("div")
-									  .attrs({
-									  	"id":"queryTimeFrameDiv"
-									  })
-									  .append("select")
-									  .attrs({
-										"name": "queryTimeFrame",
-										"id":"queryTimeFrame"
-									  });
-		for (var i in timeFrames){
-			queryTimeFrame.append("option")
-				.html(timeFrames[i]);
-		}
-		//Convert to Jquery select menus. Performs the updates of the menus on the selection options changing time frames options depending on the question.
-		$("#queryType").selectmenu({
-			change: function( event, data ) {
-				var day = new Date();
-				var timeFrames = ["now","today","last 7 days","this month","this year","time frame"];
-				if(data.item.label === "What is the duration and are there any periodic patterns or peak periods "){ //Question 1 I need to do this with labels instead of values because elements move around in the menu depending if it is comming from URL or not.
-					//Enable losse and latency measures when we select question 1
-					$("#measureOption1").attr("disabled",false);
-					$("#measureOption2").attr("disabled",false);
-					var queryTimeFrame = $("#queryTimeFrame");
-					queryTimeFrame.empty();
-					queryTimeFrame.append('<option>this month</option><option>this year</option><option>time frame</option>')
-					queryTimeFrame.selectmenu("refresh");
-					//Refresh menu to put first day of the month
-					var monthFirst = new Date(day.getFullYear(), day.getMonth(), 1);
-					createDatePickers(monthFirst,day,false);
-				}else{ //Other questions
-					///Disable losse and latency measures when we select question 1
-					//The menu is redrawn because there was a bug that when you selected latency and losses and changed to question one you could be able to question the app with that measure even though it was disabled.
-					$("#queryMeasure").empty();
-					for (var i in queryMeasures){
-						queryMeasureSelect.append("option")
-							.attrs({
-								"value":i,
-								"id":"measureOption" + i
-							})
-							.html(queryMeasures[i]);
-					}
-					//$("#queryMeasure").selectmenu("option","disabled",true);
-					$("#measureOption1").attr("disabled",true);
-					$("#measureOption2").attr("disabled",true);
-					var queryTimeFrame = d3.select("#queryTimeFrame");
-					$("#queryTimeFrame").empty();
-					for (var i in timeFrames){
-						queryTimeFrame.append("option")
-							.html(timeFrames[i]);
-					}
-					$("#queryTimeFrame").selectmenu("refresh");
-				}
-				$("#queryMeasure").selectmenu("refresh");
-			},
-			width : 'auto'
-		});
-		//Disable question that is not acive
-		$("#typeOption2").attr("disabled",true);
-		$("#queryMeasure").selectmenu({
-			width : 'auto'
-		});
-		//On start we dont allow to select measures for the first question.
-		if(queryFromTab){
-			if(queryFromTab.queryType=="0"){
-				$("#measureOption1").attr("disabled",true);
-				$("#measureOption2").attr("disabled",true);
-			}else{
+	//Insert svg Circle as bullet for list
+	fieldset.append("svg")
+			.attrs({
+				"class":"bullets",
+				"width":"2em",
+				"height":"2em"
+			})
+			.styles({
+				"top":"2em",
+				"left":"-2em"
+			})
+			.append("circle")
+			.attrs({
+				"cx":20,
+				"cy":20,
+				"r":7
+			})
+	var queryTypeSelect = fieldset.append("div")
+								  .attrs({
+								  	"id":"queryTypeDiv"
+								  })
+								  .append("select")
+								  .attrs({
+									 "name": "queryType",
+						             "id":"queryType"
+								  })
+	for (var i in queryTypes){
+		queryTypeSelect.append("option")
+			.attrs({
+				"value":i,
+				"id":"typeOption"+i
+			})
+			.html(queryTypes[i]);
+	}
+	//Insert svg Circle as bullet for list
+	fieldset.append("svg")
+			.attrs({
+				"class":"bullets",
+				"width":"2em",
+				"height":"2em"
+			})
+			.styles({
+				"left":"-2em",
+				"top":"-0.5em"
+			})
+			.append("circle")
+			.attrs({
+				"cx":20,
+				"cy":20,
+				"r":7
+			})
+	//Create Query Measure Select
+	var queryMeasureSelect = fieldset.append("div")
+								  .attrs({
+								  	"id":"queryMeasureDiv"
+								  })
+								  .append("select")
+								  .attrs({
+									"name": "queryMeasure",
+									"id":"queryMeasure"
+								  });
+	for (var i in queryMeasures){
+		queryMeasureSelect.append("option")
+			.attrs({
+				"value":i,
+				"id":"measureOption" + i
+			})
+			.html(queryMeasures[i]);
+	}
+	//Insert svg Circle as bullet for list
+	fieldset.append("svg")
+			.attrs({
+				"class":"bullets",
+				"width":"2em",
+				"height":"2em"
+			})
+			.styles({
+				"top":"-3em",
+				"left":"-2em"
+			})
+			.append("circle")
+			.attrs({
+				"cx":20,
+				"cy":20,
+				"r":7
+			})
+	//Create Query Values Select
+	var queryValueSelect = fieldset.append("div")
+								  .attrs({
+								  	"id":"queryValueDiv"
+								  })
+								  .append("select")
+								  .attrs({
+								     "name": "queryValue",
+									 "id":"queryValue"
+								  });
+	for (var i in queryValues){
+		queryValueSelect.append("option")
+			.attrs({
+				"value":i,
+				"id": "valueOption" +i
+			})
+			.html(queryValues[i]);
+	}
+	//Insert svg Circle as bullet for list
+	fieldset.append("svg")
+			.attrs({
+				"class":"bullets",
+				"width":"2em",
+				"height":"2em"
+			})
+			.styles({
+				"top":"-5.3em",
+				"left":"-2em"
+			})
+			.append("circle")
+			.attrs({
+				"cx":20,
+				"cy":20,
+				"r":7
+			})
+	//Create queryTimeFrames Select
+	var queryTimeFrame = fieldset.append("div")
+								  .attrs({
+								  	"id":"queryTimeFrameDiv"
+								  })
+								  .append("select")
+								  .attrs({
+									"name": "queryTimeFrame",
+									"id":"queryTimeFrame"
+								  });
+	for (var i in timeFrames){
+		queryTimeFrame.append("option")
+			.html(timeFrames[i]);
+	}
+	//Convert to Jquery select menus. Performs the updates of the menus on the selection options changing time frames options depending on the question.
+	$("#queryType").selectmenu({
+		change: function( event, data ) {
+			var day = new Date();
+			var timeFrames = ["now","today","last 7 days","this month","this year","time frame"];
+			if(data.item.label === "What is the duration and are there any periodic patterns or peak periods "){ //Question 1 I need to do this with labels instead of values because elements move around in the menu depending if it is comming from URL or not.
+				//Enable losse and latency measures when we select question 1
 				$("#measureOption1").attr("disabled",false);
 				$("#measureOption2").attr("disabled",false);
-			}
-		}else{
-			$("#measureOption1").attr("disabled",true);
-			$("#measureOption2").attr("disabled",true);
-		}
-		$("#queryValue").selectmenu({
-			width : 'auto'
-		});
-		//On start we disable the other queryValue options until we add the part of the code to process them.
-		$("#valueOption1").attr("disabled",true);
-		$("#valueOption2").attr("disabled",true);
-		$("#queryTimeFrame").selectmenu({
-	      change: function( event, data ) {
-			var day = new Date();
-			$( "#datePickerStart" ).remove();
-			$( "#datePickerEnd" ).remove();
-	      	//If we select Time Frame create 2 empty datePickers
-	        if(data.item.label==="time frame"){
-	        	createDatePickers("","",false);
-			//For the specified ranges we fill up the date pickers
-	        }else if(data.item.label==="this year"){
-	        	var januaryFirst = new Date(new Date().getFullYear(), 0, 1);
-	        	createDatePickers(januaryFirst,day,false);
-	         }else if(data.item.label==="this month"){
+				var queryTimeFrame = $("#queryTimeFrame");
+				queryTimeFrame.empty();
+				queryTimeFrame.append('<option>this month</option><option>this year</option><option>time frame</option>')
+				queryTimeFrame.selectmenu("refresh");
+				//Refresh menu to put first day of the month
 				var monthFirst = new Date(day.getFullYear(), day.getMonth(), 1);
 				createDatePickers(monthFirst,day,false);
-			 }else if(data.item.label==="last 7 days"){
-	        	var sevenDaysBefore = new Date(day.getTime() - (7 * 24 * 60 * 60 * 1000));
-				createDatePickers(sevenDaysBefore,day,false);
-			}else if(data.item.label==="today"){
-				createDatePickers(day,day,false);
-			}else if(data.item.label==="now"){
-				var threeHoursBefore = new Date(day.getTime() - (3 * 60 * 60 * 1000));
-				createDatePickers(threeHoursBefore,day,true);
-	    	}
-	      },
-	      width:'auto'
-	     });
+			}else{ //Other questions
+				///Disable losse and latency measures when we select question 1
+				//The menu is redrawn because there was a bug that when you selected latency and losses and changed to question one you could be able to question the app with that measure even though it was disabled.
+				$("#queryMeasure").empty();
+				for (var i in queryMeasures){
+					queryMeasureSelect.append("option")
+						.attrs({
+							"value":i,
+							"id":"measureOption" + i
+						})
+						.html(queryMeasures[i]);
+				}
+				//$("#queryMeasure").selectmenu("option","disabled",true);
+				$("#measureOption1").attr("disabled",true);
+				$("#measureOption2").attr("disabled",true);
+				var queryTimeFrame = d3.select("#queryTimeFrame");
+				$("#queryTimeFrame").empty();
+				for (var i in timeFrames){
+					queryTimeFrame.append("option")
+						.html(timeFrames[i]);
+				}
+				$("#queryTimeFrame").selectmenu("refresh");
+			}
+			$("#queryMeasure").selectmenu("refresh");
+		},
+		width : 'auto'
+	});
+	//Disable question that is not acive
+	$("#typeOption2").attr("disabled",true);
+	$("#queryMeasure").selectmenu({
+		width : 'auto'
+	});
+	//On start we dont allow to select measures for the first question.
+	if(queryFromTab){
+		if(queryFromTab.queryType=="0"){
+			$("#measureOption1").attr("disabled",true);
+			$("#measureOption2").attr("disabled",true);
+		}else{
+			$("#measureOption1").attr("disabled",false);
+			$("#measureOption2").attr("disabled",false);
+		}
+	}else{
+		$("#measureOption1").attr("disabled",true);
+		$("#measureOption2").attr("disabled",true);
+	}
+	$("#queryValue").selectmenu({
+		width : 'auto'
+	});
+	//On start we disable the other queryValue options until we add the part of the code to process them.
+	//$("#valueOption1").attr("disabled",true);
+	$("#valueOption2").attr("disabled",true);
+	$("#queryTimeFrame").selectmenu({
+      change: function( event, data ) {
+		var day = new Date();
+		$( "#datePickerStart" ).remove();
+		$( "#datePickerEnd" ).remove();
+      	//If we select Time Frame create 2 empty datePickers
+        if(data.item.label==="time frame"){
+        	createDatePickers("","",false);
+		//For the specified ranges we fill up the date pickers
+        }else if(data.item.label==="this year"){
+        	var januaryFirst = new Date(new Date().getFullYear(), 0, 1);
+        	createDatePickers(januaryFirst,day,false);
+         }else if(data.item.label==="this month"){
+			var monthFirst = new Date(day.getFullYear(), day.getMonth(), 1);
+			createDatePickers(monthFirst,day,false);
+		 }else if(data.item.label==="last 7 days"){
+        	var sevenDaysBefore = new Date(day.getTime() - (7 * 24 * 60 * 60 * 1000));
+			createDatePickers(sevenDaysBefore,day,false);
+		}else if(data.item.label==="today"){
+			createDatePickers(day,day,false);
+		}else if(data.item.label==="now"){
+			var threeHoursBefore = new Date(day.getTime() - (3 * 60 * 60 * 1000));
+			createDatePickers(threeHoursBefore,day,true);
+    	}
+      },
+      width:'auto'
+     });
 
-		var queryFormButton = queryForm.append("button")
-			.attrs({
-				"type":"button",
-				"id":"submit"
-			})
-			.on("click", function() {handleOnClick(day,false)});
-		queryFormButton.append("span")
-			.append("img")
-			.attrs({
-				"id":"playbuttonImg",
-				"src":"playArrow2.png",
-				"width":"50em",
-				"height":"50em"
-			})
+	var queryFormButton = queryForm.append("button")
+		.attrs({
+			"type":"button",
+			"id":"submit"
+		})
+		.on("click", function() {handleOnClick(day,false)});
+	queryFormButton.append("span")
+		.append("img")
+		.attrs({
+			"id":"playbuttonImg",
+			"src":"playArrow2.png",
+			"width":"50em",
+			"height":"50em"
+		})
 }
 //Function that manages the Mouseclick on the play button
 function handleOnClick(date,fromURL,queryFromTab,isDashboard){
@@ -427,6 +428,7 @@ function queryComposer(date,fromURL,queryFromTab,isDashboard){
 		var queryMeasure;
 		var queryMeasureText;
 		var queryValue;
+		var queryValueText;
 		var timeFrame;
 		var queryDate;
 		var queryDateLocalTime;
@@ -460,7 +462,8 @@ function queryComposer(date,fromURL,queryFromTab,isDashboard){
 			queryName = $("#queryTypeDiv option:selected").html();
 			queryMeasure = $("#queryMeasureDiv option:selected")[0].value;
 			queryMeasureText = $("#queryMeasureDiv option:selected").html();
-			queryValue = $("#queryValueDiv option:selected").html();
+			queryValue = $("#queryValueDiv option:selected")[0].value;
+			queryValueText = $("#queryValueDiv option:selected").html();
 		}
 		//Read TimeFrame
 		if (isDashboard==false) timeFrame = $("#queryTimeFrame")[0].value;
@@ -483,13 +486,15 @@ function queryComposer(date,fromURL,queryFromTab,isDashboard){
 			if (avgOver==undefined)avgOver = 3600; //get avg per each hour. This is the data format the heatmaps are expecting.
 			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
 		}else if (timeFrame === "this year"){
-			avgOver = 6000;
+			if(queryType==="0") avgOver = 43200;
+			else if(queryType==="1") avgOver = 3600;
 			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
 		} else if (timeFrame === "this month"){
-			if(queryType==="1") avgOver = 3600;
+			if(queryType==="0") avgOver = 21600;
+			else if(queryType==="1") avgOver = 3600;
 			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
 		} else if (timeFrame === "last 7 days"){
-			if(queryType==="0") avgOver = 3600;
+			if(queryType==="0") avgOver = 10800;
 			if(queryType==="1") avgOver = 3600;
 			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
 		}
@@ -502,7 +507,7 @@ function queryComposer(date,fromURL,queryFromTab,isDashboard){
 			else if(queryType==="1") avgOver = 3600;
 			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
 		}
-		queryObjects.push(new Query(queryName + " " + queryMeasureText + " " + queryValue + " " + timeFrame + ": From " + queryDateLocalTime[0] + ", to " + queryDateLocalTime[1] + " (" + new Date().toString().match(/\(([A-Za-z\s].*)\)/)[1] + ") ", queryDate, avgOver, queryType,queryMeasure))
+		queryObjects.push(new Query(queryName + " " + queryMeasureText + " " + queryValueText + " " + timeFrame + ": From " + queryDateLocalTime[0] + ", to " + queryDateLocalTime[1] + " (" + new Date().toString().match(/\(([A-Za-z\s].*)\)/)[1] + ") ", queryDate, avgOver, queryType,queryMeasure,queryValue))
 		//when we make a second query in the same page we open a new tab.
 		if($("#query0")[0]!==undefined){
 			$("#whiteButtonImg").remove();

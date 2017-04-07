@@ -5,20 +5,20 @@ function histogramTableGraph(queryData){
 	var linkColor;
 	var columns;
 	// Create margins
-    var margin = {top: 5, right: 15, bottom: 16, left: 5, nameLeft:30, histogramLeft: 0},
+    var margin = {top: 2, right: 5, bottom: 16, left:15, nameLeft:30, histogramLeft: 0},
     	width = 320 - margin.left - margin.right,
-   		height = 100 - margin.top - margin.bottom;
+   		height = 120 - margin.top - margin.bottom;
 	//Order the data and launch tables
 	sortObjects(queryData.links,".data.input.avg");
-	sortObjects(queryData.nodes,".data.input.avg");
+	//sortObjects(queryData.nodes,".data.input.avg");
 	queryData.graphs.table.links = queryData.links;
-	queryData.graphs.table.nodes = queryData.nodes;
+	//queryData.graphs.table.nodes = queryData.nodes;
 	columns = ["Links","Bandwidth Distribution (Gb/s)","Evolution in time (Gb/s)","Incoming Bandwidth (Gb/s)", "Outgoing Bandwidth (Gb/s)","Total Data (TB)"];
     startTable("links-"+counter,queryData.graphs.table.links);
     //columns = ["Nodes","Incoming Bandwidth (Gb/s)", "Outgoing Bandwidth (Gb/s)","Total Data (TB)"];
     //startTable("nodes-"+counter,queryData.graphs.table.nodes);
 	//Convert to dragtable
-	$('table').dragtable();
+	//$('table').dragtable();
 	//Create static header
 	staticHeader("#multipleHistogram-links-"+counter);
 	//staticHeader("#multipleHistogram-nodes-"+counter);
@@ -171,7 +171,7 @@ function histogramTableGraph(queryData){
 	        	"class": function(d,i){return tableName + "-" + group + "-col" + i;}, //class: tableName-group-column
 	        	"id": function(d,i){ return tableName + "-" + group + this.parentElement.id + "-" + i;} //id: tableName-group-column-cell
 	        })
-	        .styles({"width":"11.3em"}) //I Fix this min-width so that the cells are aligned (node names are smaller than links)
+	        .styles({"width":(width + margin.left + margin.right ) + "px"})
 		var selector = d3.selectAll(".col" + group + "-" + 0)
 		    .append("input")
 		    .attrs({
@@ -423,30 +423,94 @@ function histogramTableGraph(queryData){
 	}
 	//############### Function to draw line charts column ##############
 	function lineChartColumn(tableName,group,data){
-		function handleMouseOver(d,i){
-    		div = d3.select(".tableTooltip");
-    		d3.selectAll("#" + this.id).transition()
-    			.duration(200)
-    			.attr("r","0.5em")
-    			.style("fill","rgba(247, 201, 132, 1)")
-			div.transition()
-   				.duration(200)
-   				.style("opacity", .9);
-   			div.html("<p>"+ d[0] + " , " + d[1] + " Gb/s" )
-		       .style("left", (d3.event.pageX + 5) + "px")
-		       .style("top", (d3.event.pageY - 28) + "px");
-    	}
+		// function handleMouseOver(d,i){
+  //   		div = d3.select(".tableTooltip");
+  //   		d3.selectAll("#" + this.id).transition()
+  //   			.duration(200)
+  //   			.attr("r","0.5em")
+  //   			.style("fill","rgba(247, 201, 132, 1)")
+		// 	div.transition()
+  //  				.duration(200)
+  //  				.style("opacity", .9);
+  //  			div.html("<p>"+ d[0] + " , " + d[1] + " Gb/s" )
+		//        .style("left", (d3.event.pageX + 5) + "px")
+		//        .style("top", (d3.event.pageY - 28) + "px");
+  //   	}
     	function handleMouseOut(d,i){
     		div = d3.select(".tableTooltip");
-    		d3.selectAll("." + this.classList[0]).transition()
-    			.duration(200)
-    			.attr("r","0.05em")
-    			.style("fill","none")
+    		d3.selectAll(".lineGuide").remove();
+    		// d3.select(this).selectAll(".dataPlaceholder").transition()
+    		// 	.duration(200)
+    		// 	.attr("r","0em")
+    		// 	.style("fill","none")
 			div.transition()
    				.duration(200)
    				.style("opacity", 0);
     	}
+    	function handleMouseOver(d,i){
+    		var type = this.children[0].id.split("-")[1]; // 0 = input; 1= output
+    		var link = +this.parentElement.parentElement.id;
+    		var circles = d3.select(this).selectAll(".dataPlaceholder");
+    		var circlesCX = [];
+    		var mouseX = d3.mouse(this)[0] - 15;
+    		var index;
+    		var dataPoints;
 
+
+    		//To hide tooltip when the line draw
+    		div.transition()
+	   				.duration(200)
+	   				.style("opacity", 0);
+    		//Get all x coordinates of circles and select the closer to the mouse by using d3.bisect
+    		circles._groups[0].forEach(function(circle){
+    			circlesCX.push(+circle.attributes.cx.value);
+    		})
+
+    		d3.selectAll(".lineGuide").remove();
+
+    		//Do not draw line if we are over the left of the first element or the right of the last element (out of the line)
+    		if(mouseX>circlesCX[0] && mouseX<circlesCX[circlesCX.length-1])
+    		{
+	    		//Create vertical line
+	    		d3.select(this).append("line")
+		    	 	.attrs({
+		    	 		"class":"lineGuide",
+		    	 		"x1":mouseX+15,
+		    	 		"y1":height,
+		    	 		"x2":mouseX+15,
+		    	 		"y2":0
+		    	 	})
+		    	 	.styles({
+		    	 		"stroke":"black",
+		    	 		"stroke-width":1
+		    	 	})
+
+	    		div = d3.select(".tableTooltip");
+	    		// d3.select(this).selectAll(".dataPlaceholder")
+	    		// 	.transition()
+	    		// 	.duration(200)
+	    		// 	.attr("r","0em")
+	    		// 	.style("fill","none");
+	    		//get the data to show in the tooltip
+	    		if(type==="0"){
+	    			dataPoints = queryObjects[0].links[link].data.input.values;
+	    		}else{
+	    			dataPoints = queryObjects[0].links[link].data.output.values;
+	    		}
+	    		index = d3.bisectLeft(circlesCX,mouseX);
+	    		// d3.select(circles._groups[0][index])
+	    		// 	.transition()
+	    		// 	.duration(200)
+	    		// 	.attr("r","0.5em")
+	    		// 	.style("fill","rgba(247, 201, 132, 1)")
+				div.transition()
+	   				.duration(200)
+	   				.style("opacity", .9);
+	   			div.html("<p>"+ dataPoints[index][0] + " , " + dataPoints[index][1] + " Gb/s" )
+			       .style("left", (d3.event.pageX + 30) + "px")
+			       .style("top", (d3.event.pageY - 28) + "px");
+			}
+    	}
     	function handleMouse2(d,i){
     		var bisectDate = d3.bisector(function(d) { return d[0]; }).left;
 			var x0 = x.invert(d3.mouse(this)[0]);
@@ -488,8 +552,8 @@ function histogramTableGraph(queryData){
 	    maxIncoming = d3.max(maxIncoming);
 	    maxOutgoing = d3.max(maxOutgoing);
 	    var x = d3.scaleTime().domain([data[0].data.minDate,data[0].data.maxDate]).range([0, width]);
-	    var yIncoming = d3.scaleLinear().domain([0,maxIncoming]).range([height/2, 0]);
-	    var yOutgoing = d3.scaleLinear().domain([0,maxOutgoing]).range([height/2, 0]);
+	    var yIncoming = d3.scaleLinear().domain([0,maxIncoming]).range([0.3 * height, 0]);
+	    var yOutgoing = d3.scaleLinear().domain([0,maxOutgoing]).range([0.3 * height, 0]);
 		var xAxis = d3.axisBottom()
 		    .scale(x)
 		    .ticks(5);
@@ -512,21 +576,18 @@ function histogramTableGraph(queryData){
 	    //Input Graph
 	    var svg=d3.selectAll("." + tableName + "-" + group + "-col" + "2").append("svg")
 	   		.attrs({
-	      		"width": width + margin.left * 3  + margin.right,
-	      		"height": height/2 + margin.top + margin.bottom,
+	   			"class": "svgLineIn",
+	      		"width": width + margin.left + margin.right,
+	      		"height": 0.3 * (height + margin.top + margin.bottom),
 	    	})
-	    	//.on("mouseover",handleMouse2)
-	   	svg.append("div")
-	    	.attrs({
-	      		"class": "HistogramLineTooltip-Input",
-	      		"id": function(d,i){ return "HistogramLineTooltip-Input-" + i;}
-	    	})
+	    	.on("mousemove",handleMouseOver)
+	    	.on("mouseout",handleMouseOut);
 	   	var graph = svg.append("g")
 	        .attrs({
-	        	"class": function(d,i) { return "lineChartHistogram lineChartHistogram-" +i},
-	        	//"id": function(d,i) { return "lineChartHistogram-" +i},
-	        	"transform": "translate(" + (margin.left + 15) + "," + margin.top + ")"
-	        });
+	        	"class": function(d,i) { return "lineChartHistogram"},
+	        	"id": function(d,i){ return "line-0"},
+	        	"transform": "translate(" + (margin.left) + "," + margin.top + ")"
+	        })
 		graph.append("g")
 		      .attr("class", "y axis")
 		      .call(yAxisIncoming)
@@ -540,7 +601,7 @@ function histogramTableGraph(queryData){
 		      .attrs({
 		    	class: function(d,i){ return "inputLine " + "inputLine" + i + " node";},
 		    	"id": function(d,i){ return "input" + i },
-		    	"transform": "translate(" + 0 + ",0)"
+		    	"transform": "translate(" + (2) + "," + 0 + ")"
 		      })
 		inputNode.append("path")
 		      .attr("class", function(d,i){ return "line " + "line" + i})
@@ -555,41 +616,40 @@ function histogramTableGraph(queryData){
 		      .attrs({
 		    	class: function(d,i){ return "inputDataPoints";},
 		    	"id": function(d,i){ return "inputDataPoints" + i },
-		    	"transform": "translate(" + 0 + ",0)"
-		      });
-		    inputDataPoints.data(function(d,i){
+		      })
+		    .data(function(d,i){
 	        	return eval(data[i].data.input.values);
-	          })
-		      .enter().append("circle")
-		      .attrs({
-                cx: function (d,i) {return x(d[0]); },
-                cy: function (d,i) { return yIncoming(d[1]); },
-                class: function(d,i){ return "dataPlaceholder";},
-                id: function(d,i){ return "inputDataPlaceholder" + i;},
-                "r":"0.05em"
-             })
-		      .on("mouseover",handleMouseOver)
-		      .on("mouseout",handleMouseOut)
+	        })
+	      	.enter().append("circle")
+	      	.attrs({
+            	cx: function (d,i) {return x(d[0]); },
+            	cy: function (d,i) { return yIncoming(d[1]); },
+            	class: function(d,i){ return "dataPlaceholder";},
+           	 	id: function(d,i){ return "inputDataPlaceholder" + i;},
+            	"r":"0em",
+            	"transform": "translate(" + 2 + ",0)"
+         	})
+		    //.on("mouseover",handleMouseOver)
+		    //.on("mouseout",handleMouseOut)
 		//Output Graph
 		var svg=d3.selectAll("." + tableName + "-" + group + "-col" + "2").append("svg")
 	   		.attrs({
-	      		"width": width + margin.left * 3  + margin.right,
-	      		"height": height/2 + margin.top + margin.bottom,
+	   			"class":"svgLineOut",
+	      		"width": width + margin.left + margin.right,
+	      		"height": 0.3 * (height + margin.top + margin.bottom),
 	    	})
-	   	svg.append("div")
-	    	.attrs({
-	      		"class": "HistogramLineTooltip-Output",
-	      		"id": function(d,i){ return "HistogramLineTooltip-Output-" + i;}
-	    	})
+	    	.on("mousemove",handleMouseOver)
+	    	.on("mouseout",handleMouseOut);
 	   	var graph = svg.append("g")
 	        .attrs({
-	        	"class": function(d,i) { return "lineChartHistogram lineChartHistogram-" +i},
-	        	"transform": "translate(" + (margin.left + 15) + "," + margin.top + ")"
+	        	"class": function(d,i) { return "lineChartHistogram"},
+	        	"id": function(d,i){ return "line-1"},
+	        	"transform": "translate(" + (margin.left) + "," + margin.top + ")"
 	        });
 		//We only add one xAxis at the middle of both graphs
 		graph.append("g")
 		      .attr("class", "x axis")
-		      .attr("transform", "translate(0," + (-14) + ")")
+		      .attr("transform", "translate(0," + (-23) + ")")
 		      .call(xAxis);
 		graph.append("g")
 		      .attr("class", "y axis")
@@ -604,14 +664,14 @@ function histogramTableGraph(queryData){
 		      .attrs({
 		    	class: function(d,i){ return "outputLine " + "outputLine" + i + " node";},
 		    	"id": function(d,i){ return "input"+i },
-		    	"transform": "translate(" + 0 + ",0)"
+		    	"transform": "translate(" + (2) + "," + 0 + ")"
 		      })
 
 		outputNode.append("path")
 		      .attr("class", function(d,i){ return "line " + "line" + i})
 		      .attr("d", function(d) { return lineOutgoing(d); })
 		//Create Circles
-		var inputDataPoints = graph.selectAll(".inputDataPoints")
+		var outputDataPoints = graph.selectAll(".outputDataPoints")
 			.data(function(d,i){
 		      	//Important to add the [] to form array if not it doesnt work properly.
 	        	return eval([data[i].data.output.values]);
@@ -620,7 +680,6 @@ function histogramTableGraph(queryData){
 		      .attrs({
 		    	class: function(d,i){ return "outputDataPoints " + "outputDataPoints" + i;},
 		    	"id": function(d,i){ return "outputDataPoints" + i },
-		    	"transform": "translate(" + 0 + ",0)"
 		      })
 		      .data(function(d,i){
 	        	return eval(data[i].data.output.values);
@@ -631,10 +690,11 @@ function histogramTableGraph(queryData){
                 cy: function (d,i) { return yOutgoing(d[1]); },
                 class: function(d,i){ return "dataPlaceholder";},
                 id: function(d,i){ return "outputDataPlaceholder" + i;},
-                "r":"0.05em"
+                "r":"0em",
+                "transform": "translate(" + 2 + ",0)"
              })
-		     .on("mouseover",handleMouseOver)
-		     .on("mouseout",handleMouseOut)
+		     //.on("mouseover",handleMouseOver)
+		     //.on("mouseout",handleMouseOut)
 	}
 	//############### Function to draw total data column ###############
 	function createTotalData(tableName,group,data){
@@ -805,7 +865,7 @@ function histogramTableGraph(queryData){
 		    {
 		    	xIncoming.push(d3.scaleLinear()
 		        .domain([0, maxXIncoming[j]])
-		        .range([0, width])
+		        .range([0, 0.7 * width])
 		        .nice());
 
 		        yIncoming.push(d3.scaleLinear()
@@ -820,7 +880,7 @@ function histogramTableGraph(queryData){
 
 		      	xOutgoing.push(d3.scaleLinear()
 		        .domain([0, maxXOutgoing[j]])
-		        .range([0, width])
+		        .range([0, 0.7 * width])
 		        .nice());
 
 		        yOutgoing.push(d3.scaleLinear()
@@ -863,7 +923,7 @@ function histogramTableGraph(queryData){
 			}else{
 				x=xOutgoing;
 			}
-			var histogramLegend = {width:width - 65,height:16}
+			var histogramLegend = {width: 0.7 * width - 6 * (margin.left - margin.right) , height: margin.bottom}
 	    	var histoLegend = graph.append("g")
 						    	.attrs({
 						    		class: "histoLegend",
@@ -899,11 +959,11 @@ function histogramTableGraph(queryData){
 	    	 		"x1":function(d,i){return x[i](eval("data[i].data."+ type +".max"))},
 	    	 		"y1":height,
 	    	 		"x2":function(d,i){return x[i](eval("data[i].data."+ type +".max"))},
-	    	 		"y2":0
+	    	 		"y2":40
 	    	 	})
 	    	 	.styles({
 	    	 		"stroke":"red",
-	    	 		"stroke-width":1
+	    	 		"stroke-width":2
 	    	 	})
 	    	lineGuides.append("line")
 	    		.attrs({
@@ -911,22 +971,21 @@ function histogramTableGraph(queryData){
 	    			"x1":function(d,i){return x[i](eval("data[i].data."+ type +".avg"))},
 	    	 		"y1":height,
 	    	 		"x2":function(d,i){return x[i](eval("data[i].data."+ type +".avg"))},
-	    	 		"y2":0,
+	    	 		"y2":40,
 	    		})
 	    		.styles({
 	    	 		"stroke":"green",
-	    	 		"stroke-width":1
+	    	 		"stroke-width":2
 	    	 	})
 		}
 		var svg=d3.selectAll(colName).append("svg")
 	   		.attrs({
-	      		"width": width + margin.left + margin.right,
+	      		"width": 0.7 * (width + margin.left + margin.right),
 	      		"height": height + margin.top + margin.bottom,
 	    	})
 	    var graph = svg.append("g")
 	        .attrs({
 	        	"id": function(d,i) {return "graph"+colData+i;},
-	        	"transform": "translate(" + margin.left + "," + margin.top + ")"
 	        })
 	    if(colData=="inputDataLayouts"){
 				x = xIncoming;

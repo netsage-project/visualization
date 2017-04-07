@@ -244,20 +244,12 @@ body{
 /*************************** END Application Region Style *****************************/
 /*************************** Histogram Style *****************************/
 .multipleHistogram{
-    /*min-width:1215px;*/
     border: 1px solid black;
 	  font-size: 10px;
     position: relative;
-    /*min-height: 20em;*/
-    /*overflow-y: scroll;*/
-    display: inline-block;
-    padding-left: 1px;
     text-align: center;
 }
 
-.multipleHistogram table{
-  min-width:1215px;
-}
 .multipleHistogram .xAxis{
 	font-size: 8px;
 }
@@ -268,14 +260,33 @@ body{
   font-size: 15px;
 }
 
+.multipleHistogram .svgLineIn{
+    padding-left: 25px;
+    padding-bottom: 13px;
+    padding-top: 10px;
+    padding-right: 26px;
+}
+.multipleHistogram svg{
+    padding-left: 1em;
+    padding-right: 0.3em;
+}
+
+.multipleHistogram .svgLineOut{
+    padding-left: 25px;
+    padding-bottom: 13px;
+    padding-top: 23px;
+    padding-right: 26px;
+}
+
 #header-fixed {
     position: fixed;
-    top: 0px; display:none;
+    top: 0px;
+    display:none;
     background-color:white;
 }
 
 .multipleHistogram .bar rect {
-  fill: rgba(52, 100, 222, 1);
+  fill: rgba(52, 100, 222, 0.7);
   shape-rendering: crispEdges;
 }
 
@@ -285,7 +296,7 @@ body{
   shape-rendering: crispEdges;
 }
 .multipleHistogram rect{
-  fill: rgba(52, 100, 222, 1);
+  fill: rgba(52, 100, 222, 0.7);
   shape-rendering: crispEdges;
 }
 .multipleHistogram .totalDataBar{
@@ -310,10 +321,13 @@ body{
 .multipleHistogram .lineChartHistogram .line{
   fill: none;
   stroke:rgba(52, 100, 222, 1);
-  stroke-width: 0.05em;
+  stroke-width: 0.07em;
 }
 
 .multipleHistogram .lineChartHistogram .axis{
+  stroke-width:-01em;
+}
+.multipleHistogram .lineChartHistogram .y{
   stroke-width:0em;
 }
 .multipleHistogram .lineChartHistogram .ticks{
@@ -325,6 +339,18 @@ body{
 }
 .multipleHistogram .sampleData line{
   stroke-width:0.3em;
+}
+
+.multipleHistogram .histoLegend{
+  font-size:1.3em;
+}
+
+.multipleHistogram .histoLegend text .max {
+  stroke:rgba(255, 0, 0, 0.3);
+}
+
+.multipleHistogram .histoLegend text .avg {
+  stroke:rgba(0, 255, 0, 0.3);
 }
 /*************************** END Histogram Style *****************************/
 /*************************** LineChart Style *****************************/

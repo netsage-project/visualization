@@ -404,10 +404,8 @@ body{
 #mapTooltip {
     position: absolute;
     text-align: center;
-    padding:5px;
-    padding-left:15px;
-    padding-right:15px;
-    font-size: 1em;
+    padding:0.4em;
+    font-size: 0.8em;
     background: rgba(247, 201, 132, 1);
     border: 0px;
     pointer-events: none;

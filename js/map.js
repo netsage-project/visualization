@@ -39,7 +39,7 @@ function mapGraph(data){
     }else if(this.classList[0]==="links" || this.classList[0]==="linksPlaceholder"){
       //If MouseoverLink
       if(this.classList[0]==="links"){
-        div.html("<p class ='mapTooltipname'>" + data.links[i].description + "</p> <p> Link Maximum Capacity: "+ data.links[i].max_bandwidth/1000000000 + "Gb/s </p> " /*+ "<p> Total Data : " + d3.format(".2f")((data.links[i].data.totalData[0] + data.links[i].data.totalData[1])/1024/8) + " TB </p>" */)
+        div.html("<p class ='mapTooltipname'>" + data.links[i].description + "</p> <p> Link Maximum Capacity: "+ data.links[i].max_bandwidth/1000000000 + "Gb/s </p> " + "<p> Avg Incoming Bandwith : " + d3.format(".2f")(data.links[i].data.input.avg) + " Gb/s </p>" + "<p> Avg Outgoing Bandwith : " + d3.format(".2f")(data.links[i].data.output.avg) + " Gb/s </p>"+ "<p> Total Data : " + d3.format(".2f")((data.links[i].data.totalData[0] + data.links[i].data.totalData[1])/1024/8) + " TB </p>")
            .style("left", xPos + "px")
            .style("top", yPos + "px");
       }else{
@@ -248,7 +248,7 @@ function mapGraph(data){
             return colorLinks(d3.mean([data.links[i].data.input.avg,data.links[i].data.output.avg]))} //We are coloring links based on avg use
         })
         .on("mouseover", handleMouseOver)
-        .on("mouseout",handleMouseOut);
+        //.on("mouseout",handleMouseOut);
 
         //Create Nodes PlaceHolders
         d3.json("nodesMetadata.json",function(error, nodeValues){

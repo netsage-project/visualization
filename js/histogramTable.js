@@ -873,7 +873,8 @@ function histogramTableGraph(queryData){
 		        .range([height, 0]));
 
 		        xAxisIncoming.push(d3.axisBottom()
-		        .scale(xIncoming[j]));
+		        .scale(xIncoming[j])
+		        .ticks(7));
 
 		   		yAxisIncoming.push(d3.axisLeft()
 		      	.scale(yIncoming[j]));
@@ -888,7 +889,8 @@ function histogramTableGraph(queryData){
 		        .range([height, 0]));
 
 		        xAxisOutgoing.push(d3.axisBottom()
-		        .scale(xOutgoing[j]));
+		        .scale(xOutgoing[j])
+		        .ticks(7));
 
 		   		yAxisOutgoing.push(d3.axisLeft()
 		      	.scale(yOutgoing[j]));

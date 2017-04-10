@@ -130,7 +130,7 @@
 {
 "type": "interface",
 "node": "rtr.newy32aoa.neaar.net",
-"intf": "ethernet3/1",
+"intf": "ethernet3/2",
 "start": 1489968000,
 "end": null,
 "network": "NEAAR",

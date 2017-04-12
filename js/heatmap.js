@@ -61,11 +61,11 @@ function periodicPattern(data){
 				drawElementText("Input: " + data.links[arrayIndexLinks].description);
 				heatmapData = data.links[arrayIndexLinks].data.input.values;
 				heatmap(heatmapData,maxValueLinks,maxDate,minDate,data.queryMeasure);
-				weekHeatmap(data.links[arrayIndexLinks].data.input.weekData,maxWeekDataLinks);
+				weekHeatmap(data.links[arrayIndexLinks].data.input.weekData,maxWeekDataLinks,data.queryMeasure);
 				drawElementText("Output: " + data.links[arrayIndexLinks].description);
 				heatmapData = data.links[arrayIndexLinks].data.output.values;
 				heatmap(heatmapData,maxValueLinks,maxDate,minDate,data.queryMeasure);
-				weekHeatmap(data.links[arrayIndexLinks].data.output.weekData,maxWeekDataLinks);
+				weekHeatmap(data.links[arrayIndexLinks].data.output.weekData,maxWeekDataLinks,data.queryMeasure);
 				arrayIndexLinks++;
 				var end = new Date().getTime();
 				var time = end - start;
@@ -79,11 +79,11 @@ function periodicPattern(data){
 					drawElementText("Input: " + data.nodes[arrayIndexNodes].node);
 					heatmapData = data.nodes[arrayIndexNodes].data.input.values;
 					heatmap(heatmapData,maxValueNodes,maxDate,minDate,data.queryMeasure);
-					weekHeatmap(data.nodes[arrayIndexNodes].data.input.weekData,maxWeekDataNodes);
+					weekHeatmap(data.nodes[arrayIndexNodes].data.input.weekData,maxWeekDataNodes,data.queryMeasure);
 					drawElementText("Output: " + data.nodes[arrayIndexNodes].node);
 					heatmapData = data.nodes[arrayIndexNodes].data.output.values;
 					heatmap(heatmapData,maxValueNodes,maxDate,minDate,data.queryMeasure);
-					weekHeatmap(data.nodes[arrayIndexNodes].data.output.weekData,maxWeekDataNodes);
+					weekHeatmap(data.nodes[arrayIndexNodes].data.output.weekData,maxWeekDataNodes,data.queryMeasure);
 					arrayIndexNodes++;
 					var end = new Date().getTime();
 					var time = end - start;
@@ -115,7 +115,7 @@ function periodicPattern(data){
 				drawElementText("Link: " + data.links[arrayIndex].source +  " - " + data.links[arrayIndex].destination + ". <b>Max:</b> " + d3.format(".0f")(data.links[arrayIndex].max) + "% <b>Average:</b> " + d3.format(".2f")(data.links[arrayIndex].avg)+ "%");
 				heatmapData = data.links[arrayIndex].values;
 				heatmap(heatmapData,maxValue,maxDate,minDate,data.queryMeasure);
-				weekHeatmap(data.links[arrayIndex].values.weekData,maxWeekDataLinks);
+				weekHeatmap(data.links[arrayIndex].values.weekData,maxWeekDataLinks,data.queryMeasure);
 				arrayIndexLinks++;
 				var end = new Date().getTime();
 				var time = end - start;
@@ -147,7 +147,7 @@ function periodicPattern(data){
 				drawElementText("Link: " + data.links[arrayIndex].source +  " - " + data.links[arrayIndex].destination + " <b>Max:</b> " + d3.format(".0f")(data.links[arrayIndex].max) + " ms" + "<b> Average:</b> " + d3.format(".0f")(data.links[arrayIndex].avg) + " ms");
 				heatmapData = data.links[arrayIndex].values;
 				heatmap(heatmapData,maxValue,maxDate,minDate,data.queryMeasure);
-				weekHeatmap(data.links[arrayIndex].values.weekData,maxWeekDataLinks);
+				weekHeatmap(data.links[arrayIndex].values.weekData,maxWeekDataLinks,data.queryMeasure);
 				arrayIndexLinks++;
 				var end = new Date().getTime();
 				var time = end - start;
@@ -179,7 +179,7 @@ function periodicPattern(data){
 				drawElementText("Link: " + data.links[arrayIndex].source +  " - " + data.links[arrayIndex].destination + " <b>Max:</b> " + d3.format(".0f")(data.links[arrayIndex].max) + " ms" + "<b> Average:</b> " + d3.format(".0f")(data.links[arrayIndex].avg) + " ms");
 				heatmapData = data.links[arrayIndex].values;
 				heatmap(heatmapData,maxValue,maxDate,minDate,data.queryMeasure);
-				weekHeatmap(data.links[arrayIndex].values.weekData,maxWeekDataLinks);
+				weekHeatmap(data.links[arrayIndex].values.weekData,maxWeekDataLinks,data.queryMeasure);
 				arrayIndexLinks++;
 				var end = new Date().getTime();
 				var time = end - start;
@@ -227,7 +227,7 @@ function periodicPattern(data){
        	   .duration(500)
            .style("opacity", .9);
         if(d.val !== undefined) div.html("<p class ='heatmapTooltipname'>" + d.day + " at " + d.hour + ":</p><p>" + d3.format(".2f")(d.val) + " Gb/s</p>" );
-        else div.html("<p class ='heatmapTooltipname'>" + String(d[0]).split(" ")[0] + " " + String(d[0]).split(" ")[1] + " " + String(d[0]).split(" ")[2] + " " + String(d[0]).split(" ")[3] + " at " + String(d[0]).split(" ")[4] + "</p><p>" + d3.format(".2f")(d[1]) + " Gb/s</p>");
+        else if(d[0]!==null) div.html("<p class ='heatmapTooltipname'>" + String(d[0]).split(" ")[0] + " " + String(d[0]).split(" ")[1] + " " + String(d[0]).split(" ")[2] + " " + String(d[0]).split(" ")[3] + " at " + String(d[0]).split(" ")[4] + "</p><p>" + d3.format(".2f")(d[1]) + " Gb/s</p>");
         div.style("position","absolute")
            .style("left", (d3.event.pageX + 15) + "px")
            .style("top", (d3.event.pageY ) + "px");
@@ -251,7 +251,7 @@ function periodicPattern(data){
 		div.transition()
        	   .duration(500)
            .style("opacity", .9);
-    	if(d[1]){
+    	if(d[1]!==undefined){
     		if(d[1] !== null) div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + d3.format(".2f")(d[1]) + " % of loss</p>" );
     		else div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + "No test Data for this Period </p>");
     	}else{
@@ -270,7 +270,7 @@ function periodicPattern(data){
 		div.transition()
        	   .duration(500)
            .style("opacity", .9);
-        if(d[1]){
+        if(d[1]!==undefined){
         	if(d[1] !== null) div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + d3.format(".0f")(d[1]) + " ms</p>" );
     		else div.html("<p class ='heatmapTooltipname'>" + d[0] + ":</p><p>" + "No test Data for this Period </p>");
         }else{
@@ -603,7 +603,7 @@ function periodicPattern(data){
 	    	return result;
 		}
 	}
-	function weekHeatmap(data,maxValue){
+	function weekHeatmap(data,maxValue,queryMeasure){
 		//Margins and size
 		var m = [20, 40, 20, 80];
 		var w = 600 - m[1] - m[3];

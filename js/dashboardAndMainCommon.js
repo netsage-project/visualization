@@ -159,14 +159,14 @@ function getUrlParameter(sParam) {
     }
 }
 //Functions to populate the Form.
-function populateFormValues(){
-	//Populate queryForm Values
-	var queryTypes = ["What was the min, max, average ","What is the duration and are there any periodic patterns or peak periods ", "More to come... "];
-	var queryMeasures = ["in Bandwidth use"," in Losses"];
-	var queryValues = ["across the IRNC Network","across the IRNC Links","across the IRNC Nodes"];
-	if(getUrlParameter("date")!=undefined) var timeFrames = ["time frame","now","today","last 7 days","this month","this year"];
-	else var timeFrames = ["now","today","last 7 days","this month","this year","time frame"];
-}
+// function populateFormValues(){
+// 	//Populate queryForm Values
+// 	var queryTypes = ["What was the min, max, average ","What is the duration and are there any periodic patterns or peak periods ", "More to come... "];
+// 	var queryMeasures = ["in Bandwidth use"," in Losses"];
+// 	var queryValues = ["across the IRNC Network","across the IRNC Links","across the IRNC Nodes"];
+// 	if(getUrlParameter("date")!=undefined) var timeFrames = ["time frame","now","today","last 7 days","this month","this year"];
+// 	else var timeFrames = ["now","today","last 7 days","this month","this year","time frame"];
+// }
 
 function drawQueryFormCommon(queryForm,fieldset,queryTypes,queryMeasures,queryValues,timeFrames,day,queryFromTab){
 	//Create Query Type Select
@@ -371,7 +371,7 @@ function drawQueryFormCommon(queryForm,fieldset,queryTypes,queryMeasures,queryVa
 	});
 	//On start we disable the other queryValue options until we add the part of the code to process them.
 	//$("#valueOption1").attr("disabled",true);
-	$("#valueOption2").attr("disabled",true);
+	//$("#valueOption3").attr("disabled",true);
 	$("#queryTimeFrame").selectmenu({
       change: function( event, data ) {
 		var day = new Date();

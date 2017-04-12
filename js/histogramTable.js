@@ -244,7 +244,7 @@ function histogramTableGraph(queryData){
 			}
 			div.transition()
    				.duration(200)
-   				.style("opacity", .9);
+   				.style("opacity", 1);
 			div.html("<p>"+ d + " Gb/s" )
 		       .style("left", (d3.event.pageX + 5) + "px")
 		       .style("top", (d3.event.pageY - 28) + "px");
@@ -505,7 +505,7 @@ function histogramTableGraph(queryData){
 	    		// 	.style("fill","rgba(247, 201, 132, 1)")
 				div.transition()
 	   				.duration(200)
-	   				.style("opacity", .9);
+	   				.style("opacity", 1);
 	   			div.html("<p>"+ dataPoints[index][0] + " , " + dataPoints[index][1] + " Gb/s" )
 			       .style("left", (d3.event.pageX + 30) + "px")
 			       .style("top", (d3.event.pageY - 28) + "px");
@@ -566,12 +566,20 @@ function histogramTableGraph(queryData){
 		//Functions to draw the lines one for each scale
 		var lineIncoming = d3.line()
 		    //.curve(d3.curveLinear)
-		    .x(function(d) {return x(d[0]); })
-		    .y(function(d) {return yIncoming(d[1]); });
+		    .x(function(d) { return x(d[0]); })
+		    .y(function(d) {
+		    	if(d[0] !==null ) return yIncoming(d[1]);
+		    	else{
+		    		return yIncoming(0);
+		    	}
+		    });
 		var lineOutgoing = d3.line()
 		    //.curve(d3.curveLinear)
 		    .x(function(d) {return x(d[0]); })
-		    .y(function(d) {return yOutgoing(d[1]); });
+		    .y(function(d) {
+		    	if(d[0] !==null ) return yOutgoing(d[1]);
+		    	else return yOutgoing(0);
+		    });
 
 	    //Input Graph
 	    var svg=d3.selectAll("." + tableName + "-" + group + "-col" + "2").append("svg")
@@ -703,7 +711,7 @@ function histogramTableGraph(queryData){
     		div = d3.select("#" + split[0] + "-" + split[1] + "-tableTooltip");
 			div.transition()
    				.duration(200)
-   				.style("opacity", .9);
+   				.style("opacity", 1);
    			if(this.classList[1]=="iData"){
    				div.html("<p>"+ (eval("queryObjects[" + this.classList[0].split("-")[1] + "].graphs.table." + this.classList[0].split("-")[0]+"[" + this.id.split("-")[3] + "].data.totalData[0]")/1024/8).toFixed(1) +" TB</p> <p>"+ (100 * eval("queryObjects[" + this.classList[0].split("-")[1] + "].graphs.table." + this.classList[0].split("-")[0]+"[" + this.id.split("-")[3] + "].data.totalData[0]")/totalDataIn).toFixed(2) + " %" )
 		       .style("left", (d3.event.pageX + 5) + "px")
@@ -908,7 +916,7 @@ function histogramTableGraph(queryData){
 			div = d3.select("#" + tableName + "-tableTooltip");
 			div.transition()
 					.duration(200)
-					.style("opacity", .9);
+					.style("opacity", 1);
 		   	div.html("<p>"+ d3.mean(d).toFixed(2) +" Gb/s</p> <p>"+ d.length + " elements" )
 		       .style("left", (d3.event.pageX + 5) + "px")
 		       .style("top", (d3.event.pageY - 28) + "px");

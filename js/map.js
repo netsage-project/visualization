@@ -248,7 +248,7 @@ function mapGraph(data){
             return colorLinks(d3.mean([data.links[i].data.input.avg,data.links[i].data.output.avg]))} //We are coloring links based on avg use
         })
         .on("mouseover", handleMouseOver)
-        //.on("mouseout",handleMouseOut);
+        .on("mouseout",handleMouseOut);
 
         //Create Nodes PlaceHolders
         d3.json("nodesMetadata.json",function(error, nodeValues){

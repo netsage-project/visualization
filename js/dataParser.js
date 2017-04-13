@@ -196,7 +196,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 			//Save the cleaned scaled values in the data
 			dataPoint.histogram = dataClean;
 			dataPoint.values = values;
-		}else if(queryMeasure==="0" && queryValue==="1" && queryType === "0"){//Flow Data
+		}else if(queryMeasure==="0" && (queryValue==="1" || queryValue==="2" || queryValue==="3" || queryValue==="4") && queryType === "0"){//Flow Data
 			var dataClean=[];
 			var values=[];
 			for(each in dataPoint.input){
@@ -238,7 +238,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 	}
 	//Function to calculate Important Statistical values
 	function calculateStatistics (dataPoint,sizeInterval,queryMeasure,queryValue,queryDate){
-		if(queryMeasure==="0" && queryObjects[0].queryType === "0")//SNMP data and Flow query 0
+		if(queryMeasure==="0" && (queryValue==="0" || queryValue==="1" || queryValue==="2" || queryValue==="3" || queryValue==="4")) //SNMP data and Flow query 0
 		{
 			//Create other helper Statistical values
 			dataPoint.input.max = d3.max(dataPoint.input.histogram);
@@ -274,7 +274,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 			dataPoint.totalData = [d3.mean(dataPoint.input.histogram)*sizeInterval,d3.mean(dataPoint.output.histogram)*sizeInterval];
 			if(isNaN(dataPoint.totalData[0])) dataPoint.totalData[0]=0;
 			if(isNaN(dataPoint.totalData[1])) dataPoint.totalData[1]=0;
-		}else if(queryMeasure==="1" || queryMeasure==="2" || queryMeasure==="0" && queryObjects[0].queryType === "1"){ //PerfSonar and query 1 Flow
+		}else if(queryObjects[0].queryType === "1" && queryMeasure!=="0" ){ //PerfSonar and query 1 Flow
 			//Create other helper Statistical values
 			dataPoint.max = d3.max(dataPoint.histogram);
 			dataPoint.min = d3.min(dataPoint.histogram);
@@ -306,10 +306,11 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 		var avgOver = avgOver;
 		var links;
 		var nodes = [];
-		//We see what user wants to visualice
+		var url;
+		//We see what user wants to visualize
 		if(queryObjects[0].queryValue==="0"){//IRNC LINKS
 			//Query to retrieve metadata values
-			var url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get node, intf, description, a_endpoint.name, a_endpoint.latitude, a_endpoint.longitude, z_endpoint.name, z_endpoint.latitude, z_endpoint.longitude, max_bandwidth between( "' + date[0] + '", "' + date[1] + '" ) by node, intf from interface where a_endpoint != null and z_endpoint != null';
+			url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get node, intf, description, a_endpoint.name, a_endpoint.latitude, a_endpoint.longitude, z_endpoint.name, z_endpoint.latitude, z_endpoint.longitude, max_bandwidth between( "' + date[0] + '", "' + date[1] + '" ) by node, intf from interface where a_endpoint != null and z_endpoint != null';
 			d3.json(url)
 			.on("beforesend", function (request) {request.withCredentials = true;})
 			.get(function(error,data)
@@ -355,8 +356,17 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 					iconClearWaiting();
 				});
 			});
-		}else if(queryObjects[0].queryValue==="1"){//INSTITUTIONS
-			var url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get src_organization, point_of_observation, values.bits, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_organization, point_of_observation from netflow_src_organization where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+		}else if(queryObjects[0].queryValue==="1" || queryObjects[0].queryValue==="2" || queryObjects[0].queryValue==="3" || queryObjects[0].queryValue==="4"){ //Flow Data
+			if(queryObjects[0].queryValue==="1"){
+				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get src_organization, point_of_observation, values.bits, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_organization, point_of_observation from netflow_src_organization where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+			}else if(queryObjects[0].queryValue==="2"){
+				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get protocol, point_of_observation, values.bits, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by protocol, point_of_observation from netflow_protocol where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+			}else if(queryObjects[0].queryValue==="3"){
+				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get src_asn, point_of_observation, values.bits, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_asn, point_of_observation from netflow_src_asn where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+			}else if(queryObjects[0].queryValue==="4"){
+				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get src_country_name, point_of_observation, values.bits, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_country_name, point_of_observation from netflow_src_country_name where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+			}
+			console.log(url);
 			d3.json(url)
 			.on("beforesend", function (request) {request.withCredentials = true;})
 			.get(function(error,data)
@@ -364,7 +374,15 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 				links = data.results;
 				queryObjects[counter].links = links;
 				for (var element in queryObjects[counter].links){
-					queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_organization;
+					if(queryObjects[0].queryValue==="1"){
+						queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_organization;
+					}else if (queryObjects[0].queryValue==="2"){
+						queryObjects[counter].links[element].description = queryObjects[counter].links[element].protocol;
+					}else if(queryObjects[0].queryValue==="3"){
+						queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_asn;
+					}else if(queryObjects[0].queryValue==="4"){
+						queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_country_name;
+					}
 					queryObjects[counter].links[element].data = {};
 					queryObjects[counter].links[element].data.input = queryObjects[counter].links[element]["values.bits"];
 					queryObjects[counter].links[element].data.output = queryObjects[counter].links[element]["values.bits"];
@@ -587,6 +605,6 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 	}
 	//#################################### END AUX FUNCTIONS ############################
 	//Check what measurement the user is asking for
-	if(queryType==="0") snmpTSDSQuery(avgOver);////Loads the data for the snmp query
+	if(queryMeasure==="0") snmpTSDSQuery(avgOver);////Loads the data for the snmp query
 	else perfSonarTSDSQuery(avgOver,queryMeasure,queryObjects[0].queryValue);////Loads the data for the perfSonar query
 }

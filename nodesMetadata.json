@@ -45,13 +45,13 @@
 		"node":"Sydney"
 	},
 	{
-		"latitude":38.907192,
-		"longitude":-77.036871,
-		"node":"Washington DC"
+		"latitude":40.7128,
+		"longitude":-74.0059,
+		"node":"New York"
 	},
 	{
-		"latitude":50.1109,
-		"longitude":8.6821,
-		"node":"Frankfurt"
+		"latitude":51.5074,
+		"longitude":-0.1278,
+		"node":"London"
 	}
 ]

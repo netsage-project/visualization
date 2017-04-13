@@ -1,0 +1,27 @@
+{
+"nodes":[
+{"node":0,"name":"United Estates"},
+{"node":1,"name":"Brazil"},
+{"node":2,"name":"Germany"},
+{"node":3,"name":"Romania"},
+{"node":4,"name":"China"},
+{"node":5,"name":"Taiwan"},
+{"node":6,"name":"India"},
+{"node":7,"name":"UK"},
+{"node":8,"name":"Hong Kong"},
+{"node":9,"name":"Philippines"},
+{"node":10,"name":"Argentina"}
+],
+"links":[
+{"source":0,"target":5,"value":4519731200},
+{"source":0,"target":4,"value":4519731200},
+{"source":0,"target":2,"value":12267290992},
+{"source":0,"target":1,"value":4167827456},
+{"source":0,"target":9,"value":11788361728},
+{"source":0,"target":8,"value":9706512384},
+{"source":0,"target":6,"value":25754599424},
+{"source":1,"target":10,"value":4211441664},
+{"source":3,"target":1,"value":8364032000},
+{"source":4,"target":1,"value":5636205226.66667},
+{"source":7,"target":0,"value":19816199328}
+]}

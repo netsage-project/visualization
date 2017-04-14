@@ -298,7 +298,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 	}
 
 	//Function to retrieve Dynamic Metadata on Start and fill up the first Overview. Sets the links and nodes to be visualized and parses data for the mapgraph and histogramTable.
-	function snmpTSDSQuery(avgOver){
+	function snmpTSDSQuery(avgOver,queryMeasure,queryValue){
 		//Set up the date
 		var date = queryDate;
 		var interval = { first: new Date(date[0]), second: new Date(date[1]) }
@@ -308,7 +308,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 		var nodes = [];
 		var url;
 		//We see what user wants to visualize
-		if(queryObjects[0].queryValue==="0"){//IRNC LINKS
+		if(queryValue==="0"){//IRNC LINKS
 			//Query to retrieve metadata values
 			url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get node, intf, description, a_endpoint.name, a_endpoint.latitude, a_endpoint.longitude, z_endpoint.name, z_endpoint.latitude, z_endpoint.longitude, max_bandwidth between( "' + date[0] + '", "' + date[1] + '" ) by node, intf from interface where a_endpoint != null and z_endpoint != null';
 			d3.json(url)
@@ -356,14 +356,14 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 					iconClearWaiting();
 				});
 			});
-		}else if(queryObjects[0].queryValue==="1" || queryObjects[0].queryValue==="2" || queryObjects[0].queryValue==="3" || queryObjects[0].queryValue==="4"){ //Flow Data
-			if(queryObjects[0].queryValue==="1"){
-				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get src_organization, point_of_observation, values.bits, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_organization, point_of_observation from netflow_src_organization where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
-			}else if(queryObjects[0].queryValue==="2"){
+		}else if(queryValue==="1" || queryValue==="2" || queryValue==="3" || queryValue==="4"){ //Flow Data
+			if(queryValue==="1"){
+				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get src_organization, point_of_observation, values.bps, average(values.bps) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_organization, point_of_observation from netflow_src_organization where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+			}else if(queryValue==="2"){
 				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get protocol, point_of_observation, values.bits, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by protocol, point_of_observation from netflow_protocol where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
-			}else if(queryObjects[0].queryValue==="3"){
+			}else if(queryValue==="3"){
 				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get src_asn, point_of_observation, values.bits, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_asn, point_of_observation from netflow_src_asn where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
-			}else if(queryObjects[0].queryValue==="4"){
+			}else if(queryValue==="4"){
 				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get src_country_name, point_of_observation, values.bits, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_country_name, point_of_observation from netflow_src_country_name where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
 			}
 			console.log(url);
@@ -371,27 +371,50 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 			.on("beforesend", function (request) {request.withCredentials = true;})
 			.get(function(error,data)
 			{
+				//For flow data I need to query twice to get the input and the output of the data.
+				var extraURL;
 				links = data.results;
 				queryObjects[counter].links = links;
 				for (var element in queryObjects[counter].links){
-					if(queryObjects[0].queryValue==="1"){
+					if(queryValue==="1"){
 						queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_organization;
-					}else if (queryObjects[0].queryValue==="2"){
+						extraURL = data.query.replace("src_organization","dst_organization");
+					}else if (queryValue==="2"){
 						queryObjects[counter].links[element].description = queryObjects[counter].links[element].protocol;
-					}else if(queryObjects[0].queryValue==="3"){
+						extraURL = data.query.replace(""); //Dont know what to do with protocols yet.
+					}else if(queryValue==="3"){
 						queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_asn;
-					}else if(queryObjects[0].queryValue==="4"){
+						extraURL = data.query.replace("src_asn","dst_asn");
+					}else if(queryValue==="4"){
 						queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_country_name;
+						extraURL = data.query.replace("src_country_name","dst_country_name");
 					}
 					queryObjects[counter].links[element].data = {};
-					queryObjects[counter].links[element].data.input = queryObjects[counter].links[element]["values.bits"];
-					queryObjects[counter].links[element].data.output = queryObjects[counter].links[element]["values.bits"];
+					queryObjects[counter].links[element].data.input = queryObjects[counter].links[element]["values.bps"];
+				}
+				d3.json(extraURL)
+				.on("beforesend", function (request) {request.withCredentials = true;})
+				.get(function(error,data)
+				{
+					for (var element in queryObjects[counter].links){
+						if(queryValue==="1"){
+							queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_organization;
+						}else if (queryValue==="2"){
+							queryObjects[counter].links[element].description = queryObjects[counter].links[element].protocol;
+						}else if(queryValue==="3"){
+							queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_asn;
+						}else if(queryValue==="4"){
+							queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_country_name;
+						}
+						queryObjects[counter].links[element].data = {};
+						queryObjects[counter].links[element].data.output = queryObjects[counter].links[element]["values.bps"];
+					}
 					scaleAndClean(queryObjects[counter].links[element].data,queryMeasure,queryObjects[0].queryValue);
 					calculateStatistics(queryObjects[counter].links[element].data,sizeIntervalSeconds,queryMeasure,queryObjects[0].queryValue,date);
-				}
-				drawQueryText(queryText);
-				histogramTableGraph(queryObjects[counter]);
-				iconClearWaiting();
+					drawQueryText(queryText);
+					histogramTableGraph(queryObjects[counter]);
+					iconClearWaiting();
+				})
 			}
 		)};
 	}
@@ -735,7 +758,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 	}
 	//#################################### END AUX FUNCTIONS ############################
 	//Check what measurement the user is asking for
-	if(queryMeasure==="0" && queryType!=="2") snmpTSDSQuery(avgOver);////Loads the data for the snmp query
+	if(queryMeasure==="0" && queryType!=="2") snmpTSDSQuery(avgOver,queryMeasure,queryValue);////Loads the data for the snmp query
 	else if(queryType === "2") topTalkers(avgOver,queryMeasure,queryValue)
 	else perfSonarTSDSQuery(avgOver,queryMeasure,queryValue);////Loads the data for the perfSonar query
 }

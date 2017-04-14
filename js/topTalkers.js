@@ -35,7 +35,7 @@ function drawTopTalkers(data){
 		  sankey
 		      .nodes(data.nodes)
 		      .links(data.links)
-		      .layout(32);
+		      .layout(2000);
 
 		// add in the links
 		  var link = svg.append("g").selectAll(".link")

@@ -1,4 +1,4 @@
-function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
+function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue){
 	//#################################### AUX FUNCTIONS ############################
 	//Function return unique nodes from links
 	function uniqNodes(a,links,queryMeasure) {
@@ -391,6 +391,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 				}
 				drawQueryText(queryText);
 				histogramTableGraph(queryObjects[counter]);
+				iconClearWaiting();
 			}
 		)};
 	}
@@ -549,62 +550,192 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 				iconClearWaiting();
 			// }
 		});
-	}
-	//Function orderPerfsonarTests in order to put A -> B and then B -> A
-	function orderPerfsonarTests(tests){
-		let outputArray = [];
-		let src;
-		let dest;
-		let id;
-		let inArray1;
-		let inArray2 = false;
-		tests.forEach(function(test,index){
-			inArray1 = false;
-			src = test.source;
-			dest = test.destination;
-			id = test.id;
-			//Check if it is in output
-			if(outputArray.length !== 0 ){
-				outputArray.every(function(output){
-					if(output.id === test.id){
-						inArray1 = true;
-						return false;
+		//Function orderPerfsonarTests in order to put A -> B and then B -> A
+		function orderPerfsonarTests(tests){
+			let outputArray = [];
+			let src;
+			let dest;
+			let id;
+			let inArray1;
+			let inArray2 = false;
+			tests.forEach(function(test,index){
+				inArray1 = false;
+				src = test.source;
+				dest = test.destination;
+				id = test.id;
+				//Check if it is in output
+				if(outputArray.length !== 0 ){
+					outputArray.every(function(output){
+						if(output.id === test.id){
+							inArray1 = true;
+							return false;
+						}
+						return true;
+					})
+					if(inArray1 === false){
+						outputArray.push(test);
 					}
-					return true;
-				})
-				if(inArray1 === false){
+				}else{
 					outputArray.push(test);
 				}
-			}else{
-				outputArray.push(test);
-			}
-			tests.forEach(function(test){
-				inArray2 = false;
-				if(test.source === dest){
-					if(test.destination === src){
-						//Check if it is in output
-						outputArray.every(function(output){
-							if(output.id === test.id){
-								inArray2 = true;
-								return false;
+				tests.forEach(function(test){
+					inArray2 = false;
+					if(test.source === dest){
+						if(test.destination === src){
+							//Check if it is in output
+							outputArray.every(function(output){
+								if(output.id === test.id){
+									inArray2 = true;
+									return false;
+								}
+								return true;
+							})
+							if(inArray2 === false){
+								outputArray.push(test);
 							}
-							return true;
+						}
+					}
+				})
+			})
+			return outputArray;
+		}
+	}
+
+	function topTalkers(avgOver,queryMeasure,queryValue){
+		let date = queryDate;
+		let interval = { first: new Date(date[0]), second: new Date(date[1]) }
+		let sizeIntervalSeconds = (interval.second - interval.first)/1000
+		let links;
+		let idCount = 0;
+		let url;
+		let networkData;
+		let inputValues;
+		let outputValues;
+		let src_fieldName;
+		let dst_fieldName;
+		if(queryMeasure==="0"){
+			inputValues = "values.input_bits";
+			outputValues = "values.output_bits";
+		}else if(queryMeasure==="1"){
+			inputValues = "values.input_loss";
+			outputValues = "values.output_loss";
+		}else if(queryMeasure==="2"){
+			inputValues = "values.input_max_rtt";
+			outputValues = "values.output_max_rtt";
+		}
+		if(queryValue==="1"){
+			url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get src_organization, dst_organization, point_of_observation,' + inputValues + ',' + outputValues + ', average(' + inputValues + ') as input_avg_bits, average(' + outputValues + ') as output_avg_bits  between("' + date[0] + '", "' + date[1] + '" ) by src_organization, dst_organization, point_of_observation from netflow_src_organization_dst_organization where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+			src_fieldName = "src_organization";
+			dst_fieldName = "dst_organization";
+		}else if(queryValue==="4") {
+			url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get src_country_name, dst_country_name, point_of_observation,' + inputValues + ',' + outputValues + ', average(' + inputValues + ') as input_avg_bits, average(' + outputValues + ') as output_avg_bits  between("' + date[0] + '", "' + date[1] + '" ) by src_country_name, dst_country_name, point_of_observation from netflow_src_country_name_dst_country_name where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+			src_fieldName = "src_country_name";
+			dst_fieldName = "dst_country_name";
+		}
+		d3.json(url)
+			.on("beforesend", function (request) {request.withCredentials = true;})
+			.get(function(error,data){
+				queryObjects[counter].links = data.results;
+				networkData = createNetwork(queryObjects[counter].links,idCount);
+				console.log(networkData);
+				drawTopTalkers(networkData);
+				iconClearWaiting();
+			})
+
+			function createNetwork(data,id){
+				var networkNodes = [];
+				var parent;
+				var child;
+				var dataFormated;
+				data.forEach(function(record){
+					//First we chek if the source is a Node
+					if (notInArray(networkNodes,record[src_fieldName])){
+						networkNodes.push(new createNodes(idCount,record[src_fieldName]));
+						idCount++;
+					}
+					//Then we check the destination
+					if (notInArray(networkNodes,record[dst_fieldName])){
+						networkNodes.push(new createNodes(idCount,record[dst_fieldName]));
+						idCount++;
+					}
+					//then we add the flow as a children
+					parent = findNode(networkNodes,record[src_fieldName]);
+					child = findNode(networkNodes,record[dst_fieldName]);
+
+					parent.addChild(child.id,record.output_avg_bits);
+				})
+				console.log(networkNodes);
+				return(parseToSankeyFormat(networkNodes));
+			}
+			//Aux Funtions
+			function createNodes(id,name){
+				this.id = id;
+				this.name = name;
+				this.children = [];
+				this.addChild = function(id,value){
+					let inArray =false;
+					if(this.children.length===0){
+						this.children.push({"id":id,"value":value});
+					}else{
+						this.children.forEach(function(element){
+							if(element.id===id){
+								inArray = true;
+							}
 						})
-						if(inArray2 === false){
-							outputArray.push(test);
+						if(inArray===false){
+							this.children.push({"id":id,"value":value});
 						}
 					}
 				}
-			})
-		})
-		return outputArray;
+			}
+			function notInArray(array,value){
+				let not = true;
+				if(array.length !== 0){
+					array.forEach(function(element){
+						if(element.name === value){
+							not = false;
+						}
+					})
+				}
+				return not;
+			}
+			function findNode(array,node){
+				for(var i=0; i<array.length; i++){
+					if(array[i].name === node){
+						return array[i];
+					}
+				}
+			}
+			function parseToSankeyFormat(network){
+				var sankeyObject = {"nodes":[],"links":[]};
+				network.forEach(function(networkNode){
+					sankeyObject.nodes.push({"node":networkNode.id,"name":networkNode.name});
+					networkNode.children.forEach(function(childNode){
+						let inArray = false;
+						//Check if we have the flow already in one direction if not create flow if yes add to the data on the other direction
+						if(sankeyObject.links.length!==0){
+							sankeyObject.links.forEach(function(link){
+								if((link.source === networkNode.id && link.target === childNode.id) || (link.source ===childNode.id && link.target === networkNode.id)){
+									inArray = true;
+									link.value += childNode.value;
+								}
+							})
+						}
+						if(inArray===false && networkNode.id!==childNode.id  && childNode.value!==null) sankeyObject.links.push({"source":networkNode.id,"target":childNode.id,"value":childNode.value});
+						else if(inArray===false && networkNode.id!==childNode.id  && childNode.value===null) sankeyObject.links.push({"source":networkNode.id,"target":childNode.id,"value":1});
+					})
+				})
+				return sankeyObject;
+			}
 	}
+
 	function iconClearWaiting(){
 		$("#whiteButtonImg").remove();
 		$("#queryButtonImg").remove();
 	}
 	//#################################### END AUX FUNCTIONS ############################
 	//Check what measurement the user is asking for
-	if(queryMeasure==="0") snmpTSDSQuery(avgOver);////Loads the data for the snmp query
-	else perfSonarTSDSQuery(avgOver,queryMeasure,queryObjects[0].queryValue);////Loads the data for the perfSonar query
+	if(queryMeasure==="0" && queryType!=="2") snmpTSDSQuery(avgOver);////Loads the data for the snmp query
+	else if(queryType === "2") topTalkers(avgOver,queryMeasure,queryValue)
+	else perfSonarTSDSQuery(avgOver,queryMeasure,queryValue);////Loads the data for the perfSonar query
 }

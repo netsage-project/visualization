@@ -310,7 +310,7 @@ function drawQueryFormCommon(queryForm,fieldset,queryTypes,queryMeasures,queryVa
 		change: function( event, data ) {
 			var day = new Date();
 			var timeFrames = ["now","today","last 7 days","this month","this year","time frame"];
-			if(data.item.label === "What is the duration and are there any periodic patterns or peak periods "){ //Question 1 I need to do this with labels instead of values because elements move around in the menu depending if it is comming from URL or not.
+			if(data.item.value === "1" || data.item.value === "2" ){ //Question 1 I need to do this with labels instead of values because elements move around in the menu depending if it is comming from URL or not.
 				//Enable losse and latency measures when we select question 1
 				$("#measureOption1").attr("disabled",false);
 				$("#measureOption2").attr("disabled",false);
@@ -349,7 +349,7 @@ function drawQueryFormCommon(queryForm,fieldset,queryTypes,queryMeasures,queryVa
 		width : 'auto'
 	});
 	//Disable question that is not acive
-	$("#typeOption2").attr("disabled",true);
+	$("#typeOption3").attr("disabled",true);
 	$("#queryMeasure").selectmenu({
 		width : 'auto'
 	});
@@ -516,6 +516,6 @@ function queryComposer(date,fromURL,queryFromTab,isDashboard){
 			myWindow = window.open(url,'_blank');
 			myWindow.focus();
 		}else{
-			LoadData(queryObjects[counter].date,queryObjects[counter].queryText,queryObjects[counter].avgOver,queryObjects[counter].queryType,queryObjects[counter].queryMeasure);
+			LoadData(queryObjects[counter].date,queryObjects[counter].queryText,queryObjects[counter].avgOver,queryObjects[counter].queryType,queryObjects[counter].queryMeasure,queryObjects[counter].queryValue);
 		}
 }

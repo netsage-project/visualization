@@ -20,7 +20,7 @@ function dashboardForm(){
 				});
 			querySelector.append("img")
 				.attrs({
-					"src":"logoNoShadow.png",
+					"src":"logo.png",
 					"width":logoWidth,
 					"height":logoHeight
 				});

@@ -135,114 +135,8 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 	}
 
 	//Function to clean data
-	// function scaleAndClean(dataPoint,queryMeasure,queryValue){
-	// 	if((queryMeasure==="0" && queryValue==="0") || (queryMeasure==="0" && (queryValue==="1" || queryValue==="2" || queryValue==="3" || queryValue==="4") && queryType === "0") ) //SNMP data and Flow data question 0
-	// 	{
-	// 		var inputClean=[];
-	// 		var outputClean=[];
-	// 		var inputValues = [];
-	// 		var outputValues = [];
-	// 		//change this to the d3 assignment forEach
-	// 		for (each in dataPoint.input){
-	// 			if(dataPoint.input[each][1]!=null){
-	// 				dataPoint.input[each][1] = precise_round(dataPoint.input[each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
-	// 				inputClean.push(dataPoint.input[each][1]);
-	// 			}else{
-	// 				dataPoint.input[each][1] = null;
-	// 				//inputClean.push(0);
-	// 			}
-	// 			if(dataPoint.output[each][1]!=null){
-	// 				dataPoint.output[each][1] = precise_round(dataPoint.output[each][1]/1024/1024/1024,2);
-	// 				outputClean.push(dataPoint.output[each][1]);
-	// 			} else{
-	// 				dataPoint.output[each][1] = null;
-	// 				//outputClean.push(0);
-	// 			}
-	// 			inputValues.push([new Date (dataPoint.input[each][0]*1000),dataPoint.input[each][1]]);
-	// 			outputValues.push([new Date (dataPoint.output[each][0]*1000),dataPoint.output[each][1]]);
-	// 		}
-	// 		//Save the cleaned scaled values in the data
-	// 		dataPoint.input.histogram = inputClean;
-	// 		dataPoint.output.histogram = outputClean;
-	// 		dataPoint.input.values = inputValues;
-	// 		dataPoint.output.values = outputValues;
-	// 	}else if(queryMeasure==="1"){//losses
-	// 		var dataClean=[];
-	// 		var values=[];
-	// 		for(each in dataPoint.values){
-	// 			if(dataPoint.values[each][1]!=null){
-	// 				dataPoint.values[each][1] = dataPoint.values[each][1]*100; //To show in percentage
-	// 				dataClean.push(dataPoint.values[each][1]);
-	// 			}else{
-	// 				dataPoint.values[each][1] = null;
-	// 			}
-	// 			values.push([new Date (dataPoint.values[each][0]*1000),dataPoint.values[each][1]]);
-	// 		}
-	// 		//Save the cleaned scaled values in the data
-	// 		dataPoint.histogram = dataClean;
-	// 		dataPoint.values = values;
-	// 	}else if(queryMeasure==="2"){//latency
-	// 		var dataClean=[];
-	// 		var values=[];
-	// 		for(each in dataPoint.values){
-	// 			if(dataPoint.values[each][1]!=null){
-	// 				dataPoint.values[each][1] = dataPoint.values[each][1]; //Dont change anything value comes in ms.
-	// 				dataClean.push(dataPoint.values[each][1]);
-	// 			}else{
-	// 				dataPoint.values[each][1] = null;
-	// 			}
-	// 			values.push([new Date (dataPoint.values[each][0]*1000),dataPoint.values[each][1]]);
-	// 		}
-	// 		//Save the cleaned scaled values in the data
-	// 		dataPoint.histogram = dataClean;
-	// 		dataPoint.values = values;
-	// 	// }else if(queryMeasure==="0" && (queryValue==="1" || queryValue==="2" || queryValue==="3" || queryValue==="4") && queryType === "0"){//Flow Data
-	// 	// 	var inputDataClean=[];
-	// 	// 	var outputDataClean=[];
-	// 	// 	var inputValues=[];
-	// 	// 	var outputValues=[];
-	// 	// 	for(each in dataPoint.input){
-	// 	// 		if(dataPoint.input[each][1]!=null){
-	// 	// 			dataPoint.input[each][1] = precise_round(dataPoint.input[each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
-	// 	// 			inputDataClean.push(dataPoint.input[each][1]);
-	// 	// 		}else{
-	// 	// 			dataPoint.input[each][1] = 0;
-	// 	// 		}
-	// 	// 		inputValues.push([new Date (dataPoint.input[each][0]*1000),dataPoint.input[each][1]]);
-	// 	// 	}
-	// 	// 	for(each in dataPoint.output){
-	// 	// 		if(dataPoint.output[each][1]!=null){
-	// 	// 			dataPoint.output[each][1] = precise_round(dataPoint.output[each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
-	// 	// 			outputDataClean.push(dataPoint.output[each][1]);
-	// 	// 		}else{
-	// 	// 			dataPoint.output[each][1] = 0;
-	// 	// 		}
-	// 	// 		outputValues.push([new Date (dataPoint.output[each][0]*1000),dataPoint.output[each][1]]);
-	// 	// 	}
-	// 	// 	dataPoint.input.histogram = inputDataClean;
-	// 	// 	dataPoint.output.histogram = outputDataClean;
-	// 	// 	dataPoint.input.values = inputValues;
-	// 	// 	dataPoint.output.values = outputValues;
-	// 	}else if(queryMeasure==="0" && queryValue==="1" && queryType === "1"){ // flow for patterns
-	// 		var dataClean=[];
-	// 		var values=[];
-	// 		for(each in dataPoint["values.bits"]){
-	// 			if(dataPoint["values.bits"][each][1]!=null){
-	// 				dataPoint["values.bits"][each][1] = precise_round(dataPoint["values.bits"][each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
-	// 				dataClean.push(dataPoint["values.bits"][each][1]);
-	// 			}else{
-	// 				dataPoint["values.bits"][each][1] = null;
-	// 			}
-	// 			values.push([new Date (dataPoint["values.bits"][each][0]*1000),dataPoint["values.bits"][each][1]]);
-	// 		}
-	// 		//Save the cleaned scaled values in the data
-	// 		dataPoint.histogram = dataClean;
-	// 		dataPoint.values = values;
-	// 	}
-
-	//Function to clean data
 	function scaleAndClean(dataPoint,queryMeasure,queryValue){
-		if(queryMeasure==="0" && queryValue==="0") //SNMP data
+		if((queryMeasure==="0" && queryValue==="0") || (queryMeasure==="0" && (queryValue==="1" || queryValue==="2" || queryValue==="3" || queryValue==="4") && queryType === "0") ) //SNMP data and Flow data question 0
 		{
 			var inputClean=[];
 			var outputClean=[];
@@ -302,24 +196,34 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 			//Save the cleaned scaled values in the data
 			dataPoint.histogram = dataClean;
 			dataPoint.values = values;
-		}else if(queryMeasure==="0" && queryValue==="1" && queryType === "0"){//Flow Data
-			var dataClean=[];
-			var values=[];
-			for(each in dataPoint.input){
-				if(dataPoint.input[each][1]!=null){
-					dataPoint.input[each][1] = precise_round(dataPoint.input[each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
-					dataClean.push(dataPoint.input[each][1]);
-				}else{
-					dataPoint.input[each][1] = 0;
-				}
-				values.push([new Date (dataPoint.input[each][0]*1000),dataPoint.input[each][1]]);
-			}
-			//I save twice now to simulate input and output that I hope I will get this is temporary
-			dataPoint.input.histogram = dataClean;
-			dataPoint.output.histogram = dataClean;
-			dataPoint.input.values = values;
-			dataPoint.output.values = values;
-		}else if(queryMeasure==="0" && queryValue==="1" && queryType === "1"){
+		// }else if(queryMeasure==="0" && (queryValue==="1" || queryValue==="2" || queryValue==="3" || queryValue==="4") && queryType === "0"){//Flow Data
+		// 	var inputDataClean=[];
+		// 	var outputDataClean=[];
+		// 	var inputValues=[];
+		// 	var outputValues=[];
+		// 	for(each in dataPoint.input){
+		// 		if(dataPoint.input[each][1]!=null){
+		// 			dataPoint.input[each][1] = precise_round(dataPoint.input[each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
+		// 			inputDataClean.push(dataPoint.input[each][1]);
+		// 		}else{
+		// 			dataPoint.input[each][1] = 0;
+		// 		}
+		// 		inputValues.push([new Date (dataPoint.input[each][0]*1000),dataPoint.input[each][1]]);
+		// 	}
+		// 	for(each in dataPoint.output){
+		// 		if(dataPoint.output[each][1]!=null){
+		// 			dataPoint.output[each][1] = precise_round(dataPoint.output[each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
+		// 			outputDataClean.push(dataPoint.output[each][1]);
+		// 		}else{
+		// 			dataPoint.output[each][1] = 0;
+		// 		}
+		// 		outputValues.push([new Date (dataPoint.output[each][0]*1000),dataPoint.output[each][1]]);
+		// 	}
+		// 	dataPoint.input.histogram = inputDataClean;
+		// 	dataPoint.output.histogram = outputDataClean;
+		// 	dataPoint.input.values = inputValues;
+		// 	dataPoint.output.values = outputValues;
+		}else if(queryMeasure==="0" && queryValue==="1" && queryType === "1"){ // flow for patterns
 			var dataClean=[];
 			var values=[];
 			for(each in dataPoint["values.bits"]){
@@ -335,6 +239,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 			dataPoint.histogram = dataClean;
 			dataPoint.values = values;
 		}
+
 		//Function to precise round the results so that they are numbers .toFixed() converts them to strings and misbehaves sometimes
 		function precise_round(num,decimals){
 			var t = Math.pow(10, decimals);
@@ -454,7 +359,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 						mapGraph(queryObjects[counter]);
 						//Create Table
 						histogramTableGraph(queryObjects[counter]);
-						if(window.location.pathname==="/dashboard.html" || window.location.pathname==="/netsage/dashboard.html") lineChart(queryObjects[counter]);
+						//if(window.location.pathname==="/dashboard.html" || window.location.pathname==="/netsage/dashboard.html") lineChart(queryObjects[counter]);
 					}else if(queryObjects[counter].queryType==="1"){//Periodic Patterns
 						periodicPattern(queryObjects[counter]);
 					}
@@ -463,13 +368,13 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 			});
 		}else if(queryValue==="1" || queryValue==="2" || queryValue==="3" || queryValue==="4"){ //Flow Data
 			if(queryValue==="1"){
-				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get src_organization, point_of_observation, values.bps, average(values.bps) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_organization, point_of_observation from netflow_src_organization where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get src_organization, point_of_observation, values.bps, average(values.bps) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_organization, point_of_observation from netflow_src_organization where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
 			}else if(queryValue==="2"){
-				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get protocol, point_of_observation, values.bps, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by protocol, point_of_observation from netflow_protocol where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get protocol, point_of_observation, values.bits, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by protocol, point_of_observation from netflow_protocol where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
 			}else if(queryValue==="3"){
-				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get src_asn, point_of_observation, values.bps, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_asn, point_of_observation from netflow_src_asn where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get src_asn, point_of_observation, values.bits, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_asn, point_of_observation from netflow_src_asn where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
 			}else if(queryValue==="4"){
-				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get src_country_name, point_of_observation, values.bps, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_country_name, point_of_observation from netflow_src_country_name where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get src_country_name, point_of_observation, values.bits, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_country_name, point_of_observation from netflow_src_country_name where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
 			}
 			console.log(url);
 			d3.json(url)
@@ -477,65 +382,35 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 			.get(function(error,data)
 			{
 				//For flow data I need to query twice to get the input and the output of the data.
-				let extraURL;
-				let flowLinksSRC = data.results;
-				let regularExpression;
-				queryObjects[counter].links = flowLinksSRC;
-				let loopCount =0;
+				var extraURL;
+				links = data.results;
+				queryObjects[counter].links = links;
 				for (var element in queryObjects[counter].links){
 					if(queryValue==="1"){
 						queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_organization;
-						regularExpression = new RegExp("src_organization","g");
-						extraURL = data.query.replace(regularExpression,"dst_organization");
-						extraURL = extraURL.replace("netflow_src_organization","netflow_dst_organization");
-						extraURL = extraURL.replace('where point_of_observation = "*"', 'where dst_organization ="' + queryObjects[counter].links[element].src_organization + '"');
+						extraURL = data.query.replace("src_organization","dst_organization");
 					}else if (queryValue==="2"){
 						queryObjects[counter].links[element].description = queryObjects[counter].links[element].protocol;
-						extraURL = extraURL.replace(""); //Dont know what to do with protocols yet.
+						extraURL = data.query.replace(""); //Dont know what to do with protocols yet.
 					}else if(queryValue==="3"){
 						queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_asn;
-						regularExpression = new RegExp("src_asn","g");
-						extraURL = data.query.replace(regularExpression,"dst_asn");
-						extraURL = extraURL.replace("netflow_src_asn","netflow_dst_asn");
+						extraURL = data.query.replace("src_asn","dst_asn");
 					}else if(queryValue==="4"){
 						queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_country_name;
-						regularExpression = new RegExp("src_country_name","g");
-						extraURL = data.query.replace(regularExpression,"dst_organization");
-						extraURL = extraURL.replace("netflow_src_country_name","netflow_dst_country_name");
+						extraURL = data.query.replace("src_country_name","dst_country_name");
 					}
 					queryObjects[counter].links[element].data = {};
-					queryObjects[counter].links[element].data.input = queryObjects[counter].links[element]["values.bps"];
-					queryObjects[counter].links[element].data.output = queryObjects[counter].links[element]["values.bps"];
+					queryObjects[counter].links[element].data.input = queryObjects[counter].links[element]["values.bits"];
+ 					queryObjects[counter].links[element].data.output = queryObjects[counter].links[element]["values.bits"];
  					scaleAndClean(queryObjects[counter].links[element].data,queryMeasure,queryObjects[0].queryValue);
  					calculateStatistics(queryObjects[counter].links[element].data,sizeIntervalSeconds,queryMeasure,queryObjects[0].queryValue,date);
-					// d3.json('https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=' + extraURL)
-					// .on("beforesend", function (request) {request.withCredentials = true;})
-					// .get(function(error,data)
-					// {
-					// 	if(data){
-					// 		for(var element in data.results){
-					// 			if(data.results[element].point_of_observation==="*"){
-					// 				queryObjects[counter].links[element].data.output = data.results[element]["values.bps"];
-					// 				scaleAndClean(queryObjects[counter].links[element].data,queryMeasure,queryObjects[counter].queryValue);
-					// 				calculateStatistics(queryObjects[counter].links[element].data,sizeIntervalSeconds,queryMeasure,queryObjects[counter].queryValue,date);
-					// 			}
-					// 		}
-					// 	}
-					// 	loopCount++;
-					// 	if(loopCount===queryObjects[counter].links.length){
-					// 		drawQueryText(queryText);
-					// 		histogramTableGraph(queryObjects[counter]);
-					// 		iconClearWaiting();
-					// 	}
-					// })
 				}
-				// d3.json('https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=' + extraURL)
+				// d3.json('https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=' + extraURL)
 				// .on("beforesend", function (request) {request.withCredentials = true;})
 				// .get(function(error,data)
 				// {
-				// 	var flowLinksDST = data.results;
-				// 	for (var element in flowLinksDST){
-				// 		queryObjects[counter].links[element].data.output = flowLinksDST[element]["values.bps"];
+				// 	for (var element in queryObjects[counter].links){
+				// 		queryObjects[counter].links[element].data.output = queryObjects[counter].links[element]["values.bits"];
 				// 		scaleAndClean(queryObjects[counter].links[element].data,queryMeasure,queryObjects[counter].queryValue);
 				// 		calculateStatistics(queryObjects[counter].links[element].data,sizeIntervalSeconds,queryMeasure,queryObjects[counter].queryValue,date);
 				// 	}
@@ -667,7 +542,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 		var idCount = 0;
 		if (queryMeasure==="1")var url = 'https://netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get source, destination, aggregate(values.loss,3600, average) as values, max(aggregate(values.loss,3600, average)) as max_loss between( "' + date[0] + '", "' + date[1] + '" ) by source, destination, from ps_owamp having max_loss >0 limit 1000 offset 0 ordered by source,destination desc';
 		else if(queryMeasure==="2") var url = 'https://netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get source, destination, aggregate(values.latency_avg,3600, average) as values, max(aggregate(values.latency_avg,3600, average)) as max_lat between( "' + date[0] + '", "' + date[1] + '" ) by source, destination, from ps_owamp having max_lat >0 limit 1000 offset 0 ordered by source,destination desc';
-		else if(queryValue === "1") var url = 'https://netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get%20src_organization,%20point_of_observation,%20values.bits,%20average(values.bits)%20as%20avg_bits%20between("' + date[0] + '", "' + date[1] + '" )%20by%20src_organization,%20point_of_observation%20from%20netflow_src_organization%20where%20point_of_observation%20=%20%22*%22%20limit%201000%20offset%200%20ordered%20by%20avg_bits%20desc';
+		else if(queryValue === "1") var url = 'https://netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get%20src_organization,%20point_of_observation,%20values.bits,%20average(values.bits)%20as%20avg_bits%20between("' + date[0] + '", "' + date[1] + '" )%20by%20src_organization,%20point_of_observation%20from%20netflow_src_organization%20where%20point_of_observation%20=%20%22*%22%20limit%201000%20offset%200%20ordered%20by%20avg_bits%20desc';
 		d3.json(url)
 			.on("beforesend", function (request) {request.withCredentials = true;})
 			.get(function(error,data)
@@ -778,11 +653,11 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 			outputValues = "values.output_max_rtt";
 		}
 		if(queryValue==="1"){
-			url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get src_organization, dst_organization, point_of_observation,' + inputValues + ',' + outputValues + ', average(' + inputValues + ') as input_avg_bits, average(' + outputValues + ') as output_avg_bits  between("' + date[0] + '", "' + date[1] + '" ) by src_organization, dst_organization, point_of_observation from netflow_src_organization_dst_organization where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+			url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get src_organization, dst_organization, point_of_observation,' + inputValues + ',' + outputValues + ', average(' + inputValues + ') as input_avg_bits, average(' + outputValues + ') as output_avg_bits  between("' + date[0] + '", "' + date[1] + '" ) by src_organization, dst_organization, point_of_observation from netflow_src_organization_dst_organization where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
 			src_fieldName = "src_organization";
 			dst_fieldName = "dst_organization";
 		}else if(queryValue==="4") {
-			url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get src_country_name, dst_country_name, point_of_observation,' + inputValues + ',' + outputValues + ', average(' + inputValues + ') as input_avg_bits, average(' + outputValues + ') as output_avg_bits  between("' + date[0] + '", "' + date[1] + '" ) by src_country_name, dst_country_name, point_of_observation from netflow_src_country_name_dst_country_name where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+			url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get src_country_name, dst_country_name, point_of_observation,' + inputValues + ',' + outputValues + ', average(' + inputValues + ') as input_avg_bits, average(' + outputValues + ') as output_avg_bits  between("' + date[0] + '", "' + date[1] + '" ) by src_country_name, dst_country_name, point_of_observation from netflow_src_country_name_dst_country_name where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
 			src_fieldName = "src_country_name";
 			dst_fieldName = "dst_country_name";
 		}

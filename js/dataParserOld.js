@@ -1,4 +1,4 @@
-function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue){
+function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure){
 	//#################################### AUX FUNCTIONS ############################
 	//Function return unique nodes from links
 	function uniqNodes(a,links,queryMeasure) {
@@ -135,112 +135,6 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 	}
 
 	//Function to clean data
-	// function scaleAndClean(dataPoint,queryMeasure,queryValue){
-	// 	if((queryMeasure==="0" && queryValue==="0") || (queryMeasure==="0" && (queryValue==="1" || queryValue==="2" || queryValue==="3" || queryValue==="4") && queryType === "0") ) //SNMP data and Flow data question 0
-	// 	{
-	// 		var inputClean=[];
-	// 		var outputClean=[];
-	// 		var inputValues = [];
-	// 		var outputValues = [];
-	// 		//change this to the d3 assignment forEach
-	// 		for (each in dataPoint.input){
-	// 			if(dataPoint.input[each][1]!=null){
-	// 				dataPoint.input[each][1] = precise_round(dataPoint.input[each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
-	// 				inputClean.push(dataPoint.input[each][1]);
-	// 			}else{
-	// 				dataPoint.input[each][1] = null;
-	// 				//inputClean.push(0);
-	// 			}
-	// 			if(dataPoint.output[each][1]!=null){
-	// 				dataPoint.output[each][1] = precise_round(dataPoint.output[each][1]/1024/1024/1024,2);
-	// 				outputClean.push(dataPoint.output[each][1]);
-	// 			} else{
-	// 				dataPoint.output[each][1] = null;
-	// 				//outputClean.push(0);
-	// 			}
-	// 			inputValues.push([new Date (dataPoint.input[each][0]*1000),dataPoint.input[each][1]]);
-	// 			outputValues.push([new Date (dataPoint.output[each][0]*1000),dataPoint.output[each][1]]);
-	// 		}
-	// 		//Save the cleaned scaled values in the data
-	// 		dataPoint.input.histogram = inputClean;
-	// 		dataPoint.output.histogram = outputClean;
-	// 		dataPoint.input.values = inputValues;
-	// 		dataPoint.output.values = outputValues;
-	// 	}else if(queryMeasure==="1"){//losses
-	// 		var dataClean=[];
-	// 		var values=[];
-	// 		for(each in dataPoint.values){
-	// 			if(dataPoint.values[each][1]!=null){
-	// 				dataPoint.values[each][1] = dataPoint.values[each][1]*100; //To show in percentage
-	// 				dataClean.push(dataPoint.values[each][1]);
-	// 			}else{
-	// 				dataPoint.values[each][1] = null;
-	// 			}
-	// 			values.push([new Date (dataPoint.values[each][0]*1000),dataPoint.values[each][1]]);
-	// 		}
-	// 		//Save the cleaned scaled values in the data
-	// 		dataPoint.histogram = dataClean;
-	// 		dataPoint.values = values;
-	// 	}else if(queryMeasure==="2"){//latency
-	// 		var dataClean=[];
-	// 		var values=[];
-	// 		for(each in dataPoint.values){
-	// 			if(dataPoint.values[each][1]!=null){
-	// 				dataPoint.values[each][1] = dataPoint.values[each][1]; //Dont change anything value comes in ms.
-	// 				dataClean.push(dataPoint.values[each][1]);
-	// 			}else{
-	// 				dataPoint.values[each][1] = null;
-	// 			}
-	// 			values.push([new Date (dataPoint.values[each][0]*1000),dataPoint.values[each][1]]);
-	// 		}
-	// 		//Save the cleaned scaled values in the data
-	// 		dataPoint.histogram = dataClean;
-	// 		dataPoint.values = values;
-	// 	// }else if(queryMeasure==="0" && (queryValue==="1" || queryValue==="2" || queryValue==="3" || queryValue==="4") && queryType === "0"){//Flow Data
-	// 	// 	var inputDataClean=[];
-	// 	// 	var outputDataClean=[];
-	// 	// 	var inputValues=[];
-	// 	// 	var outputValues=[];
-	// 	// 	for(each in dataPoint.input){
-	// 	// 		if(dataPoint.input[each][1]!=null){
-	// 	// 			dataPoint.input[each][1] = precise_round(dataPoint.input[each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
-	// 	// 			inputDataClean.push(dataPoint.input[each][1]);
-	// 	// 		}else{
-	// 	// 			dataPoint.input[each][1] = 0;
-	// 	// 		}
-	// 	// 		inputValues.push([new Date (dataPoint.input[each][0]*1000),dataPoint.input[each][1]]);
-	// 	// 	}
-	// 	// 	for(each in dataPoint.output){
-	// 	// 		if(dataPoint.output[each][1]!=null){
-	// 	// 			dataPoint.output[each][1] = precise_round(dataPoint.output[each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
-	// 	// 			outputDataClean.push(dataPoint.output[each][1]);
-	// 	// 		}else{
-	// 	// 			dataPoint.output[each][1] = 0;
-	// 	// 		}
-	// 	// 		outputValues.push([new Date (dataPoint.output[each][0]*1000),dataPoint.output[each][1]]);
-	// 	// 	}
-	// 	// 	dataPoint.input.histogram = inputDataClean;
-	// 	// 	dataPoint.output.histogram = outputDataClean;
-	// 	// 	dataPoint.input.values = inputValues;
-	// 	// 	dataPoint.output.values = outputValues;
-	// 	}else if(queryMeasure==="0" && queryValue==="1" && queryType === "1"){ // flow for patterns
-	// 		var dataClean=[];
-	// 		var values=[];
-	// 		for(each in dataPoint["values.bits"]){
-	// 			if(dataPoint["values.bits"][each][1]!=null){
-	// 				dataPoint["values.bits"][each][1] = precise_round(dataPoint["values.bits"][each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
-	// 				dataClean.push(dataPoint["values.bits"][each][1]);
-	// 			}else{
-	// 				dataPoint["values.bits"][each][1] = null;
-	// 			}
-	// 			values.push([new Date (dataPoint["values.bits"][each][0]*1000),dataPoint["values.bits"][each][1]]);
-	// 		}
-	// 		//Save the cleaned scaled values in the data
-	// 		dataPoint.histogram = dataClean;
-	// 		dataPoint.values = values;
-	// 	}
-
-	//Function to clean data
 	function scaleAndClean(dataPoint,queryMeasure,queryValue){
 		if(queryMeasure==="0" && queryValue==="0") //SNMP data
 		{
@@ -335,6 +229,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 			dataPoint.histogram = dataClean;
 			dataPoint.values = values;
 		}
+
 		//Function to precise round the results so that they are numbers .toFixed() converts them to strings and misbehaves sometimes
 		function precise_round(num,decimals){
 			var t = Math.pow(10, decimals);
@@ -343,7 +238,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 	}
 	//Function to calculate Important Statistical values
 	function calculateStatistics (dataPoint,sizeInterval,queryMeasure,queryValue,queryDate){
-		if(queryMeasure==="0" && (queryValue==="0" || queryValue==="1" || queryValue==="2" || queryValue==="3" || queryValue==="4")) //SNMP data and Flow query 0
+		if(queryMeasure==="0" && queryObjects[0].queryType === "0")//SNMP data and Flow query 0
 		{
 			//Create other helper Statistical values
 			dataPoint.input.max = d3.max(dataPoint.input.histogram);
@@ -379,7 +274,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 			dataPoint.totalData = [d3.mean(dataPoint.input.histogram)*sizeInterval,d3.mean(dataPoint.output.histogram)*sizeInterval];
 			if(isNaN(dataPoint.totalData[0])) dataPoint.totalData[0]=0;
 			if(isNaN(dataPoint.totalData[1])) dataPoint.totalData[1]=0;
-		}else if(queryObjects[0].queryType === "1" && queryMeasure!=="0" ){ //PerfSonar and query 1 Flow
+		}else if(queryMeasure==="1" || queryMeasure==="2" || queryMeasure==="0" && queryObjects[0].queryType === "1"){ //PerfSonar and query 1 Flow
 			//Create other helper Statistical values
 			dataPoint.max = d3.max(dataPoint.histogram);
 			dataPoint.min = d3.min(dataPoint.histogram);
@@ -403,7 +298,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 	}
 
 	//Function to retrieve Dynamic Metadata on Start and fill up the first Overview. Sets the links and nodes to be visualized and parses data for the mapgraph and histogramTable.
-	function snmpTSDSQuery(avgOver,queryMeasure,queryValue){
+	function snmpTSDSQuery(avgOver){
 		//Set up the date
 		var date = queryDate;
 		var interval = { first: new Date(date[0]), second: new Date(date[1]) }
@@ -411,11 +306,10 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 		var avgOver = avgOver;
 		var links;
 		var nodes = [];
-		var url;
-		//We see what user wants to visualize
-		if(queryValue==="0"){//IRNC LINKS
+		//We see what user wants to visualice
+		if(queryObjects[0].queryValue==="0"){//IRNC LINKS
 			//Query to retrieve metadata values
-			url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get node, intf, description, a_endpoint.name, a_endpoint.latitude, a_endpoint.longitude, z_endpoint.name, z_endpoint.latitude, z_endpoint.longitude, max_bandwidth between( "' + date[0] + '", "' + date[1] + '" ) by node, intf from interface where a_endpoint != null and z_endpoint != null';
+			var url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get node, intf, description, a_endpoint.name, a_endpoint.latitude, a_endpoint.longitude, z_endpoint.name, z_endpoint.latitude, z_endpoint.longitude, max_bandwidth between( "' + date[0] + '", "' + date[1] + '" ) by node, intf from interface where a_endpoint != null and z_endpoint != null';
 			d3.json(url)
 			.on("beforesend", function (request) {request.withCredentials = true;})
 			.get(function(error,data)
@@ -454,100 +348,33 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 						mapGraph(queryObjects[counter]);
 						//Create Table
 						histogramTableGraph(queryObjects[counter]);
-						if(window.location.pathname==="/dashboard.html" || window.location.pathname==="/netsage/dashboard.html") lineChart(queryObjects[counter]);
+						//if(window.location.pathname==="/dashboard.html" || window.location.pathname==="/netsage/dashboard.html") lineChart(queryObjects[counter]);
 					}else if(queryObjects[counter].queryType==="1"){//Periodic Patterns
 						periodicPattern(queryObjects[counter]);
 					}
 					iconClearWaiting();
 				});
 			});
-		}else if(queryValue==="1" || queryValue==="2" || queryValue==="3" || queryValue==="4"){ //Flow Data
-			if(queryValue==="1"){
-				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get src_organization, point_of_observation, values.bps, average(values.bps) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_organization, point_of_observation from netflow_src_organization where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
-			}else if(queryValue==="2"){
-				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get protocol, point_of_observation, values.bps, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by protocol, point_of_observation from netflow_protocol where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
-			}else if(queryValue==="3"){
-				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get src_asn, point_of_observation, values.bps, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_asn, point_of_observation from netflow_src_asn where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
-			}else if(queryValue==="4"){
-				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get src_country_name, point_of_observation, values.bps, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_country_name, point_of_observation from netflow_src_country_name where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
-			}
-			console.log(url);
+		}else if(queryObjects[0].queryValue==="1"){//INSTITUTIONS
+			var url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get src_organization, point_of_observation, values.bits, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_organization, point_of_observation from netflow_src_organization where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
 			d3.json(url)
 			.on("beforesend", function (request) {request.withCredentials = true;})
 			.get(function(error,data)
 			{
-				//For flow data I need to query twice to get the input and the output of the data.
-				let extraURL;
-				let flowLinksSRC = data.results;
-				let regularExpression;
-				queryObjects[counter].links = flowLinksSRC;
-				let loopCount =0;
+				links = data.results;
+				queryObjects[counter].links = links;
 				for (var element in queryObjects[counter].links){
-					if(queryValue==="1"){
-						queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_organization;
-						regularExpression = new RegExp("src_organization","g");
-						extraURL = data.query.replace(regularExpression,"dst_organization");
-						extraURL = extraURL.replace("netflow_src_organization","netflow_dst_organization");
-						extraURL = extraURL.replace('where point_of_observation = "*"', 'where dst_organization ="' + queryObjects[counter].links[element].src_organization + '"');
-					}else if (queryValue==="2"){
-						queryObjects[counter].links[element].description = queryObjects[counter].links[element].protocol;
-						extraURL = extraURL.replace(""); //Dont know what to do with protocols yet.
-					}else if(queryValue==="3"){
-						queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_asn;
-						regularExpression = new RegExp("src_asn","g");
-						extraURL = data.query.replace(regularExpression,"dst_asn");
-						extraURL = extraURL.replace("netflow_src_asn","netflow_dst_asn");
-					}else if(queryValue==="4"){
-						queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_country_name;
-						regularExpression = new RegExp("src_country_name","g");
-						extraURL = data.query.replace(regularExpression,"dst_organization");
-						extraURL = extraURL.replace("netflow_src_country_name","netflow_dst_country_name");
-					}
+					queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_organization;
 					queryObjects[counter].links[element].data = {};
-					queryObjects[counter].links[element].data.input = queryObjects[counter].links[element]["values.bps"];
-					queryObjects[counter].links[element].data.output = queryObjects[counter].links[element]["values.bps"];
- 					scaleAndClean(queryObjects[counter].links[element].data,queryMeasure,queryObjects[0].queryValue);
- 					calculateStatistics(queryObjects[counter].links[element].data,sizeIntervalSeconds,queryMeasure,queryObjects[0].queryValue,date);
-					// d3.json('https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=' + extraURL)
-					// .on("beforesend", function (request) {request.withCredentials = true;})
-					// .get(function(error,data)
-					// {
-					// 	if(data){
-					// 		for(var element in data.results){
-					// 			if(data.results[element].point_of_observation==="*"){
-					// 				queryObjects[counter].links[element].data.output = data.results[element]["values.bps"];
-					// 				scaleAndClean(queryObjects[counter].links[element].data,queryMeasure,queryObjects[counter].queryValue);
-					// 				calculateStatistics(queryObjects[counter].links[element].data,sizeIntervalSeconds,queryMeasure,queryObjects[counter].queryValue,date);
-					// 			}
-					// 		}
-					// 	}
-					// 	loopCount++;
-					// 	if(loopCount===queryObjects[counter].links.length){
-					// 		drawQueryText(queryText);
-					// 		histogramTableGraph(queryObjects[counter]);
-					// 		iconClearWaiting();
-					// 	}
-					// })
+					queryObjects[counter].links[element].data.input = queryObjects[counter].links[element]["values.bits"];
+					queryObjects[counter].links[element].data.output = queryObjects[counter].links[element]["values.bits"];
+					scaleAndClean(queryObjects[counter].links[element].data,queryMeasure,queryObjects[0].queryValue);
+					calculateStatistics(queryObjects[counter].links[element].data,sizeIntervalSeconds,queryMeasure,queryObjects[0].queryValue,date);
 				}
-				// d3.json('https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=' + extraURL)
-				// .on("beforesend", function (request) {request.withCredentials = true;})
-				// .get(function(error,data)
-				// {
-				// 	var flowLinksDST = data.results;
-				// 	for (var element in flowLinksDST){
-				// 		queryObjects[counter].links[element].data.output = flowLinksDST[element]["values.bps"];
-				// 		scaleAndClean(queryObjects[counter].links[element].data,queryMeasure,queryObjects[counter].queryValue);
-				// 		calculateStatistics(queryObjects[counter].links[element].data,sizeIntervalSeconds,queryMeasure,queryObjects[counter].queryValue,date);
-				// 	}
-				// 	drawQueryText(queryText);
-				// 	histogramTableGraph(queryObjects[counter]);
-				// 	iconClearWaiting();
-				// })
 				drawQueryText(queryText);
 				histogramTableGraph(queryObjects[counter]);
-				iconClearWaiting();
-			});
-		}
+			}
+		)};
 	}
 
 	function drawQueryText(queryText){
@@ -667,7 +494,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 		var idCount = 0;
 		if (queryMeasure==="1")var url = 'https://netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get source, destination, aggregate(values.loss,3600, average) as values, max(aggregate(values.loss,3600, average)) as max_loss between( "' + date[0] + '", "' + date[1] + '" ) by source, destination, from ps_owamp having max_loss >0 limit 1000 offset 0 ordered by source,destination desc';
 		else if(queryMeasure==="2") var url = 'https://netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get source, destination, aggregate(values.latency_avg,3600, average) as values, max(aggregate(values.latency_avg,3600, average)) as max_lat between( "' + date[0] + '", "' + date[1] + '" ) by source, destination, from ps_owamp having max_lat >0 limit 1000 offset 0 ordered by source,destination desc';
-		else if(queryValue === "1") var url = 'https://netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get%20src_organization,%20point_of_observation,%20values.bits,%20average(values.bits)%20as%20avg_bits%20between("' + date[0] + '", "' + date[1] + '" )%20by%20src_organization,%20point_of_observation%20from%20netflow_src_organization%20where%20point_of_observation%20=%20%22*%22%20limit%201000%20offset%200%20ordered%20by%20avg_bits%20desc';
+		else if(queryValue === "1") var url = 'https://netsage-archive.grnoc.iu.edu/tsds/services/query.cgi?method=query;query=get%20src_organization,%20point_of_observation,%20values.bits,%20average(values.bits)%20as%20avg_bits%20between("' + date[0] + '", "' + date[1] + '" )%20by%20src_organization,%20point_of_observation%20from%20netflow_src_organization%20where%20point_of_observation%20=%20%22*%22%20limit%201000%20offset%200%20ordered%20by%20avg_bits%20desc';
 		d3.json(url)
 			.on("beforesend", function (request) {request.withCredentials = true;})
 			.get(function(error,data)
@@ -704,272 +531,62 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 				iconClearWaiting();
 			// }
 		});
-		//Function orderPerfsonarTests in order to put A -> B and then B -> A
-		function orderPerfsonarTests(tests){
-			let outputArray = [];
-			let src;
-			let dest;
-			let id;
-			let inArray1;
-			let inArray2 = false;
-			tests.forEach(function(test,index){
-				inArray1 = false;
-				src = test.source;
-				dest = test.destination;
-				id = test.id;
-				//Check if it is in output
-				if(outputArray.length !== 0 ){
-					outputArray.every(function(output){
-						if(output.id === test.id){
-							inArray1 = true;
-							return false;
-						}
-						return true;
-					})
-					if(inArray1 === false){
-						outputArray.push(test);
+	}
+	//Function orderPerfsonarTests in order to put A -> B and then B -> A
+	function orderPerfsonarTests(tests){
+		let outputArray = [];
+		let src;
+		let dest;
+		let id;
+		let inArray1;
+		let inArray2 = false;
+		tests.forEach(function(test,index){
+			inArray1 = false;
+			src = test.source;
+			dest = test.destination;
+			id = test.id;
+			//Check if it is in output
+			if(outputArray.length !== 0 ){
+				outputArray.every(function(output){
+					if(output.id === test.id){
+						inArray1 = true;
+						return false;
 					}
-				}else{
+					return true;
+				})
+				if(inArray1 === false){
 					outputArray.push(test);
 				}
-				tests.forEach(function(test){
-					inArray2 = false;
-					if(test.source === dest){
-						if(test.destination === src){
-							//Check if it is in output
-							outputArray.every(function(output){
-								if(output.id === test.id){
-									inArray2 = true;
-									return false;
-								}
-								return true;
-							})
-							if(inArray2 === false){
-								outputArray.push(test);
-							}
-						}
-					}
-				})
-			})
-			return outputArray;
-		}
-	}
-
-	function topTalkers(avgOver,queryMeasure,queryValue){
-		let date = queryDate;
-		let interval = { first: new Date(date[0]), second: new Date(date[1]) }
-		let sizeIntervalSeconds = (interval.second - interval.first)/1000
-		let links;
-		let idCount = 0;
-		let url;
-		let inputValues;
-		let outputValues;
-		let src_fieldName;
-		let dst_fieldName;
-		let networkData={};
-		if(queryMeasure==="0"){
-			inputValues = "values.input_bits";
-			outputValues = "values.output_bits";
-		}else if(queryMeasure==="1"){
-			inputValues = "values.input_loss";
-			outputValues = "values.output_loss";
-		}else if(queryMeasure==="2"){
-			inputValues = "values.input_max_rtt";
-			outputValues = "values.output_max_rtt";
-		}
-		if(queryValue==="1"){
-			url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get src_organization, dst_organization, point_of_observation,' + inputValues + ',' + outputValues + ', average(' + inputValues + ') as input_avg_bits, average(' + outputValues + ') as output_avg_bits  between("' + date[0] + '", "' + date[1] + '" ) by src_organization, dst_organization, point_of_observation from netflow_src_organization_dst_organization where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
-			src_fieldName = "src_organization";
-			dst_fieldName = "dst_organization";
-		}else if(queryValue==="4") {
-			url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get src_country_name, dst_country_name, point_of_observation,' + inputValues + ',' + outputValues + ', average(' + inputValues + ') as input_avg_bits, average(' + outputValues + ') as output_avg_bits  between("' + date[0] + '", "' + date[1] + '" ) by src_country_name, dst_country_name, point_of_observation from netflow_src_country_name_dst_country_name where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
-			src_fieldName = "src_country_name";
-			dst_fieldName = "dst_country_name";
-		}
-		d3.json(url)
-			.on("beforesend", function (request) {request.withCredentials = true;})
-			.get(function(error,data){
-				queryObjects[counter].links = data.results;
-				networkData.nodes =  createNetwork(queryObjects[counter].links,idCount);
-				networkData.sankey = parseToSankeyFormat(networkData.nodes);
-				networkData.chord = parseToChordFormat(networkData.nodes);
-				console.log(networkData);
-				drawTopTalkers(networkData);
-				iconClearWaiting();
-			})
-
-			function createNetwork(data,id){
-				var networkNodes = [];
-				var srcNode;
-				var dstNode;
-				var dataFormated;
-				data.forEach(function(record,index){
-					//First we chek if the source is a Node
-					if (notInArray(networkNodes,record[src_fieldName])){
-						networkNodes.push(new createNodes(idCount,record[src_fieldName]));
-						idCount++;
-					}
-					//Then we check the destination
-					if (notInArray(networkNodes,record[dst_fieldName])){
-						networkNodes.push(new createNodes(idCount,record[dst_fieldName]));
-						idCount++;
-					}
-					//then we add the flow as a children
-					srcNode = findNode(networkNodes,record[src_fieldName]);
-					dstNode = findNode(networkNodes,record[dst_fieldName]);
-
-					srcNode.addFlow(dstNode.id,index,record.output_avg_bits,0);
-					srcNode.addFlow(dstNode.id,index,record.input_avg_bits,1);
-					dstNode.addFlow(srcNode.id,index,record.output_avg_bits,0);
-					dstNode.addFlow(srcNode.id,index,record.input_avg_bits,1);
-				})
-				console.log(networkNodes);
-				return networkNodes;
+			}else{
+				outputArray.push(test);
 			}
-			//Aux Funtions
-			function createNodes(id,name,type){
-				this.id = id;
-				this.name = name;
-				this.flows = [];
-				this.addFlow = function(id,connection,value,type){
-					let inArray =false;
-					if(this.flows.length===0){
-						this.flows.push({"src":this.id,"dst":id,"connection":connection,"value":value,"type":type});
-					}else{
-						this.flows.forEach(function(element){
-							if(element.id===id){
-								inArray = true;
+			tests.forEach(function(test){
+				inArray2 = false;
+				if(test.source === dest){
+					if(test.destination === src){
+						//Check if it is in output
+						outputArray.every(function(output){
+							if(output.id === test.id){
+								inArray2 = true;
+								return false;
 							}
+							return true;
 						})
-						if(inArray===false){
-							this.flows.push({"src":this.id,"dst":id,"connection":connection,"value":value,"type":type});
+						if(inArray2 === false){
+							outputArray.push(test);
 						}
 					}
 				}
-				this.childValue = function(){
-					let sum=0;
-					this.flows.forEach(function(element){
-						sum += element.value;
-					})
-					return sum;
-				}
-			}
-			function notInArray(array,value){
-				let not = true;
-				if(array.length !== 0){
-					array.forEach(function(element){
-						if(element.name === value){
-							not = false;
-						}
-					})
-				}
-				return not;
-			}
-			function findNode(array,node){
-				for(var i=0; i<array.length; i++){
-					if(array[i].name === node){
-						return array[i];
-					}
-				}
-			}
-			function parseToSankeyFormat(network){
-				var sankeyObject = {"nodes":[],"links":[]};
-				network.forEach(function(networkNode){
-					//For each node Create a node for the sankey
-					sankeyObject.nodes.push({"node":networkNode.id,"name":networkNode.name});
-					networkNode.flows.forEach(function(childFlow){
-						let inArray = false;
-						let types = [];
-						//For each flow in each node add it to the links but check that we dont duplicate the flow.
-						//If one flow is the same flow already inserted from the same type we dont add it to dont duplicate
-						//Each link is the sum of input and output flow.
-						if(sankeyObject.links.length!==0){
-							sankeyObject.links.forEach(function(link){
-								let typeIn = false;
-								if(link.id === childFlow.connection){
-									inArray = true;
-									link.type.forEach(function(type){
-										if(type===childFlow.type){
-											typeIn=true;
-										}
-									})
-									if(typeIn=false){
-										link.value += childFlow.value;
-										link.type.push(childFlow.type);
-									}
-								}
-							})
-						}
-						//If is not in array and src and dst are different (Sankey dsnt handle self nodes)
-						if(inArray===false && childFlow.value!==null && childFlow.src !== childFlow.dst){
-							types.push(childFlow.type);
-							sankeyObject.links.push({"id":childFlow.connection,"source":childFlow.src,"target":childFlow.dst,"value":childFlow.value,"type":types});
-						}else if(inArray===false && childFlow.value===null && childFlow.src !== childFlow.dst){
-							types.push(childFlow.type);
-							sankeyObject.links.push({"id":childFlow.connection,"source":childFlow.src,"target":childFlow.dst,"value":1,"type":types});
-						}
-					})
-				})
-				//There are still duplicated links that come from different nodes. The connection value is different because they come from different nodes. I delete them before returning the object
-				for(var i=0;i<sankeyObject.links.length;i++){
-					let src = sankeyObject.links[i].source;
-					let dst = sankeyObject.links[i].target;
-					let id = sankeyObject.links[i].id;
-					for(var j=0;j<sankeyObject.links.length;j++){
-						if(src===sankeyObject.links[j].source && dst===sankeyObject.links[j].target && id !== sankeyObject.links[j].id){
-							console.log(sankeyObject.links[j].source + "-" + sankeyObject.links[j].target + " : " + sankeyObject.links[j].value + "    "  + sankeyObject.links[i].source + "-" + sankeyObject.links[i].target + " : " + sankeyObject.links[i].value);
-							sankeyObject.links.splice(j, 1);
-						}
-					}
-				}
-				return sankeyObject;
-			}
-			function parseToChordFormat(network){
-				let matrix = [];
-				let nodes = [];
-				let cleanNodes = [];
-				// //delete those with all null
-				// for(var i=0;i<network.length;i++){
-				// 	var checkIfAllCero=0;
-				// 	for(var j = 0 ;j < network[i].children.length; j++){
-				// 		checkIfAllCero += network[i].children[j].value;
-				// 	}
-				// 	if(checkIfAllCero!==0) cleanNodes.push(network[i]);
-				// }
-				// for(var i = 0; i < cleanNodes.length; i++){
-				// 	var arrayOfValues = Array(cleanNodes.length);
-				// 	for(var j = 0 ;j < cleanNodes[i].children.length; j++){
-				// 		arrayOfValues[cleanNodes[i].children[j].id]= cleanNodes[i].children[j].value;
-				// 	}
-				// 	for(var j = 0 ;j < arrayOfValues.length; j++){
-				// 		if(arrayOfValues[j]===undefined || arrayOfValues[j]===null) arrayOfValues[j] = 0;
-				// 	}
-				// 	matrix.push(arrayOfValues);
-				// 	nodes.push(network[i].name);
-				// }
-				for(let i = 0 ;i < network.length; i++){
-					//Initialize an array per node with the size of network
-					let array = new Array(network.length);
-					for(let j=0; j < network[i].flows.length;j++){
-						array.splice(network[i].flows[j].dst, 1, network[i].flows[j].value);
-					}
-					//Clean undefined to 0
-					for(let j=0; j< array.length;j++){
-						if(array[j]===undefined || array[j]===null) array[j]=0;
-					}
-					matrix.push(array);
-				}
-				return {"nodes":nodes,"matrix":matrix};
-			}
+			})
+		})
+		return outputArray;
 	}
-
 	function iconClearWaiting(){
 		$("#whiteButtonImg").remove();
 		$("#queryButtonImg").remove();
 	}
 	//#################################### END AUX FUNCTIONS ############################
 	//Check what measurement the user is asking for
-	if(queryMeasure==="0" && queryType!=="2") snmpTSDSQuery(avgOver,queryMeasure,queryValue);////Loads the data for the snmp query
-	else if(queryType === "2") topTalkers(avgOver,queryMeasure,queryValue)
-	else perfSonarTSDSQuery(avgOver,queryMeasure,queryValue);////Loads the data for the perfSonar query
+	if(queryType==="0") snmpTSDSQuery(avgOver);////Loads the data for the snmp query
+	else perfSonarTSDSQuery(avgOver,queryMeasure,queryObjects[0].queryValue);////Loads the data for the perfSonar query
 }

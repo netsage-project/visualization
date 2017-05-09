@@ -1,6 +1,6 @@
 function drawTopTalkers(data){
-	//chord(data.chord);
-	sankey(data.sankey);
+	// chord(data.chord);
+	// sankey(data.sankey);
 	function sankey(data){
 		var units = "Bits";
 		// set the dimensions and margins of the graph
@@ -116,9 +116,24 @@ function drawTopTalkers(data){
 		var margin = {top: 10, right: 10, bottom: 10, left: 10},
 		    width = window.innerWidth - margin.left - margin.right,
 		    height = 1000 - margin.top - margin.bottom;
+		var max =0;
+		let tempMax=0;
+		for(let i=0;i<data.matrix.length;i++){
+			tempMax = d3.max(data.matrix[i]);
+			max = d3.max([max,tempMax]);
+		}
+		var scale = d3.scaleLinear()
+					  .domain([0,max])
+					  .range([0,100])
+
+		for(let i=0;i<data.matrix.length;i++){
+			for(let j=0;j<data.matrix[i].length;j++){
+				data.matrix[i][j] = scale(data.matrix[j][j]);
+			}
+		}
 
 		// var data ={
-		//   "nodes":["Australia","USA","GER","BRASIL","Australia","USA","GER","BRASIL","Australia","USA"],
+		//   "nodes":["Australia","USA","GER","BRASIL","Peter","LAker","Revolt","Mangosta","Scarlett","Determinant","Spain","Congo","Korea"],
 		//   "matrix":[
 		//               [11975,  5871, 8916, 2868,0,0,0,0,0,0,1,1,2],
 		//               [ 1951, 10048, 2060, 6171,0,0,0,0,0,10,2,3,4],

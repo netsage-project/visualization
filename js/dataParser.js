@@ -302,7 +302,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 			//Save the cleaned scaled values in the data
 			dataPoint.histogram = dataClean;
 			dataPoint.values = values;
-		}else if(queryMeasure==="0" && queryValue==="1" && queryType === "0"){//Flow Data
+		}else if(queryMeasure==="0" && queryType === "0" && (queryValue==="0" || queryValue==="1" || queryValue==="2" || queryValue==="3" || queryValue==="4") ){//Flow Data
 			var dataClean=[];
 			var values=[];
 			for(each in dataPoint.input){
@@ -415,7 +415,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 		//We see what user wants to visualize
 		if(queryValue==="0"){//IRNC LINKS
 			//Query to retrieve metadata values
-			url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get node, intf, description, a_endpoint.name, a_endpoint.latitude, a_endpoint.longitude, z_endpoint.name, z_endpoint.latitude, z_endpoint.longitude, max_bandwidth between( "' + date[0] + '", "' + date[1] + '" ) by node, intf from interface where a_endpoint != null and z_endpoint != null';
+			url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get node, intf,  link_name as description, a_endpoint.name, a_endpoint.latitude, a_endpoint.longitude, z_endpoint.name, z_endpoint.latitude, z_endpoint.longitude, max_bandwidth between( "' + date[0] + '", "' + date[1] + '" ) by node, intf from interface where a_endpoint != null and z_endpoint != null';
 			d3.json(url)
 			.on("beforesend", function (request) {request.withCredentials = true;})
 			.get(function(error,data)
@@ -454,7 +454,8 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 						mapGraph(queryObjects[counter]);
 						//Create Table
 						histogramTableGraph(queryObjects[counter]);
-						if(window.location.pathname==="/dashboard.html" || window.location.pathname==="/netsage/dashboard.html") lineChart(queryObjects[counter]);
+						//if(window.location.pathname==="/dashboard.html" || window.location.pathname==="/netsage/dashboard.html") 
+						lineChart(queryObjects[counter]);
 					}else if(queryObjects[counter].queryType==="1"){//Periodic Patterns
 						periodicPattern(queryObjects[counter]);
 					}
@@ -465,11 +466,11 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 			if(queryValue==="1"){
 				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get src_organization, point_of_observation, values.bps, average(values.bps) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_organization, point_of_observation from netflow_src_organization where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
 			}else if(queryValue==="2"){
-				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get protocol, point_of_observation, values.bps, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by protocol, point_of_observation from netflow_protocol where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get protocol, point_of_observation, values.bps, average(values.bps) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by protocol, point_of_observation from netflow_protocol where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
 			}else if(queryValue==="3"){
-				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get src_asn, point_of_observation, values.bps, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_asn, point_of_observation from netflow_src_asn where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get src_asn, point_of_observation, values.bps, average(values.bps) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_asn, point_of_observation from netflow_src_asn where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
 			}else if(queryValue==="4"){
-				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get src_country_name, point_of_observation, values.bps, average(values.bits) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_country_name, point_of_observation from netflow_src_country_name where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
+				url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get src_country_name, point_of_observation, values.bps, average(values.bps) as avg_bits between( "' + date[0] + '", "' + date[1] + '" ) by src_country_name, point_of_observation from netflow_src_country_name where point_of_observation = "*" limit 1000 offset 0 ordered by avg_bits desc';
 			}
 			console.log(url);
 			d3.json(url)
@@ -491,7 +492,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 						extraURL = extraURL.replace('where point_of_observation = "*"', 'where dst_organization ="' + queryObjects[counter].links[element].src_organization + '"');
 					}else if (queryValue==="2"){
 						queryObjects[counter].links[element].description = queryObjects[counter].links[element].protocol;
-						extraURL = extraURL.replace(""); //Dont know what to do with protocols yet.
+						//extraURL = extraURL.replace(""); //Dont know what to do with protocols yet.
 					}else if(queryValue==="3"){
 						queryObjects[counter].links[element].description = queryObjects[counter].links[element].src_asn;
 						regularExpression = new RegExp("src_asn","g");
@@ -506,8 +507,8 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 					queryObjects[counter].links[element].data = {};
 					queryObjects[counter].links[element].data.input = queryObjects[counter].links[element]["values.bps"];
 					queryObjects[counter].links[element].data.output = queryObjects[counter].links[element]["values.bps"];
- 					scaleAndClean(queryObjects[counter].links[element].data,queryMeasure,queryObjects[0].queryValue);
- 					calculateStatistics(queryObjects[counter].links[element].data,sizeIntervalSeconds,queryMeasure,queryObjects[0].queryValue,date);
+ 					scaleAndClean(queryObjects[counter].links[element].data,queryMeasure,queryObjects[counter].queryValue);
+ 					calculateStatistics(queryObjects[counter].links[element].data,sizeIntervalSeconds,queryMeasure,queryObjects[counter].queryValue,date);
 					// d3.json('https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=' + extraURL)
 					// .on("beforesend", function (request) {request.withCredentials = true;})
 					// .get(function(error,data)
@@ -786,13 +787,16 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 			src_fieldName = "src_country_name";
 			dst_fieldName = "dst_country_name";
 		}
+		//Maybe I should look this URL for getting the groups directly
+		//https://netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get src_country_name as source,all(dst_country_name) as destinations between(now-180d,now ) by src_country_name from netflow_src_country_name_dst_country_name limit 10000
+		console.log(url);
 		d3.json(url)
 			.on("beforesend", function (request) {request.withCredentials = true;})
 			.get(function(error,data){
 				queryObjects[counter].links = data.results;
 				networkData.nodes =  createNetwork(queryObjects[counter].links,idCount);
 				networkData.sankey = parseToSankeyFormat(networkData.nodes);
-				networkData.chord = parseToChordFormat(networkData.nodes);
+				networkData.chord = parseToChordFormat(networkData.sankey);
 				console.log(networkData);
 				drawTopTalkers(networkData);
 				iconClearWaiting();
@@ -804,7 +808,9 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 				var dstNode;
 				var dataFormated;
 				data.forEach(function(record,index){
-					//First we chek if the source is a Node
+					//First we Check if flow is cero
+					
+					//Second we chek if the source is a Node
 					if (notInArray(networkNodes,record[src_fieldName])){
 						networkNodes.push(new createNodes(idCount,record[src_fieldName]));
 						idCount++;
@@ -817,17 +823,22 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 					//then we add the flow as a children
 					srcNode = findNode(networkNodes,record[src_fieldName]);
 					dstNode = findNode(networkNodes,record[dst_fieldName]);
-
+					//We only want the output because input comes in another flow.
 					srcNode.addFlow(dstNode.id,index,record.output_avg_bits,0);
-					srcNode.addFlow(dstNode.id,index,record.input_avg_bits,1);
-					dstNode.addFlow(srcNode.id,index,record.output_avg_bits,0);
-					dstNode.addFlow(srcNode.id,index,record.input_avg_bits,1);
+					// srcNode.addFlow(dstNode.id,index,record.input_avg_bits,1);
+					// dstNode.addFlow(srcNode.id,index,record.output_avg_bits,0);
+					// dstNode.addFlow(srcNode.id,index,record.input_avg_bits,1);
 				})
 				console.log(networkNodes);
+				for(let i=0;i<networkNodes.length;i++){
+					for(let j=0;j<networkNodes[i].flows.length;j++){
+						console.log("");
+					}
+				}
 				return networkNodes;
 			}
 			//Aux Funtions
-			function createNodes(id,name,type){
+			function createNodes(id,name){
 				this.id = id;
 				this.name = name;
 				this.flows = [];
@@ -865,6 +876,18 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 				}
 				return not;
 			}
+			function notInFlows(array,value){
+				let not = true;
+				if(array.length !== 0){
+					array.forEach(function(element){
+						if(element.src === value.src && element.dst ===value.dst){
+							not = false;
+						}
+					})
+				}
+				return not;
+			}
+
 			function findNode(array,node){
 				for(var i=0; i<array.length; i++){
 					if(array[i].name === node){
@@ -915,8 +938,14 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 					let src = sankeyObject.links[i].source;
 					let dst = sankeyObject.links[i].target;
 					let id = sankeyObject.links[i].id;
-					for(var j=0;j<sankeyObject.links.length;j++){
-						if(src===sankeyObject.links[j].source && dst===sankeyObject.links[j].target && id !== sankeyObject.links[j].id){
+					// for(var j=0;j<sankeyObject.links.length;j++){
+					// 	if(src===sankeyObject.links[j].source && dst===sankeyObject.links[j].target && id !== sankeyObject.links[j].id){
+					// 		console.log(sankeyObject.links[j].source + "-" + sankeyObject.links[j].target + " : " + sankeyObject.links[j].value + "    "  + sankeyObject.links[i].source + "-" + sankeyObject.links[i].target + " : " + sankeyObject.links[i].value);
+					// 		sankeyObject.links.splice(j, 1);
+					// 	}
+					// }
+					for(var j=i;j<sankeyObject.links.length;j++){
+						if(src===sankeyObject.links[j].target && dst===sankeyObject.links[j].source){
 							console.log(sankeyObject.links[j].source + "-" + sankeyObject.links[j].target + " : " + sankeyObject.links[j].value + "    "  + sankeyObject.links[i].source + "-" + sankeyObject.links[i].target + " : " + sankeyObject.links[i].value);
 							sankeyObject.links.splice(j, 1);
 						}
@@ -928,38 +957,25 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 				let matrix = [];
 				let nodes = [];
 				let cleanNodes = [];
-				// //delete those with all null
-				// for(var i=0;i<network.length;i++){
-				// 	var checkIfAllCero=0;
-				// 	for(var j = 0 ;j < network[i].children.length; j++){
-				// 		checkIfAllCero += network[i].children[j].value;
-				// 	}
-				// 	if(checkIfAllCero!==0) cleanNodes.push(network[i]);
-				// }
-				// for(var i = 0; i < cleanNodes.length; i++){
-				// 	var arrayOfValues = Array(cleanNodes.length);
-				// 	for(var j = 0 ;j < cleanNodes[i].children.length; j++){
-				// 		arrayOfValues[cleanNodes[i].children[j].id]= cleanNodes[i].children[j].value;
-				// 	}
-				// 	for(var j = 0 ;j < arrayOfValues.length; j++){
-				// 		if(arrayOfValues[j]===undefined || arrayOfValues[j]===null) arrayOfValues[j] = 0;
-				// 	}
-				// 	matrix.push(arrayOfValues);
-				// 	nodes.push(network[i].name);
-				// }
 				for(let i = 0 ;i < network.length; i++){
 					//Initialize an array per node with the size of network
 					let array = new Array(network.length);
 					for(let j=0; j < network[i].flows.length;j++){
-						array.splice(network[i].flows[j].dst, 1, network[i].flows[j].value);
+						if(array[network[i].flows[j].dst]===undefined){
+							array.splice(network[i].flows[j].dst, 1, network[i].flows[j].value);
+						}
+						else if(network[i].flows[j].value!==null){
+							array[network[i].flows[j].dst] = array[network[i].flows[j].dst] + network[i].flows[j].value;
+						}
 					}
 					//Clean undefined to 0
 					for(let j=0; j< array.length;j++){
 						if(array[j]===undefined || array[j]===null) array[j]=0;
 					}
 					matrix.push(array);
+					nodes.push(network[i].name);
 				}
-				return {"nodes":nodes,"matrix":matrix};
+				return {"nodes":network.nodes,"matrix":matrix};
 			}
 	}
 

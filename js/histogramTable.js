@@ -821,7 +821,7 @@ function histogramTableGraph(queryData){
 	    var graph = svg.append("g")
 	        .attrs({
 	        	"class": "graph",
-	        	"transform": "translate(" + (width/2 - 4) + "," + (height/2 - barwidth/2) + ")"
+	        	"transform": "translate(" + (width/2 - 14) + "," + (height/2 - barwidth/2) + ")"
 	        });
 	    //totalInput
 	    var totalInput = graph.append("g")
@@ -846,7 +846,7 @@ function histogramTableGraph(queryData){
 	    graph.append("text")
 	      	.attrs({
 	      		"class": "totalDataTotalValue",
-	      		"x": function(d){ return x(totalDataIn) - 120;},
+	      		"x": function(d){ return x(maxX) - (x(totalDataIn) + x(totalDataOut));},
 	      		"y": 55
 	      	})
 	      	.text(function(d,i) { return (totalDataIn/1024/8).toFixed(1) + " TB"; } );
@@ -856,7 +856,7 @@ function histogramTableGraph(queryData){
 	    		"class": tableName + " iData",
 	    		"id": function(d,i){
 	    			return this.classList[0] + "-totalIn-" + i;},
-	    		"transform": "translate(0,2.3)",
+	    		"transform": "translate(0,2.25)",
 				"height": barwidth - 5,
 				"width": function(d,i){ return x(eval("queryObjects[" + this.classList[0].split("-")[1] + "]." + this.classList[0].split("-")[0]+"[i].data.totalData[0]")); }
 			  })
@@ -886,7 +886,7 @@ function histogramTableGraph(queryData){
 	    totalOutput.append("text")
 	    	.attrs({
 	    		"class": "totalDataTotalValue",
-	      		"x": function(d){ return x(totalDataOut)-70;},
+	      		"x": function(d){ return x(maxX)-70;},
 	      		"y": 48,
 	     	})
 	     	.text(function(d,i) { return (totalDataOut/1024/8).toFixed(1) + " TB"; });
@@ -895,7 +895,7 @@ function histogramTableGraph(queryData){
 	    	.attrs({
 	    	  	"class": tableName + " oData ",
 	    	  	"id": function(d,i){ return this.classList[0] + "-totalOut-" + i;},
-	    	  	"transform": "translate(0,2.3)",
+	    	  	"transform": "translate(0,2.5)",
 				"height": barwidth - 5,
 			  	"width": function(d,i){ return x(eval("queryObjects[" + this.classList[0].split("-")[1] + "]." + this.classList[0].split("-")[0]+"[i].data.totalData[1]")); }
 			})

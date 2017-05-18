@@ -198,6 +198,7 @@ body{
 .topAppRegion{
   display:inline-flex;
   margin-bottom:2em;
+  /*width:330em;*/
 }
 
 #infoDiv-map{
@@ -254,8 +255,8 @@ body{
   float:left;
   position: relative;
   top:5em;
-  margin-left: 5em;
-  margin-right: 13.4em;
+  margin-left: 2em;
+  margin-right: 2em;
 }
 
 .NetworkSummary .mapTooltipname{

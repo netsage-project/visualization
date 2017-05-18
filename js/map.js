@@ -11,7 +11,9 @@ function mapGraph(data){
       xPos =d3.event.layerX-100;
       yPos =d3.event.layerY-100;
     }else{
-      xPos =d3.event.layerX - 100;
+      //For sttyle purposes I can not move the tooltip more to the right it brakes the style so we set a maximun value
+      if(d3.event.layerX < 1000) xPos =d3.event.layerX - 100;
+      else xPos = 1000;
       yPos =d3.event.layerY - 100;
     }
     div = d3.select(".mapTooltip");
@@ -172,7 +174,7 @@ function mapGraph(data){
   }
   //#################################### END AUX FUNCTIONS ########################
   // Define the div for the tooltip
-  var div = d3.select("#AppRegion"+counter).append("div")
+  var div = d3.select("#topAppRegion"+counter).append("div")
     .attrs({
       "class": "mapTooltip",
       "id":"mapTooltip"

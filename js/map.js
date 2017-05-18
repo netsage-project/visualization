@@ -7,15 +7,10 @@ function mapGraph(data){
   function handleMouseOver(d,i){
     var xPos;
     var yPos;
-    if(window.location.pathname==="/dashboard.html" || window.location.pathname==="/netsage/dashboard.html"){
-      xPos =d3.event.layerX-100;
-      yPos =d3.event.layerY-100;
-    }else{
-      //For sttyle purposes I can not move the tooltip more to the right it brakes the style so we set a maximun value
-      if(d3.event.layerX < 1000) xPos =d3.event.layerX - 100;
-      else xPos = 1000;
-      yPos =d3.event.layerY - 100;
-    }
+    //For style purposes I can not move the tooltip more to the right it brakes the style so we set a maximun value
+    if(d3.event.layerX < 1000) xPos =d3.event.layerX - 100;
+    else xPos = 1000;
+    yPos =d3.event.layerY - 100;
     div = d3.select(".mapTooltip");
     div.transition()
        .duration(500)
@@ -43,16 +38,31 @@ function mapGraph(data){
     }else if(this.classList[0]==="links" || this.classList[0]==="linksPlaceholder"){
       let description;
         let linkSize;
-        if(data.links[i].description.split('100GE').length > 1){
-          description = data.links[i].description.split('100GE')[0]
-          linkSize = "100GE"
+        if(this.classList[0]==="links"){
+          if(data.links[i].description.split('100GE').length > 1){
+            description = data.links[i].description.split('100GE')[0]
+            linkSize = "100GE"
+          }
+          else if(data.links[i].description.split('10GE').length > 1){
+            description = data.links[i].description.split('100GE')[0]
+            linkSize = "10GE"
+          }else{
+            description = link[i].description;
+            linkSize ="";
+          }
         }
-        else if(data.links[i].description.split('10GE').length > 1){
-          description = data.links[i].description.split('100GE')[0]
-          linkSize = "10GE"
-        }else{
-          description = link[i].description;
-          linkSize ="";
+        else if(this.classList[0]==="linksPlaceholder"){
+          if(d.name.split('100GE').length > 1){
+            description = d.name.split('100GE')[0]
+            linkSize = "100GE"
+          }
+          else if(d.name.split('10GE').length > 1){
+            description = d.name.split('100GE')[0]
+            linkSize = "10GE"
+          }else{
+            description = d.name;
+            linkSize ="";
+          }
         }
       //If Mouseover Link with Data
       if(this.classList[0]==="links"){

@@ -446,6 +446,11 @@ body{
   max-width: 8em;
   min-width: 6em;
 }
+
+.multipleHistogram .links-0-0-col5{
+  padding-right: 1em;
+  padding-left: 1em;
+}
 /*************************** END Histogram Style *****************************/
 /*************************** LineChart Style *****************************/
 #lineChart {

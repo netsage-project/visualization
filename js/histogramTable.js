@@ -792,9 +792,6 @@ function histogramTableGraph(queryData){
 		       .duration(500)
 		       .style("opacity", 0);
     	}
-    	width = width/2;
-    	var barwidth = 30;
-    	var position = {position1: height/4 , position2: height - height/3}
 
     	//Calculate Max values for scales and Total data transmitted accross all elements
 	    var totalDataIn=0, totalDataOut=0;
@@ -803,6 +800,25 @@ function histogramTableGraph(queryData){
 	    	totalDataOut += eval("queryObjects[" + tableName.split("-")[1] + "].graphs.table." + tableName.split("-")[0] + "[each].data.totalData[1]");
 	    }
 	   	var maxX = d3.max([totalDataIn,totalDataOut]);
+	   	let digitSize = (maxX/1024/8).toFixed(1).toString().length;
+
+	   	width = width/2;
+	   	let svgWidth, incomingXPos, outgoingXPos,graphPos;
+	   	if(digitSize<4){
+	   		svgWidth = width * 2 + 40;
+	   		graphPos = 70;
+	   		incomingXPos = 15;
+	   	}else if(digitSize<7){
+	   		svgWidth = width * 2 + 100;
+	   		graphPos = 100;
+	   		incomingXPos = -15;
+	   	}else{
+	   		svgWidth = width * 2 + 120;
+	   		graphPos = 125;
+	   		incomingXPos = -15;
+	   	}
+    	var barwidth = 30;
+    	var position = {position1: height/4 , position2: height - height/3}
 
 	    //Set up scales
 	    var x = d3.scaleLinear()
@@ -815,13 +831,13 @@ function histogramTableGraph(queryData){
 
 	    var svg=d3.selectAll("." + tableName + "-" + group + "-col" + "5").append("svg")
 	   		.attrs({
-	      		"width": width * 2,
+	      		"width": svgWidth,
 	      		"height": height + margin.top + margin.bottom,
 	    	})
 	    var graph = svg.append("g")
 	        .attrs({
 	        	"class": "graph",
-	        	"transform": "translate(" + (width/2 - 14) + "," + (height/2 - barwidth/2) + ")"
+	        	"transform": "translate(" + (graphPos) + "," + (height/2 - barwidth/2) + ")"
 	        });
 	    //totalInput
 	    var totalInput = graph.append("g")
@@ -846,8 +862,8 @@ function histogramTableGraph(queryData){
 	    graph.append("text")
 	      	.attrs({
 	      		"class": "totalDataTotalValue",
-	      		"x": function(d){ return x(maxX) - (x(totalDataIn) + x(totalDataOut));},
-	      		"y": 55
+	      		"x": function(d){ return x(maxX) - (x(totalDataIn) + x(totalDataOut)) + incomingXPos;},
+	      		"y": 25
 	      	})
 	      	.text(function(d,i) { return (totalDataIn/1024/8).toFixed(1) + " TB"; } );
 	      	//Fills up the totalDatabar input for each individual element
@@ -886,8 +902,8 @@ function histogramTableGraph(queryData){
 	    totalOutput.append("text")
 	    	.attrs({
 	    		"class": "totalDataTotalValue",
-	      		"x": function(d){ return x(maxX)-70;},
-	      		"y": 48,
+	      		"x": function(d){ return x(totalDataOut) + 10;},
+	      		"y": 22,
 	     	})
 	     	.text(function(d,i) { return (totalDataOut/1024/8).toFixed(1) + " TB"; });
 	     	//Fills up the totalDatabar output for each individual element

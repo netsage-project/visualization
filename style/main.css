@@ -43,7 +43,11 @@ body{
    outline:0;
 }
 
-.ui-menu-item{
+.ui-selectmenu-menu .ui-menu-item{
+  background:#ededed
+}
+
+.ui-selectmenu-menu .ui-state-focus{
   background:rgba(255, 153, 0, 0.4);
 }
 
@@ -191,6 +195,11 @@ body{
   width:80em;
 }
 
+.topAppRegion{
+  display:inline-flex;
+  margin-bottom:2em;
+}
+
 #infoDiv-map{
   position: absolute;
   top: 24.5em;
@@ -241,11 +250,87 @@ body{
   padding: 5px;
 }
 
+.NetworkSummary{
+  float:left;
+  position: relative;
+  top:5em;
+  margin-left: 5em;
+  margin-right: 9.4em;
+}
+
+.NetworkSummary .mapTooltipname{
+  font-weight: bold;
+}
+
+.NetworkSummary .mapTooltipname .mapTooltipDescription{
+  text-align: center;
+}
+
+.NetworkSummary .mapTooltipname .mapTooltipSize{
+  font-weight: bold;
+}
+
+.NetworkSummary p {
+  margin:0.4em;
+}
+
+.NetworkSummary .mapTooltipValueType{
+  font-size:1.5em;
+  position: relative;
+  left: -0.6em;
+}
+
+.NetworkSummary .valuesLine{
+  position: relative;
+  left: -0.6em;
+}
+
+
+.NetworkSummary .mapTooltipValue{
+  font-size: 2em;
+  color:black;
+  font-weight: bold;
+  text-align: center;
+}
+
+.NetworkSummary .Networkmax{
+  position: relative;
+  left:1em;
+}
+
+.NetworkSummary .Networkavg{
+  position: relative;
+  left:1em;
+}
+
+.NetworkSummary .Networkmin{
+  position: relative;
+  left:1em;
+}
+
+.NetworkSummary .mapTooltipDimension{
+  color: rgba(52, 100, 222, 1);
+  position: relative;
+  top:-0.15em;
+  font-size:1.4em;
+  font-weight: bold;
+  text-align: center;
+}
+
+.NetworkSummary .mapTooltipScale{
+  text-align: center;
+  font-size: 2em;
+}
+
+.NetworkSummary .networkTimeFrame{
+  text-align: center;
+  font-size: 1.3em;
+}
+
 /*************************** END Application Region Style *****************************/
 /*************************** Histogram Style *****************************/
 .multipleHistogram{
-    border: 1px solid black;
-	  font-size: 10px;
+    margin-left: 2em;
     position: relative;
     text-align: center;
 }
@@ -257,7 +342,7 @@ body{
 .multipleHistogram thead{
 	background-color:rgba(232, 157, 77, 0.9);
 	overflow:visible;
-  font-size: 15px;
+  font-size: 1em;
 }
 
 .multipleHistogram .svgLineIn{
@@ -268,7 +353,7 @@ body{
 }
 .multipleHistogram svg{
     padding-left: 1em;
-    padding-right: 0.3em;
+    padding-right: 1em;
 }
 
 .multipleHistogram .svgLineOut{
@@ -305,19 +390,6 @@ body{
   stroke-width: 1px;
 }
 
-.tableTooltip {
-    position: absolute;
-    text-align: center;
-    padding:5px;
-    padding-left:15px;
-    padding-right:15px;
-    font-size: 1em;
-    background: rgba(247, 201, 132, 1);
-    border: 0px;
-    pointer-events: none;
-    font-weight: bold;
-}
-
 .multipleHistogram .lineChartHistogram .line{
   fill: none;
   stroke:rgba(52, 100, 222, 1);
@@ -342,7 +414,7 @@ body{
 }
 
 .multipleHistogram .histoLegend{
-  font-size:1.3em;
+  font-size:1em;
 }
 
 .multipleHistogram .histoLegend text .max {
@@ -351,6 +423,28 @@ body{
 
 .multipleHistogram .histoLegend text .avg {
   stroke:rgba(0, 255, 0, 0.3);
+}
+
+.multipleHistogram .totalDataText{
+  font-size: 1em;
+}
+
+.multipleHistogram .totalDataTotalValue{
+  font-size: 1em;
+}
+
+.multipleHistogram .histogramRowName{
+  font-size: 1.5em;
+}
+
+.multipleHistogram .histogramOriginDestination{
+  font-size: 0.8em;
+}
+
+.multipleHistogram .links-0-0-col0{
+  word-wrap: break-word;
+  max-width: 8em;
+  min-width: 6em;
 }
 /*************************** END Histogram Style *****************************/
 /*************************** LineChart Style *****************************/
@@ -383,6 +477,7 @@ body{
   width:1215px;
   height:500px;
   display: inline-block;
+  float:left;
 }
 .map path {
   stroke: black;
@@ -401,18 +496,83 @@ body{
   stroke-width:4px;
 }
 
-#mapTooltip {
+.mapTooltip {
     position: absolute;
     text-align: center;
-    padding:0.4em;
-    font-size: 0.8em;
+    padding-left:0.4em;
+    padding-right:0.4em;
     background: rgba(247, 201, 132, 1);
-    border: 0px;
+    /*border: 1px solid black;*/
     pointer-events: none;
 }
 
-.mapTooltipname{
+.mapTooltip .mapTooltipname{
   font-weight: bold;
+  font-size: 0.7em;
+}
+
+.mapTooltip .mapTooltipname .mapTooltipDescription{
+  float: left;
+}
+
+.mapTooltip .mapTooltipname .mapTooltipSize{
+  font-weight: bold;
+}
+
+.mapTooltip p {
+  margin:0.4em;
+}
+
+.mapTooltip .mapTooltipValue{
+  font-size: 2em;
+  color:black;
+  font-weight: bold;
+}
+
+.mapTooltip .mapTooptipValueIncoming{
+  float:left;
+}
+
+.mapTooltip .mapTooptipValueOutgoing{
+  float:left;
+}
+
+.mapTooltip .mapTooltipDimension{
+  color: rgba(52, 100, 222, 1);
+  position: relative;
+  top:-0.15em;
+  font-size:1.4em;
+  font-weight: bold;
+  left:-0.5em;
+}
+
+.mapTooltip #mapTooltipTransferDimension{
+  color: rgba(52, 100, 222, 1);
+  position: relative;
+  top:-0.15em;
+  font-size:1.4em;
+  font-weight: bold;
+}
+
+.mapTooltip .mapTooltipValueType{
+  font-size: 1.3em;
+}
+
+.mapTooltip .mapTooltipValueTypeIncoming{
+  float:left;
+}
+
+.mapTooltip .mapTooltipScale{
+  text-align: center;
+  font-size: 2em;
+}
+
+.mapTooltip .mapTooltipDimension .mapTooltipTransferDimension{
+  margin-bottom: 0em
+}
+
+.mapTooltip .textTotalData{
+  color: rgba(52, 100, 222, 1);
 }
 
 .map .nodes{

@@ -135,112 +135,6 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 	}
 
 	//Function to clean data
-	// function scaleAndClean(dataPoint,queryMeasure,queryValue){
-	// 	if((queryMeasure==="0" && queryValue==="0") || (queryMeasure==="0" && (queryValue==="1" || queryValue==="2" || queryValue==="3" || queryValue==="4") && queryType === "0") ) //SNMP data and Flow data question 0
-	// 	{
-	// 		var inputClean=[];
-	// 		var outputClean=[];
-	// 		var inputValues = [];
-	// 		var outputValues = [];
-	// 		//change this to the d3 assignment forEach
-	// 		for (each in dataPoint.input){
-	// 			if(dataPoint.input[each][1]!=null){
-	// 				dataPoint.input[each][1] = precise_round(dataPoint.input[each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
-	// 				inputClean.push(dataPoint.input[each][1]);
-	// 			}else{
-	// 				dataPoint.input[each][1] = null;
-	// 				//inputClean.push(0);
-	// 			}
-	// 			if(dataPoint.output[each][1]!=null){
-	// 				dataPoint.output[each][1] = precise_round(dataPoint.output[each][1]/1024/1024/1024,2);
-	// 				outputClean.push(dataPoint.output[each][1]);
-	// 			} else{
-	// 				dataPoint.output[each][1] = null;
-	// 				//outputClean.push(0);
-	// 			}
-	// 			inputValues.push([new Date (dataPoint.input[each][0]*1000),dataPoint.input[each][1]]);
-	// 			outputValues.push([new Date (dataPoint.output[each][0]*1000),dataPoint.output[each][1]]);
-	// 		}
-	// 		//Save the cleaned scaled values in the data
-	// 		dataPoint.input.histogram = inputClean;
-	// 		dataPoint.output.histogram = outputClean;
-	// 		dataPoint.input.values = inputValues;
-	// 		dataPoint.output.values = outputValues;
-	// 	}else if(queryMeasure==="1"){//losses
-	// 		var dataClean=[];
-	// 		var values=[];
-	// 		for(each in dataPoint.values){
-	// 			if(dataPoint.values[each][1]!=null){
-	// 				dataPoint.values[each][1] = dataPoint.values[each][1]*100; //To show in percentage
-	// 				dataClean.push(dataPoint.values[each][1]);
-	// 			}else{
-	// 				dataPoint.values[each][1] = null;
-	// 			}
-	// 			values.push([new Date (dataPoint.values[each][0]*1000),dataPoint.values[each][1]]);
-	// 		}
-	// 		//Save the cleaned scaled values in the data
-	// 		dataPoint.histogram = dataClean;
-	// 		dataPoint.values = values;
-	// 	}else if(queryMeasure==="2"){//latency
-	// 		var dataClean=[];
-	// 		var values=[];
-	// 		for(each in dataPoint.values){
-	// 			if(dataPoint.values[each][1]!=null){
-	// 				dataPoint.values[each][1] = dataPoint.values[each][1]; //Dont change anything value comes in ms.
-	// 				dataClean.push(dataPoint.values[each][1]);
-	// 			}else{
-	// 				dataPoint.values[each][1] = null;
-	// 			}
-	// 			values.push([new Date (dataPoint.values[each][0]*1000),dataPoint.values[each][1]]);
-	// 		}
-	// 		//Save the cleaned scaled values in the data
-	// 		dataPoint.histogram = dataClean;
-	// 		dataPoint.values = values;
-	// 	// }else if(queryMeasure==="0" && (queryValue==="1" || queryValue==="2" || queryValue==="3" || queryValue==="4") && queryType === "0"){//Flow Data
-	// 	// 	var inputDataClean=[];
-	// 	// 	var outputDataClean=[];
-	// 	// 	var inputValues=[];
-	// 	// 	var outputValues=[];
-	// 	// 	for(each in dataPoint.input){
-	// 	// 		if(dataPoint.input[each][1]!=null){
-	// 	// 			dataPoint.input[each][1] = precise_round(dataPoint.input[each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
-	// 	// 			inputDataClean.push(dataPoint.input[each][1]);
-	// 	// 		}else{
-	// 	// 			dataPoint.input[each][1] = 0;
-	// 	// 		}
-	// 	// 		inputValues.push([new Date (dataPoint.input[each][0]*1000),dataPoint.input[each][1]]);
-	// 	// 	}
-	// 	// 	for(each in dataPoint.output){
-	// 	// 		if(dataPoint.output[each][1]!=null){
-	// 	// 			dataPoint.output[each][1] = precise_round(dataPoint.output[each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
-	// 	// 			outputDataClean.push(dataPoint.output[each][1]);
-	// 	// 		}else{
-	// 	// 			dataPoint.output[each][1] = 0;
-	// 	// 		}
-	// 	// 		outputValues.push([new Date (dataPoint.output[each][0]*1000),dataPoint.output[each][1]]);
-	// 	// 	}
-	// 	// 	dataPoint.input.histogram = inputDataClean;
-	// 	// 	dataPoint.output.histogram = outputDataClean;
-	// 	// 	dataPoint.input.values = inputValues;
-	// 	// 	dataPoint.output.values = outputValues;
-	// 	}else if(queryMeasure==="0" && queryValue==="1" && queryType === "1"){ // flow for patterns
-	// 		var dataClean=[];
-	// 		var values=[];
-	// 		for(each in dataPoint["values.bits"]){
-	// 			if(dataPoint["values.bits"][each][1]!=null){
-	// 				dataPoint["values.bits"][each][1] = precise_round(dataPoint["values.bits"][each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
-	// 				dataClean.push(dataPoint["values.bits"][each][1]);
-	// 			}else{
-	// 				dataPoint["values.bits"][each][1] = null;
-	// 			}
-	// 			values.push([new Date (dataPoint["values.bits"][each][0]*1000),dataPoint["values.bits"][each][1]]);
-	// 		}
-	// 		//Save the cleaned scaled values in the data
-	// 		dataPoint.histogram = dataClean;
-	// 		dataPoint.values = values;
-	// 	}
-
-	//Function to clean data
 	function scaleAndClean(dataPoint,queryMeasure,queryValue){
 		if(queryMeasure==="0" && queryValue==="0") //SNMP data
 		{
@@ -447,15 +341,19 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 					for (var element in queryObjects[counter].nodes){
 						calculateStatistics(queryObjects[counter].nodes[element].data,sizeIntervalSeconds,queryMeasure,queryObjects[0].queryValue,queryDate);
 					}
+					//Calculate IRNC Data
+					queryObjects[counter].network = calculateIRNCData(queryObjects[counter]);
 					//Create query text
 					drawQueryText(queryText);
 					if(queryObjects[counter].queryType==="0"){//Bandwith accross links
+						//NetworkSummary
+						drawNetworkSummary(queryObjects[counter]);
 						//Create Map
 						mapGraph(queryObjects[counter]);
 						//Create Table
 						histogramTableGraph(queryObjects[counter]);
-						//if(window.location.pathname==="/dashboard.html" || window.location.pathname==="/netsage/dashboard.html") 
-						lineChart(queryObjects[counter]);
+						//if(window.location.pathname==="/dashboard.html" || window.location.pathname==="/netsage/dashboard.html")
+						//lineChart(queryObjects[counter]);
 					}else if(queryObjects[counter].queryType==="1"){//Periodic Patterns
 						periodicPattern(queryObjects[counter]);
 					}
@@ -570,8 +468,8 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 			})
 		.style("float","left")
 		.on("click",handleClick)
-		queryTextDiv.append("p")
-		.html(queryText);
+		// queryTextDiv.append("p")
+		// .html(queryText);
 
 		function handleClick(){
 			var text;
@@ -654,6 +552,55 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 				else if (location==="1") return text1;
 			}
 		}
+	}
+
+	function calculateIRNCData(query){
+		let network = {'totalData':0,'avg':0,'max':0,'min':0};
+		let max=[], avg=[], min=[];
+		//The input from a link is the output of another so we only iterate the inputs to calculate the values for the whole network
+		for(let i=0;i<query.links.length;i++){
+			max.push(query.links[i].data.input.max);
+			avg.push(query.links[i].data.input.avg);
+			min.push(query.links[i].data.input.min);
+			network.totalData += (query.links[i].data.totalData[0] + query.links[i].data.totalData[1])
+		}
+	    //We store the total data in the network
+	    network.totalData = (network.totalData)/1024/8;
+		network.max = d3.max(max);
+		network.min = d3.min(min);
+		network.avg = d3.mean(avg);
+
+		return network;
+	}
+
+	function drawNetworkSummary(query){
+		//Variables to parse date
+		let parseWeekDay = d3.timeFormat('%A');
+		let parseDayMonthYear = d3.timeFormat('%d-%B-%Y');
+		let parseTime = d3.timeFormat('%H:%M')
+		//Variables to store dates
+		let start = new Date(query.date[0]);
+		let stop = new Date(query.date[1]);
+		let netSummary = d3.select("#AppRegion"+counter)
+	      .append("div")
+	      .attrs({
+	        "id":"topAppRegion"+counter,
+	        "class":"topAppRegion"
+	      })
+	      .styles({
+	      	"height":"34em"
+	      })
+	      .append("div")
+	      .attrs({
+	        "id":"NetworkSummary"+counter,
+	        "class":"NetworkSummary"
+	      })
+	      netSummary.html("<p class='mapTooltipValueType'> <span class='mapTooltipValueTypeIncoming'> <span style='display:inline-block; width: 2.2em;'></span> <span id='mapTooltipMax'>Max</span> <span style='display:inline-block; width: 3.4em;'></span> <span id='mapTooltipAvg'> Avg </span> <span style='display:inline-block; width: 3.4em;'></span> <span id='mapTooltipMin'>Min</span> </p>" +
+           "<p class='valuesLine'> <span style='display:inline-block; width: 1em;'></span> <span class='mapTooltipValue Networkmax'>" + d3.format(".2f")(query.network.max) + "</span> <span style='display:inline-block; width: 4em;'></span> <span class='mapTooltipValue Networkavg'>" + d3.format(".2f")(query.network.avg) + "</span> <span style='display:inline-block; width: 4em;'></span> <span class='mapTooltipValue Networkmin'>" + d3.format(".2f")(query.network.min) + "</span> <span style='display:inline-block; width: 4em;'></span> </span>" +
+           "<p class ='mapTooltipScale'> Gb/s </p> <hr>" +
+           "<p class='mapTooltipDimension' id='mapTooltipTransferDimension'> Total Transferred</p><p class='mapTooltipValue'>" + d3.format(".0f")(query.network.totalData) + " TB </p> <hr>" +
+           "<p class='networkTimeFrame'> <span> " + parseDayMonthYear(start) + "</span> <span style='display:inline-block; width: 1em;'> </span> <span> to </span> <span style='display:inline-block; width: 1em;'></span> <span>" + parseDayMonthYear(stop) + "</span></p>" +
+           "<p class='networkTimeFrame' id='networkTimeFrameHour'> <span> " + parseTime(start) + "</span> <span style='display:inline-block; width: 7em;'></span> <span>" + parseTime(stop) + "</span></p>")
 	}
 
 	//Function for TSDS PerfSonar Data

@@ -8,13 +8,13 @@ function mapGraph(data){
     var xPos;
     var yPos;
     if(window.location.pathname==="/dashboard.html" || window.location.pathname==="/netsage/dashboard.html"){
-      xPos =d3.event.pageX-100;
-      yPos =d3.event.pageY-100;
+      xPos =d3.event.layerX-100;
+      yPos =d3.event.layerY-100;
     }else{
-      xPos =d3.event.pageX - 100;
-      yPos =d3.event.pageY - 100;
+      xPos =d3.event.layerX - 100;
+      yPos =d3.event.layerY - 100;
     }
-    div = d3.select("#mapTooltip");
+    div = d3.select(".mapTooltip");
     div.transition()
        .duration(500)
        .style("opacity", .9);
@@ -28,22 +28,42 @@ function mapGraph(data){
         .style('stroke-width','2')
         .attr('r',15)
       if(this.classList[0]==="nodes"){
-          div.html("<p class ='mapTooltipname'>" + d.node + "</p> <p> Total Data : " + d3.format(".2f")((d.data.totalData[0] + d.data.totalData[1])/1024/8) + " TB </p>")
+          div.html("<p class ='mapTooltipname'> <span>" + d.node + "</span> </p>" +
+            " <hr> " +
+            " <p> <span class='mapTooltipDimension'> Total Transfer : </span> <span class='mapTooltipValue'>" + d3.format(".2f")((d.data.totalData[0] + d.data.totalData[1])/1024/8) + " TB </span> </p>")
             .style("left", xPos + "px")
             .style("top", yPos + "px");
       }else{
-        div.html("<p class ='mapTooltipname'>" + d.node + "</p>")
+        div.html("<p class ='mapTooltipname'> <span>" + d.node + "</span> </p>")
             .style("left", xPos + "px")
             .style("top", yPos + "px");
       }
     }else if(this.classList[0]==="links" || this.classList[0]==="linksPlaceholder"){
-      //If MouseoverLink
+      let description;
+        let linkSize;
+        if(data.links[i].description.split('100GE').length > 1){
+          description = data.links[i].description.split('100GE')[0]
+          linkSize = "100GE"
+        }
+        else if(data.links[i].description.split('10GE').length > 1){
+          description = data.links[i].description.split('100GE')[0]
+          linkSize = "10GE"
+        }else{
+          description = link[i].description;
+          linkSize ="";
+        }
+      //If Mouseover Link with Data
       if(this.classList[0]==="links"){
-        div.html("<p class ='mapTooltipname'>" + data.links[i].description + "</p> <p> Link Maximum Capacity: "+ data.links[i].max_bandwidth/1000000000 + "Gb/s </p> " + "<p> Avg Incoming Bandwith : " + d3.format(".2f")(data.links[i].data.input.avg) + " Gb/s </p>" + "<p> Avg Outgoing Bandwith : " + d3.format(".2f")(data.links[i].data.output.avg) + " Gb/s </p>"+ "<p> Total Data : " + d3.format(".2f")((data.links[i].data.totalData[0] + data.links[i].data.totalData[1])/1024/8) + " TB </p>")
+        div.html("<p class ='mapTooltipname'> <span class='mapTooltipDescription'>" + description + "</span> <span style='display:inline-block; width: 32em;'> </span> <span class='mapTooltipSize'>" + linkSize + " </span> </p> <hr>" +
+           "<p class='mapTooltipDimension' > <span id='outDimension' > Incoming <span style='display:inline-block; width: 8.0em;'></span> </span> <span id='inDimension'> <span style='display:inline-block; width: 4.0em;'> Outgoing </span> </p>"+
+           "<p class='mapTooltipValueType'> <span class='mapTooltipValueTypeOutgoing'> <span id='mapTooltipMax'>Max</span> <span style='display:inline-block; width: 2.2em;'></span> <span id='mapTooltipAvg'> Avg </span> <span style='display:inline-block; width: 2.2em;'></span> <span id='mapTooltipMin'>Min</span> </span> <span class='mapTooltipValueTypeIncoming'> <span style='display:inline-block; width: 0.2em;'></span> <span id='mapTooltipMax'>Max</span> <span style='display:inline-block; width: 2em;'></span> <span id='mapTooltipAvg'> Avg </span> <span style='display:inline-block; width: 2em;'></span> <span id='mapTooltipMin'>Min</span> <span style='display:inline-block; width: 3em;'></span> </span> </p>" +
+           "<p> <span class='mapTooltipValueOutgoing'> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.input.max) + " </span> <span style='display:inline-block; width: 1em;'></span> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.input.avg) + " </span> <span style='display:inline-block; width: 1em;'></span> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.input.min) + " </span> </span>" +  " <span style='display:inline-block; width: 0.3em;'></span> <span class='mapTooptipValueIncoming'> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.output.max) + "</span> <span style='display:inline-block; width: 1em;'></span> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.output.avg) + "</span> <span style='display:inline-block; width: 1em;'></span> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.output.min) + "</span> <span style='display:inline-block; width: 4em;'></span> </span>" +
+           "<p class ='mapTooltipScale'> Gb/s </p> <hr>" +
+           "<p id='mapTooltipTransferDimension'> Total Transferred</p><p class='mapTooltipValue'>" + d3.format(".2f")((data.links[i].data.totalData[0] + data.links[i].data.totalData[1])/1024/8) + " TB </p>")
            .style("left", xPos + "px")
            .style("top", yPos + "px");
       }else{
-        div.html("<p class ='mapTooltipname'>" + d.name + "</p> <p> Link Maximum Capacity: "+ d.size/1000000000 + "Gb/s </p>")
+        div.html("<p class ='mapTooltipname'> <span class='mapTooltipDescription'>" + description + "</span> <span style='display:inline-block; width: 17.8em;'> </span> <span class='mapTooltipSize'>" + linkSize + " </span> </p> <hr>")
            .style("left", xPos + "px")
            .style("top", yPos + "px");
       }
@@ -154,13 +174,14 @@ function mapGraph(data){
   // Define the div for the tooltip
   var div = d3.select("#AppRegion"+counter).append("div")
     .attrs({
-      "id": "mapTooltip"
+      "class": "mapTooltip",
+      "id":"mapTooltip"
     })
     .style("opacity", 0);
   var margin = {top: 0, right: 0, bottom: 0, left: 60},
         width = 1215 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
-  var svgMap = d3.select("#AppRegion"+counter)
+  var svgMap = d3.select("#topAppRegion"+counter)
       .append("div")
       .attrs({
         "id":"map"+counter,

@@ -9,9 +9,9 @@ function mainQueryForm(){
 	if(getUrlParameter("date")!=undefined) hasParameters = true;
 	else hasParameters = false;
 	//QueryFormVariables Array of Options
-	var queryTypesOptions = ["What was the min, max, average ","What is the duration and are there any periodic patterns or peak periods ", "Top Talkers", "More to come... "];
+	var queryTypesOptions = ["What was the min, max, average ","What is the duration and are there any periodic patterns or peak periods ", "Top Talkers (Coming Soon)", "More to come... "];
 	var queryMeasuresOptions = ["in Bandwidth use"," in Losses","in Latency"];
-	var queryValuesOptions = ["across the IRNC Links","across the Institutions","across the protocols","across the Autonomous Systems (AS)","accross Countries"];
+	var queryValuesOptions = ["across the IRNC Links","across the Institutions (Coming Soon)","across the protocols (Coming Soon)","across the Autonomous Systems (AS) (Coming Soon)","accross Countries (Coming Soon)"];
 	var timeFramesOptions = ["now","today","last 7 days","this month","this year","time frame"];
 	//Variables we populate to create menus from the available options.
 	var queryTypes = [];

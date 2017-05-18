@@ -348,7 +348,11 @@ function drawQueryFormCommon(queryForm,fieldset,queryTypes,queryMeasures,queryVa
 		},
 		width : 'auto'
 	});
-	//Disable question that is not acive
+	//Disable question that is not acive Flows and to come
+	$("#typeOption2").attr("disabled",true);
+	$("#queryMeasure").selectmenu({
+		width : 'auto'
+	});
 	$("#typeOption3").attr("disabled",true);
 	$("#queryMeasure").selectmenu({
 		width : 'auto'
@@ -370,8 +374,11 @@ function drawQueryFormCommon(queryForm,fieldset,queryTypes,queryMeasures,queryVa
 		width : 'auto'
 	});
 	//On start we disable the other queryValue options until we add the part of the code to process them.
-	//$("#valueOption1").attr("disabled",true);
-	//$("#valueOption3").attr("disabled",true);
+	$("#valueOption1").attr("disabled",true);
+	$("#valueOption2").attr("disabled",true);
+	$("#valueOption3").attr("disabled",true);
+	$("#valueOption4").attr("disabled",true);
+	$("#valueOption5").attr("disabled",true);
 	$("#queryTimeFrame").selectmenu({
       change: function( event, data ) {
 		var day = new Date();
@@ -405,7 +412,7 @@ function drawQueryFormCommon(queryForm,fieldset,queryTypes,queryMeasures,queryVa
 			"type":"button",
 			"id":"submit"
 		})
-		.on("click", function() {handleOnClick(day,false)});
+		.on("click", function() {handleOnClick(day,false,false,false)});
 	queryFormButton.append("span")
 		.append("img")
 		.attrs({
@@ -417,7 +424,7 @@ function drawQueryFormCommon(queryForm,fieldset,queryTypes,queryMeasures,queryVa
 }
 //Function that manages the Mouseclick on the play button
 function handleOnClick(date,fromURL,queryFromTab,isDashboard){
-	queryComposer(date,fromURL,queryFromTab);
+	queryComposer(date,fromURL,queryFromTab,isDashboard);
 }//Function that reads the query
 function queryComposer(date,fromURL,queryFromTab,isDashboard){
 	var dayFormat = d3.timeFormat("%m/%d/%Y");
@@ -483,10 +490,10 @@ function queryComposer(date,fromURL,queryFromTab,isDashboard){
 		console.log(UTCDateStart);
 		console.log(UTCDateStop);
 		if (timeFrame === "time frame") {
-			if (avgOver==undefined)avgOver = 3600; //get avg per each hour. This is the data format the heatmaps are expecting.
+			if (avgOver==undefined) avgOver = 3600; //get avg per each hour. This is the data format the heatmaps are expecting.
 			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
 		}else if (timeFrame === "this year"){
-			if(queryType==="0") avgOver = 43200;
+			if(queryType==="0") avgOver = 86400;
 			else if(queryType==="1") avgOver = 3600;
 			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
 		} else if (timeFrame === "this month"){
@@ -503,7 +510,7 @@ function queryComposer(date,fromURL,queryFromTab,isDashboard){
 			if(queryType==="1") avgOver = 3600;
 			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
 		} else if (timeFrame === "now"){
-			if(queryType==="0") avgOver = 60;
+			if(queryType==="0") avgOver = 180;
 			else if(queryType==="1") avgOver = 3600;
 			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
 		}

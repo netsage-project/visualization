@@ -112,7 +112,7 @@ function periodicPattern(data){
 		for(var element in data.links){
 			setTimeout(function(){
 				var start = new Date().getTime();
-				drawElementText("Link: " + data.links[arrayIndex].source +  " - " + data.links[arrayIndex].destination + ". <b>Max:</b> " + d3.format(".0f")(data.links[arrayIndex].max) + "% <b>Average:</b> " + d3.format(".2f")(data.links[arrayIndex].avg)+ "%");
+				drawElementText(arrayIndex + ". Link: " + data.links[arrayIndex].source +  " - " + data.links[arrayIndex].destination + ". <b>Max:</b> " + d3.format(".0f")(data.links[arrayIndex].max) + "% <b>Average:</b> " + d3.format(".2f")(data.links[arrayIndex].avg)+ "%");
 				heatmapData = data.links[arrayIndex].values;
 				heatmap(heatmapData,maxValue,maxDate,minDate,data.queryMeasure);
 				weekHeatmap(data.links[arrayIndex].values.weekData,maxWeekDataLinks,data.queryMeasure);
@@ -144,7 +144,7 @@ function periodicPattern(data){
 		for(var element in data.links){
 			setTimeout(function(){
 				var start = new Date().getTime();
-				drawElementText("Link: " + data.links[arrayIndex].source +  " - " + data.links[arrayIndex].destination + " <b>Max:</b> " + d3.format(".0f")(data.links[arrayIndex].max) + " ms" + "<b> Average:</b> " + d3.format(".0f")(data.links[arrayIndex].avg) + " ms");
+				drawElementText(arrayIndex + ". Link: " + data.links[arrayIndex].source +  " - " + data.links[arrayIndex].destination + " <b>Max:</b> " + d3.format(".0f")(data.links[arrayIndex].max) + " ms" + "<b> Average:</b> " + d3.format(".0f")(data.links[arrayIndex].avg) + " ms");
 				heatmapData = data.links[arrayIndex].values;
 				heatmap(heatmapData,maxValue,maxDate,minDate,data.queryMeasure);
 				weekHeatmap(data.links[arrayIndex].values.weekData,maxWeekDataLinks,data.queryMeasure);
@@ -176,7 +176,7 @@ function periodicPattern(data){
 		for(var element in data.links){
 			setTimeout(function(){
 				var start = new Date().getTime();
-				drawElementText("Link: " + data.links[arrayIndex].source +  " - " + data.links[arrayIndex].destination + " <b>Max:</b> " + d3.format(".0f")(data.links[arrayIndex].max) + " ms" + "<b> Average:</b> " + d3.format(".0f")(data.links[arrayIndex].avg) + " ms");
+				drawElementText(arrayIndex + ". Link: " + data.links[arrayIndex].source +  " - " + data.links[arrayIndex].destination + " <b>Max:</b> " + d3.format(".0f")(data.links[arrayIndex].max) + " ms" + "<b> Average:</b> " + d3.format(".0f")(data.links[arrayIndex].avg) + " ms");
 				heatmapData = data.links[arrayIndex].values;
 				heatmap(heatmapData,maxValue,maxDate,minDate,data.queryMeasure);
 				weekHeatmap(data.links[arrayIndex].values.weekData,maxWeekDataLinks,data.queryMeasure);
@@ -205,7 +205,7 @@ function periodicPattern(data){
 		getHour=d3.timeFormat('%H');
 		//Calculate new data for each weekday at each hour
 		for(var i=0; i<data.length; i++){
-			weekDaydata[getDayOfWeek(data[i][0])][getHour(data[i][0])] += data[i][1];
+			weekDaydata[getDayOfWeek(data[i][0])][getHour(data[i][0])] += Math.abs(data[i][1]); //We use abs because latencies sometimes are negative but we want to always sum as positive.
 			weekDaydata[getDayOfWeek(data[i][0])]["length"] +=1;
 		}
 		for(var each in weekDaydata){
@@ -588,9 +588,14 @@ function periodicPattern(data){
 				'stroke': function(){ return "black"},
 				'stroke-width': function(){return 0},
 				'fill': function(d){
-					if(d[1] !== null) return colorScale(d[1])
+					if(d[1] !== null && d[1]>=0) return colorScale(d[1])
+					else if(d[1]<0) return "#ff9900"
 					else return "lightGrey"
-				}
+				},
+				'fill-opacity': function(d){
+				 	if(d[1]<0) return 0.2
+				 	else return 1
+				 }
 
 			})
 			.on("mouseover", handleMouseOverLatency)

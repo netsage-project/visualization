@@ -167,8 +167,11 @@ body{
 }
 .mainInfo{
   position: absolute;
-  top: -3em;
-  left: 14em;
+  top: -4.1em;
+  left: 15em;
+  -ms-transform: scale(2);
+  -webkit-transform: scale(2);
+  transform: scale(1.5);
 }
 
 .mainInFoText{
@@ -188,7 +191,13 @@ body{
 /*************************** END query Style *****************************/
 
 /***************************Application Region Style **********************************/
-.applicationRegion{
+.applicationRegion .ui-icon-info{
+    -ms-transform: scale(2);
+    -webkit-transform: scale(2);
+    transform: scale(2);
+    position: relative;
+    left: 15em;
+    top: 1em;
 }
 
 .queryTextAppRegion{
@@ -203,39 +212,59 @@ body{
 
 #infoDiv-map{
   position: absolute;
-  top: 24.5em;
+  top: 22.4em;
   width: 26em;
-  left: 0.5em;
-  background: rgba(247, 201, 132, 1);
-  border: 1px solid black;
-  padding:5px;
-}
-
-#infoDiv-table{
-  position: absolute;
-  top: 56em;
-  width: 26em;
-  left: 0.5em;
+  left: 31.6em;
   background: rgba(247, 201, 132, 1);
   border: 1px solid black;
   padding: 5px;
 }
 
+#infoDiv-table{
+    position: absolute;
+    top: 58.5em;
+    width: 26em;
+    left: 2.6em;
+    background: rgba(247, 201, 132, 1);
+    border: 1px solid black;
+    padding: 5px;
+}
+
+#infoDiv-networkSummary{
+    position: absolute;
+    top: 24.0em;
+    width: 26em;
+    left: 2.6em;
+    background: rgba(247, 201, 132, 1);
+    border: 1px solid black;
+    padding: 5px;
+}
+
 #infoDashboardDiv-map{
   position: absolute;
-  top: 9.2em;
+  top: 7.1em;
   width: 26em;
-  left: 0.5em;
+  left: 31.6em;
   background: rgba(247, 201, 132, 1);
   border: 1px solid black;
-  padding:5px;
+  padding: 5px;
+}
+
+#infoDashboardDiv-networkSummary{
+  position: absolute;
+    top: 8.3em;
+    width: 26em;
+    left: 2.6em;
+    background: rgba(247, 201, 132, 1);
+    border: 1px solid black;
+    padding: 5px;
 }
 
 #infoDashboardDiv-table{
   position: absolute;
-  top: 40.8em;
+  top: 43.3em;
   width: 26em;
-  left: 0.5em;
+  left: 2.6em;
   background: rgba(247, 201, 132, 1);
   border: 1px solid black;
   padding: 5px;
@@ -449,8 +478,8 @@ body{
 }
 
 .multipleHistogram .links-0-0-col5{
-  padding-right: 1em;
-  padding-left: 1em;
+  padding-right: 2em;
+  padding-left: 2em;
 }
 /*************************** END Histogram Style *****************************/
 /*************************** LineChart Style *****************************/
@@ -514,7 +543,7 @@ body{
 
 .mapTooltip .mapTooltipname{
   font-weight: bold;
-  font-size: 0.7em;
+  font-size: 1em;
 }
 
 .mapTooltip .mapTooltipname .mapTooltipDescription{

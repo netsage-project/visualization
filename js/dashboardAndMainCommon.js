@@ -28,8 +28,9 @@ var isChrome = !!window.chrome && !!window.chrome.webstore;
 if(isFirefox) window.alert("We are sorry but the NetSage Project uses features that are currently not supported on Firefox. The NetSage portal has full support on Chrome, but is also supported in Safary and Internet Explorer. Please switch to any of these browsers and then visit this URL again. Sorry for the inconvenience");
 
 //Query Object Prototype
-function Query(query,date,avgOver,queryType,queryMeasure,queryValue){
+function Query(query,locale,date,avgOver,queryType,queryMeasure,queryValue){
 	this.queryText = query;
+	this.locale = locale;
 	this.date = date;
 	this.links = 0;
 	this.nodes = 0;
@@ -514,7 +515,7 @@ function queryComposer(date,fromURL,queryFromTab,isDashboard){
 			else if(queryType==="1") avgOver = 3600;
 			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
 		}
-		queryObjects.push(new Query(queryName + " " + queryMeasureText + " " + queryValueText + " " + timeFrame + ": From " + queryDateLocalTime[0] + ", to " + queryDateLocalTime[1] + " (" + new Date().toString().match(/\(([A-Za-z\s].*)\)/)[1] + ") ", queryDate, avgOver, queryType,queryMeasure,queryValue))
+		queryObjects.push(new Query(queryName + " " + queryMeasureText + " " + queryValueText + " " + timeFrame + ": From " + queryDateLocalTime[0] + ", to " + queryDateLocalTime[1], "(" + new Date().toString().match(/\(([A-Za-z\s].*)\)/)[1] + ")", queryDate, avgOver, queryType,queryMeasure,queryValue))
 		//when we make a second query in the same page we open a new tab.
 		if($("#query0")[0]!==undefined){
 			$("#whiteButtonImg").remove();

@@ -804,10 +804,10 @@ function histogramTableGraph(queryData){
 
 	   	width = width/2;
 	   	let svgWidth, incomingXPos, outgoingXPos,graphPos;
-	   	if(digitSize<4){
-	   		svgWidth = width * 2 + 40;
-	   		graphPos = 70;
-	   		incomingXPos = 15;
+	   	if(digitSize<5){
+	   		svgWidth = width * 2 + 60;
+	   		graphPos = 80;
+	   		incomingXPos = 10;
 	   	}else if(digitSize<7){
 	   		svgWidth = width * 2 + 100;
 	   		graphPos = 100;
@@ -858,7 +858,8 @@ function histogramTableGraph(queryData){
 	      		"x": width/2 -70,
 	      		"y": 0,
 	      	})
-	      	.text(function(d) { return "Incoming"; });
+	      	//.text(function(d,i) { return queryObjects[0].links[i]["a_endpoint.name"]; });
+	      	.text("Incoming")
 	    graph.append("text")
 	      	.attrs({
 	      		"class": "totalDataTotalValue",
@@ -898,7 +899,8 @@ function histogramTableGraph(queryData){
 	      		"y": -25,
 	      		"dy": barwidth/1.5
 	      	})
-	      .text(function(d) { return "Outgoing"; });
+	      //.text(function(d,i) { return queryObjects[0].links[i]["z_endpoint.name"]; });
+	      	.text("Outgoing")
 	    totalOutput.append("text")
 	    	.attrs({
 	    		"class": "totalDataTotalValue",

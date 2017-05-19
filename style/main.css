@@ -539,6 +539,7 @@ body{
     background: rgba(247, 201, 132, 1);
     /*border: 1px solid black;*/
     pointer-events: none;
+    min-width:16em;
 }
 
 .mapTooltip .mapTooltipname{

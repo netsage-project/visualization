@@ -364,7 +364,7 @@ function histogramTableGraph(queryData){
 	    	 		"stroke-width":1
 	    	 	})
 		}
-		var barwidth = 15;
+		var barwidth = 30;
 		var position ={position1:height/4,position2:height-height/3};
 
 		//Calculate Max values for scales
@@ -398,7 +398,7 @@ function histogramTableGraph(queryData){
 	    var graph = svg.append("g")
 	        .attrs({
 	        	"class": "sampleData",
-	        	"transform": "translate(" + margin.left + "," + margin.top + ")"
+	        	"transform": "translate(" + margin.left + "," + (-10) + ")"
 	        })
 	    //Creates incoming Data bar
 	    var incoming = graph.append("g")
@@ -1023,8 +1023,8 @@ function histogramTableGraph(queryData){
 					.duration(200)
 					.style("opacity", 1);
 		   	div.html("<p class ='mapTooltipname'> <span class='mapTooltipDescription'>" + description + "</span> <span style='display:inline-block; width: 2em;'> </span> <span class='mapTooltipSize'>" + linkSize + " </span> </p> <hr>" +
-   						 "<p> <span> Bucket: " + i + " </span> <span style='display:inline-block; width: 2em;'></span> <span>" + d3.min(d) + "-" + d3.max(d) + " Gb/s</span> <hr> </p>" +
-   						 "<p class='textTotalData'>" + d.length + " elements</p> <hr> " +
+   						 "<p> <span class='textTotalData'> " + d.length + " elements</span> <span style='display:inline-block; width: 4em;'></span> <span>" + d3.min(d) + "-" + d3.max(d) + " Gb/s</span> <hr> </p>" +
+   						// "<p class='textTotalData'>" + d.length + " elements</p> <hr> " +
    						 "<p>Avg:<p>"+
    						 "<p><span class='mapTooltipValue'>" + d3.mean(d).toFixed(2) + " Gb/s </span></p>")
 		       .style("left", xPos + "px")

@@ -271,20 +271,21 @@ function histogramTableGraph(queryData){
 	          linkSize ="";
 	        }
 			div = d3.select(".tableTooltip");
-			var returnedIndeces = indexOfElement(d,i,linkID,type);
+			//Highlight of the dots in linechart need to see how to make it right
 			var typeSelector;
+			let changedot = d.toString().split('.');
+			changedot = changedot[0] + "-" +changedot[1]
 			if(type==="Incoming"){
-					//Dont forget the space
-					typeSelector = " #inputDataPlaceholder";
-				}else if (type==="Outgoing"){
-					typeSelector = " #outputDataPlaceholder";
-				}
-			for(var j=0; j<returnedIndeces.length;j++){
-				d3.selectAll(".lineChartHistogram-" + linkID + typeSelector + returnedIndeces[j]).transition()
-    			.duration(200)
-    			.attr("r","0.5em")
-    			.style("fill","rgba(247, 201, 132, 1)")
+				//Dont forget the space
+				typeSelector = " .inputDataPlaceholder";
+			}else if (type==="Outgoing"){
+				typeSelector = " .outputDataPlaceholder";
 			}
+			d3.selectAll(".lineChartHistogram"+linkID+ " " + typeSelector+changedot )
+				.transition()
+				.duration(200)
+				.attr("r","0.5em")
+				.style("fill","rgba(247, 201, 132, 1)")
 			div.transition()
    				.duration(200)
    				.style("opacity", 1);
@@ -295,9 +296,10 @@ function histogramTableGraph(queryData){
 		}
 		function handleMouseOut(d,i){
 			div = d3.select(".tableTooltip");
-			d3.selectAll(".lineChartHistogram .dataPlaceholder").transition()
+			d3.selectAll(".lineChartHistogram .dataPlaceholder")
+				.transition()
     			.duration(200)
-    			.attr("r","0.05em")
+    			.attr("r","0em")
     			.style("fill","none")
 			div.transition()
    				.duration(200)
@@ -636,8 +638,8 @@ function histogramTableGraph(queryData){
 	    	.on("mouseout",handleMouseOut);
 	   	var graph = svg.append("g")
 	        .attrs({
-	        	"class": function(d,i) { return "lineChartHistogram"},
-	        	"id": function(d,i){ return "line-0"},
+	        	"class": function(d,i) { return "lineChartHistogram lineChartHistogram" +i},
+	        	// "id": function(d,i){ return "line-"+i},
 	        	"transform": "translate(" + (margin.left) + "," + margin.top + ")"
 	        })
 		graph.append("g")
@@ -676,7 +678,11 @@ function histogramTableGraph(queryData){
 	      	.attrs({
             	cx: function (d,i) {return x(d[0]); },
             	cy: function (d,i) { return yIncoming(d[1]); },
-            	class: function(d,i){ return "dataPlaceholder";},
+            	class: function(d,i){
+            		let changedot = d[1].toString().split('.');
+					changedot = changedot[0] + "-" +changedot[1]
+            	 	return "dataPlaceholder inputDataPlaceholder" + changedot;
+            	 },
            	 	id: function(d,i){ return "inputDataPlaceholder" + i;},
             	"r":"0em",
             	"transform": "translate(" + 2 + ",0)"
@@ -694,8 +700,8 @@ function histogramTableGraph(queryData){
 	    	.on("mouseout",handleMouseOut);
 	   	var graph = svg.append("g")
 	        .attrs({
-	        	"class": function(d,i) { return "lineChartHistogram"},
-	        	"id": function(d,i){ return "line-1"},
+	        	"class": function(d,i) { return "lineChartHistogram lineChartHistogram"+i},
+	        	// "id": function(d,i){ return "line"+i},
 	        	"transform": "translate(" + (margin.left) + "," + margin.top + ")"
 	        });
 		//We only add one xAxis at the middle of both graphs
@@ -740,7 +746,11 @@ function histogramTableGraph(queryData){
 		      .attrs({
                 cx: function (d,i) { return x(d[0]); },
                 cy: function (d,i) { return yOutgoing(d[1]); },
-                class: function(d,i){ return "dataPlaceholder";},
+                class: function(d,i){
+                	let changedot = d[1].toString().split('.');
+					changedot = changedot[0] + "-" +changedot[1];
+            	 	return "dataPlaceholder outputDataPlaceholder" + changedot;
+            		},
                 id: function(d,i){ return "outputDataPlaceholder" + i;},
                 "r":"0em",
                 "transform": "translate(" + 2 + ",0)"

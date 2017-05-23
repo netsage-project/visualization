@@ -353,7 +353,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 						//Create Table
 						histogramTableGraph(queryObjects[counter]);
 						//if(window.location.pathname==="/dashboard.html" || window.location.pathname==="/netsage/dashboard.html")
-						//lineChart(queryObjects[counter]);
+						lineChart(queryObjects[counter]);
 					}else if(queryObjects[counter].queryType==="1"){//Periodic Patterns
 						periodicPattern(queryObjects[counter]);
 					}

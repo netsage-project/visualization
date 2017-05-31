@@ -100,11 +100,11 @@ body{
 .querySelector #submit{
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-size: 1em;
-  background-color:white;
+  background-color: white;
   position: relative;
-  border-style: solid;
-  top: -3em;
-  left: 1.2em;
+  border: 0em;
+  top: -2.2em;
+  left: 1.3em;
   border-radius: 100%;
   height: 3em;
   width: 3em;
@@ -196,7 +196,7 @@ body{
     -webkit-transform: scale(2);
     transform: scale(2);
     position: relative;
-    left: 15em;
+    left: -12.5em;
     top: 1em;
 }
 
@@ -207,14 +207,14 @@ body{
 .topAppRegion{
   display:inline-flex;
   margin-bottom:2em;
-  /*width:330em;*/
+  min-width: 96em;
 }
 
 #infoDiv-map{
   position: absolute;
-  top: 22.4em;
+  top: 43.4em;
   width: 26em;
-  left: 31.6em;
+  left: 42.2em;
   background: rgba(247, 201, 132, 1);
   border: 1px solid black;
   padding: 5px;
@@ -222,7 +222,7 @@ body{
 
 #infoDiv-table{
     position: absolute;
-    top: 58.5em;
+    top: 57.5em;
     width: 26em;
     left: 2.6em;
     background: rgba(247, 201, 132, 1);
@@ -232,28 +232,28 @@ body{
 
 #infoDiv-networkSummary{
     position: absolute;
-    top: 24.0em;
-    width: 26em;
-    left: 2.6em;
+    top: 46em;
+    width: 23em;
+    left: 0.6em;
     background: rgba(247, 201, 132, 1);
     border: 1px solid black;
     padding: 5px;
 }
 
 #infoDashboardDiv-map{
-  position: absolute;
-  top: 7.1em;
-  width: 26em;
-  left: 31.6em;
-  background: rgba(247, 201, 132, 1);
-  border: 1px solid black;
-  padding: 5px;
+    position: absolute;
+    top: 1.4em;
+    width: 57em;
+    left: 25.2em;
+    background: rgba(247, 201, 132, 1);
+    border: 1px solid black;
+    padding: 5px;
 }
 
 #infoDashboardDiv-networkSummary{
-  position: absolute;
-    top: 8.3em;
-    width: 26em;
+    position: absolute;
+    top: 37.3em;
+    width: 20em;
     left: 2.6em;
     background: rgba(247, 201, 132, 1);
     border: 1px solid black;
@@ -262,7 +262,7 @@ body{
 
 #infoDashboardDiv-table{
   position: absolute;
-  top: 43.3em;
+  top: 50.3em;
   width: 26em;
   left: 2.6em;
   background: rgba(247, 201, 132, 1);
@@ -272,9 +272,9 @@ body{
 
 #infoDashboardDiv-line{
   position: absolute;
-  top: 126em;
+  top: 116em;
   width: 26em;
-  left: 2.5em;
+  left: 32.5em;
   background: rgba(247, 201, 132, 1);
   border: 1px solid black;
   padding: 5px;
@@ -283,7 +283,7 @@ body{
 .NetworkSummary{
   float:left;
   position: relative;
-  top:5em;
+  top:6em;
   margin-left: 2em;
   margin-right: 2em;
 }
@@ -305,9 +305,9 @@ body{
 }
 
 .NetworkSummary .mapTooltipValueType{
-  font-size:1.5em;
+  font-size:1.1em;
   position: relative;
-  left: -0.6em;
+  left: 0.2em;
 }
 
 .NetworkSummary .valuesLine{
@@ -317,7 +317,7 @@ body{
 
 
 .NetworkSummary .mapTooltipValue{
-  font-size: 2em;
+  font-size: 1.7em;
   color:black;
   font-weight: bold;
   text-align: center;
@@ -342,19 +342,19 @@ body{
   color: rgba(52, 100, 222, 1);
   position: relative;
   top:-0.15em;
-  font-size:1.4em;
+  font-size:0.9em;
   font-weight: bold;
   text-align: center;
 }
 
 .NetworkSummary .mapTooltipScale{
   text-align: center;
-  font-size: 2em;
+  font-size: 1.5em;
 }
 
 .NetworkSummary .networkTimeFrame{
   text-align: center;
-  font-size: 1.3em;
+  font-size: 1em;
 }
 
 /*************************** END Application Region Style *****************************/
@@ -363,6 +363,7 @@ body{
     margin-left: 2em;
     position: relative;
     text-align: center;
+    max-width: 94em;
 }
 
 .multipleHistogram .xAxis{
@@ -460,15 +461,15 @@ body{
 }
 
 .multipleHistogram .totalDataTotalValue{
-  font-size: 1em;
+  font-size: 0.8em;
 }
 
 .multipleHistogram .histogramRowName{
-  font-size: 1.5em;
+  font-size: 1.3em;
 }
 
 .multipleHistogram .histogramOriginDestination{
-  font-size: 0.8em;
+  font-size: 0.6em;
 }
 
 .multipleHistogram .links-0-0-col0{
@@ -480,6 +481,86 @@ body{
 .multipleHistogram .links-0-0-col5{
   padding-right: 2em;
   padding-left: 2em;
+}
+
+.tableTooltip {
+    position: absolute;
+    text-align: center;
+    padding-left:0.4em;
+    padding-right:0.4em;
+    background: rgba(247, 201, 132, 1);
+    /*border: 1px solid black;*/
+    pointer-events: none;
+    min-width: 17em;
+}
+
+.tableTooltip .mapTooltipname{
+  font-weight: bold;
+  font-size: 1em;
+}
+
+.tableTooltip .mapTooltipname .mapTooltipDescription{
+  float: left;
+}
+
+.tableTooltip .mapTooltipname .mapTooltipSize{
+  font-weight: bold;
+}
+
+.tableTooltip p {
+  margin:0.4em;
+}
+
+.tableTooltip .mapTooltipValue{
+  font-size: 1.8em;
+  color:black;
+  font-weight: bold;
+}
+
+.tableTooltip .mapTooptipValueIncoming{
+  float:left;
+}
+
+.tableTooltip .mapTooptipValueOutgoing{
+  float:left;
+}
+
+.tableTooltip .mapTooltipDimension{
+  color: rgba(52, 100, 222, 1);
+  position: relative;
+  top:-0.15em;
+  font-size:1.4em;
+  font-weight: bold;
+  left:-0.5em;
+}
+
+.tableTooltip #mapTooltipTransferDimension{
+  color: rgba(52, 100, 222, 1);
+  position: relative;
+  top:-0.15em;
+  font-size:1.4em;
+  font-weight: bold;
+}
+
+.tableTooltip .mapTooltipValueType{
+  font-size: 1.3em;
+}
+
+.tableTooltip .mapTooltipValueTypeIncoming{
+  float:left;
+}
+
+.tableTooltip .mapTooltipScale{
+  text-align: center;
+  font-size: 2em;
+}
+
+.tableTooltip .mapTooltipDimension .mapTooltipTransferDimension{
+  margin-bottom: 0em
+}
+
+.tableTooltip .textTotalData{
+  color: rgba(52, 100, 222, 1);
 }
 /*************************** END Histogram Style *****************************/
 /*************************** LineChart Style *****************************/
@@ -497,8 +578,8 @@ body{
 
 #lineChart .line {
   fill: none;
-  stroke-width: 0.06em;
-  stroke-opacity:0.4;
+  stroke-width: 0.1em;
+  stroke-opacity:0.7;
 }
 
 .lineChartLegendNames{
@@ -509,7 +590,7 @@ body{
 /*************************** Map Style *****************************/
 .map{
   border: 1px solid black;
-  width:1215px;
+  /*width:1215px;*/
   height:500px;
   display: inline-block;
   float:left;
@@ -539,7 +620,7 @@ body{
     background: rgba(247, 201, 132, 1);
     /*border: 1px solid black;*/
     pointer-events: none;
-    min-width:16em;
+    min-width:35em;
 }
 
 .mapTooltip .mapTooltipname{
@@ -560,7 +641,7 @@ body{
 }
 
 .mapTooltip .mapTooltipValue{
-  font-size: 2em;
+  font-size: 1.8em;
   color:black;
   font-weight: bold;
 }

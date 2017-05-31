@@ -44,7 +44,7 @@ function mapGraph(data){
             linkSize = "100GE"
           }
           else if(data.links[i].description.split('10GE').length > 1){
-            description = data.links[i].description.split('100GE')[0]
+            description = data.links[i].description.split('10GE')[0]
             linkSize = "10GE"
           }else{
             description = link[i].description;
@@ -57,7 +57,7 @@ function mapGraph(data){
             linkSize = "100GE"
           }
           else if(d.name.split('10GE').length > 1){
-            description = d.name.split('100GE')[0]
+            description = d.name.split('10GE')[0]
             linkSize = "10GE"
           }else{
             description = d.name;
@@ -66,16 +66,16 @@ function mapGraph(data){
         }
       //If Mouseover Link with Data
       if(this.classList[0]==="links"){
-        div.html("<p class ='mapTooltipname'> <span class='mapTooltipDescription'>" + description + "</span> <span style='display:inline-block; width: 19em;'> </span> <span class='mapTooltipSize'>" + linkSize + " </span> </p> <hr>" +
-           "<p class='mapTooltipDimension' > <span id='outDimension' > Incoming <span style='display:inline-block; width: 8.0em;'></span> </span> <span id='inDimension'> <span style='display:inline-block; width: 4.0em;'> Outgoing </span> </p>"+
-           "<p class='mapTooltipValueType'> <span class='mapTooltipValueTypeOutgoing'> <span id='mapTooltipMax'>Max</span> <span style='display:inline-block; width: 2.2em;'></span> <span id='mapTooltipAvg'> Avg </span> <span style='display:inline-block; width: 2.2em;'></span> <span id='mapTooltipMin'>Min</span> </span> <span class='mapTooltipValueTypeIncoming'> <span style='display:inline-block; width: 0.2em;'></span> <span id='mapTooltipMax'>Max</span> <span style='display:inline-block; width: 2em;'></span> <span id='mapTooltipAvg'> Avg </span> <span style='display:inline-block; width: 2em;'></span> <span id='mapTooltipMin'>Min</span> <span style='display:inline-block; width: 3em;'></span> </span> </p>" +
+        div.html("<p class ='mapTooltipname'> <span class='mapTooltipDescription'>" + description + "</span> <span style='display:inline-block; width: 14em;'> </span> <span class='mapTooltipSize'>" + linkSize + " </span> </p> <hr>" +
+           "<p class='mapTooltipDimension' > <span style='display:inline-block; width: 1.0em;'> </span> <span> Incoming </span> <span style='display:inline-block; width: 8.0em;'></span> <span>Outgoing </span> </p>"+
+           "<p class='mapTooltipValueType'> <span class='mapTooltipValueTypeOutgoing'> <span id='mapTooltipMax'>Max</span> <span style='display:inline-block; width: 1.5em;'></span> <span id='mapTooltipAvg'> Avg </span> <span style='display:inline-block; width: 1.8em;'></span> <span id='mapTooltipMin'>Min</span> </span> <span class='mapTooltipValueTypeIncoming'> <span style='display:inline-block; width: 0.2em;'></span> <span id='mapTooltipMax'>Max</span> <span style='display:inline-block; width: 1.5em;'></span> <span id='mapTooltipAvg'> Avg </span> <span style='display:inline-block; width: 1.8em;'></span> <span id='mapTooltipMin'>Min</span> <span style='display:inline-block; width: 2.7em;'></span> </span> </p>" +
            "<p> <span class='mapTooltipValueOutgoing'> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.input.max) + " </span> <span style='display:inline-block; width: 1em;'></span> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.input.avg) + " </span> <span style='display:inline-block; width: 1em;'></span> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.input.min) + " </span> </span>" +  " <span style='display:inline-block; width: 0.3em;'></span> <span class='mapTooptipValueIncoming'> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.output.max) + "</span> <span style='display:inline-block; width: 1em;'></span> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.output.avg) + "</span> <span style='display:inline-block; width: 1em;'></span> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.output.min) + "</span> <span style='display:inline-block; width: 4em;'></span> </span>" +
            "<p class ='mapTooltipScale'> Gb/s </p> <hr>" +
            "<p id='mapTooltipTransferDimension'> Total Transferred</p><p class='mapTooltipValue'>" + d3.format(".2f")((data.links[i].data.totalData[0] + data.links[i].data.totalData[1])/1024/8) + " TB </p>")
            .style("left", xPos + "px")
            .style("top", yPos + "px");
       }else{
-        div.html("<p class ='mapTooltipname'> <span class='mapTooltipDescription'>" + description + "</span> <span style='display:inline-block; width: 17.8em;'> </span> <span class='mapTooltipSize'>" + linkSize + " </span> </p> <hr>")
+        div.html("<p class ='mapTooltipname'> <span class='mapTooltipDescription'>" + description + "</span> <span style='display:inline-block; width: 14em;'> </span> <span class='mapTooltipSize'>" + linkSize + " </span> </p> <hr>")
            .style("left", xPos + "px")
            .style("top", yPos + "px");
       }
@@ -191,7 +191,7 @@ function mapGraph(data){
     })
     .style("opacity", 0);
   var margin = {top: 0, right: 0, bottom: 0, left: 60},
-        width = 1215 - margin.left - margin.right,
+        width = 1150 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
   var svgMap = d3.select("#topAppRegion"+counter)
       .append("div")
@@ -258,7 +258,7 @@ function mapGraph(data){
               return ((linkValues[i].max_bandwidth/10000000000) + 2 + 3 )}, //Transform to Terabyte and adjust size. We add a few extra pixels so that a border appears around the links.
          })
          .on("mouseover",handleMouseOver)
-         .on("mouseout",handleMouseOut);
+         //.on("mouseout",handleMouseOut);
 
       //After we create the Real Links so they render on top
       map.selectAll(".links")

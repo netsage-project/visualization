@@ -6,7 +6,7 @@ function histogramTableGraph(queryData){
 	var columns;
 	// Create margins
     var margin = {top: 2, right: 5, bottom: 16, left:15, nameLeft:30, histogramLeft: 0},
-    	width = 320 - margin.left - margin.right,
+    	width = 237 - margin.left - margin.right,
    		height = 120 - margin.top - margin.bottom;
 	//Order the data and launch tables
 	sortObjects(queryData.links,".data.input.avg");
@@ -20,7 +20,7 @@ function histogramTableGraph(queryData){
 	//Convert to dragtable
 	//$('table').dragtable();
 	//Create static header
-	staticHeader("#multipleHistogram-links-"+counter);
+	// staticHeader("#multipleHistogram-links-"+counter);
 	//staticHeader("#multipleHistogram-nodes-"+counter);
 
 	//#################################### AUX FUNCTIONS ###########################
@@ -76,7 +76,7 @@ function histogramTableGraph(queryData){
 			      .duration(500)
 			      .style('stroke-width','2')
 			      .attr('r',15)
-			    div = d3.select("#mapTooltip");
+			    div = d3.select(".tableTooltip");
 			    div.transition()
 			       .duration(500)
 			       .style("opacity", 0);
@@ -107,7 +107,7 @@ function histogramTableGraph(queryData){
 			      .style('stroke-width','1')
 			      .attr('r',10)
 			    var nodeLinks="";
-			    div = d3.select("#mapTooltip");
+			    div = d3.select(".tableTooltip");
 			    div.transition()
 			       .duration(1000)
 			       .style("opacity", 0);
@@ -140,10 +140,10 @@ function histogramTableGraph(queryData){
 	        .style("background-color", function(d,i){ return ((i % 2 == 0) ? "rgba(63, 191, 127, 0.4)" : "rgba(63, 191, 127, 0.2)");})
 	       	.on("mouseover",handleMouseOverRow)
 	       	.on("mouseout",handleMouseOutRow);
-			var div = d3.select(".applicationRegion").append("div")
+			var div = d3.select("body").append("div")
 			    .attrs({
 			    	"id": tableName+"-tableTooltip",
-			    	"class": "tableTooltip mapTooltip",
+			    	"class": "tableTooltip",
 			    	"z-index":10
 			    })
 			    .style("opacity", 0);
@@ -679,9 +679,11 @@ function histogramTableGraph(queryData){
             	cx: function (d,i) {return x(d[0]); },
             	cy: function (d,i) { return yIncoming(d[1]); },
             	class: function(d,i){
-            		let changedot = d[1].toString().split('.');
-					changedot = changedot[0] + "-" +changedot[1]
-            	 	return "dataPlaceholder inputDataPlaceholder" + changedot;
+            		if(d[1]!==null){
+	            		let changedot = d[1].toString().split('.');
+						changedot = changedot[0] + "-" +changedot[1]
+	            	 	return "dataPlaceholder inputDataPlaceholder" + changedot;
+	            	 }
             	 },
            	 	id: function(d,i){ return "inputDataPlaceholder" + i;},
             	"r":"0em",
@@ -747,10 +749,12 @@ function histogramTableGraph(queryData){
                 cx: function (d,i) { return x(d[0]); },
                 cy: function (d,i) { return yOutgoing(d[1]); },
                 class: function(d,i){
-                	let changedot = d[1].toString().split('.');
-					changedot = changedot[0] + "-" +changedot[1];
-            	 	return "dataPlaceholder outputDataPlaceholder" + changedot;
-            		},
+                	if(d[1]!==null){
+                		let changedot = d[1].toString().split('.');
+						changedot = changedot[0] + "-" +changedot[1];
+            	 		return "dataPlaceholder outputDataPlaceholder" + changedot;
+            	 	}
+            	},
                 id: function(d,i){ return "outputDataPlaceholder" + i;},
                 "r":"0em",
                 "transform": "translate(" + 2 + ",0)"
@@ -815,17 +819,17 @@ function histogramTableGraph(queryData){
 	   	width = width/2;
 	   	let svgWidth, incomingXPos, outgoingXPos,graphPos;
 	   	if(digitSize<5){
-	   		svgWidth = width * 2 + 60;
+	   		svgWidth = width * 2 + 70;
 	   		graphPos = 80;
-	   		incomingXPos = 10;
+	   		incomingXPos = 0;
 	   	}else if(digitSize<7){
 	   		svgWidth = width * 2 + 100;
 	   		graphPos = 100;
 	   		incomingXPos = -15;
 	   	}else{
-	   		svgWidth = width * 2 + 120;
+	   		svgWidth = width * 2 + 140;
 	   		graphPos = 125;
-	   		incomingXPos = -15;
+	   		incomingXPos = -20;
 	   	}
     	var barwidth = 30;
     	var position = {position1: height/4 , position2: height - height/3}
@@ -888,7 +892,7 @@ function histogramTableGraph(queryData){
 				"width": function(d,i){ return x(eval("queryObjects[" + this.classList[0].split("-")[1] + "]." + this.classList[0].split("-")[0]+"[i].data.totalData[0]")); }
 			  })
 			.on("mouseover",handleMouseOver)
-			.on("mouseout",handleMouseOut)
+			// .on("mouseout",handleMouseOut)
 		//totalOutput
 		var totalOutput = graph.append("g")
 	        .attrs({
@@ -1032,7 +1036,7 @@ function histogramTableGraph(queryData){
 			div.transition()
 					.duration(200)
 					.style("opacity", 1);
-		   	div.html("<p class ='mapTooltipname'> <span class='mapTooltipDescription'>" + description + "</span> <span style='display:inline-block; width: 2em;'> </span> <span class='mapTooltipSize'>" + linkSize + " </span> </p> <hr>" +
+		   	div.html("<p class ='tableTooltip'> <span class='mapTooltipDescription'>" + description + "</span> <span style='display:inline-block; width: 2em;'> </span> <span class='mapTooltipSize'>" + linkSize + " </span> </p> <hr>" +
    						 "<p> <span class='textTotalData'> " + d.length + " elements</span> <span style='display:inline-block; width: 4em;'></span> <span>" + d3.min(d) + "-" + d3.max(d) + " Gb/s</span> <hr> </p>" +
    						// "<p class='textTotalData'>" + d.length + " elements</p> <hr> " +
    						 "<p>Avg:<p>"+

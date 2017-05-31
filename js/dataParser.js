@@ -456,21 +456,83 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 			"id": "AppRegion"+counter,
 			"class": "applicationRegion"
 		})
-		.style("float","left")
+		.styles({
+			"min-width": "98em"
+		})
+		if(window.location.pathname==="/dashboard.html" || window.location.pathname==="/netsage/dashboard.html"){
+			appRegion.styles({
+				"position": "relative",
+				"top": "8em"
+			})
+		}
 		var queryTextDiv = appRegion.append("div")
 		.attrs({
 			"id": "query"+counter,
 			"class": "queryTextAppRegion"
 		})
-		queryTextDiv.append("span")
+	}
+
+	function calculateIRNCData(query){
+		let network = {'totalData':0,'avg':0,'max':0,'min':0};
+		let max=[], avg=[], min=[];
+		//The input from a link is the output of another so we only iterate the inputs to calculate the values for the whole network
+		for(let i=0;i<query.links.length;i++){
+			max.push(query.links[i].data.input.max);
+			avg.push(query.links[i].data.input.avg);
+			min.push(query.links[i].data.input.min);
+			network.totalData += (query.links[i].data.totalData[0] + query.links[i].data.totalData[1])
+		}
+	    //We store the total data in the network
+	    network.totalData = (network.totalData)/1024/8;
+		network.max = d3.max(max);
+		network.min = d3.min(min);
+		network.avg = d3.mean(avg);
+
+		return network;
+	}
+
+	function drawNetworkSummary(query){
+		//Variables to parse date
+		let parseWeekDay = d3.timeFormat('%A');
+		let parseDayMonthYear = d3.timeFormat('%d-%B-%Y');
+		let parseTime = d3.timeFormat('%H:%M')
+		//Variables to store dates
+		let start = new Date(query.date[0]);
+		let stop = new Date(query.date[1]);
+		let netSummary = d3.select("#AppRegion"+counter)
+	      .append("div")
+	      .attrs({
+	        "id":"topAppRegion"+counter,
+	        "class":"topAppRegion"
+	      })
+	      .styles({
+	      	"height":"34em"
+	      })
+	      .append("div")
+	      .attrs({
+	        "id":"NetworkSummary"+counter,
+	        "class":"NetworkSummary"
+	      })
+	      d3.select("#topAppRegion"+counter).append("span")
 			.attrs({
 				class:"ui-icon ui-icon-info noShowInfo"
 			})
-		.on("click",handleClick)
-		// queryTextDiv.append("p")
-		// .html(queryText);
+		  .on("click",handleClick)
+		  if(window.location.pathname==="/dashboard.html" || window.location.pathname==="/netsage/dashboard.html"){
+				// d3.select("#topAppRegion"+counter).styles({
+				// 	"position": "relative",
+				// 	"left": "-5em"
+				// })
+			}
+	      netSummary.html("<p class='mapTooltipValueType'> <span class='mapTooltipValueTypeIncoming'> <span style='display:inline-block; width: 2em;'></span> <span id='mapTooltipMax'>Max</span> <span style='display:inline-block; width: 3.3em;'></span> <span id='mapTooltipAvg'> Avg </span> <span style='display:inline-block; width: 3.3em;'></span> <span id='mapTooltipMin'>Min</span> </p>" +
+           "<p class='valuesLine'> <span style='display:inline-block; width: 0.5em;'></span> <span class='mapTooltipValue Networkmax'>" + d3.format(".2f")(query.network.max) + "</span> <span style='display:inline-block; width: 2.2em;'></span> <span class='mapTooltipValue Networkavg'>" + d3.format(".2f")(query.network.avg) + "</span> <span style='display:inline-block; width: 2.2em;'></span> <span class='mapTooltipValue Networkmin'>" + d3.format(".2f")(query.network.min) + "</span> <span style='display:inline-block; width: 4em;'></span> </span>" +
+           "<p class ='mapTooltipScale'> Gb/s </p> <hr>" +
+           "<p class='mapTooltipDimension' id='mapTooltipTransferDimension'> Total Transferred</p><p class='mapTooltipValue'>" + d3.format(".0f")(query.network.totalData) + " TB </p> <hr>" +
+           "<p class='networkTimeFrame'> <span> " + parseDayMonthYear(start) + "</span> <span style='display:inline-block; width: 1em;'> </span> <span> to </span> <span style='display:inline-block; width: 1em;'></span> <span>" + parseDayMonthYear(stop) + "</span></p>" +
+           "<p class='networkTimeFrame' id='networkTimeFrameHour'> <span> " + parseTime(start) + "</span> <span style='display:inline-block; width: 7em;'></span> <span>" + parseTime(stop) + "</span></p>"+
+           "<p class ='mapTooltipScale'> " + query.locale + "</p>")
 
-		function handleClick(){
+	      function handleClick(){
 			var text;
 			if(this.classList[2]==="showInfo"){
 				d3.select(this)
@@ -558,7 +620,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 				}
 				text0 = "<p>The NetSage dashboard updates every 30 seconds showing the last 3 hours of information about IRNC Network. Click on Ask NetSage above to perform a custom query.</p> <p>The map shows the state of the links and nodes, where the size of the links represent the relative bandwidth of the connection. Links are colored in a blue scale while nodes are colored using an orange scale, gray links and white nodes have no data for the last 3 hours.</p>";
 				text01 = "<p>The table below shows more detailed information about the links and nodes.</p> <p> The first column shows the distribution of measurements for a specific link. Where the width of the rectangle represents the maximun and minimun measurements for the period selected. The top rectangle represents incoming data and the bottom rectangle represents outgoing data. Each vertical line represents a measurement for that specific link. The more measurements in the same region the darker it shows in the diagram. Allowing users to detect the operating regime for the specific network element </p> <p> The next column, shows the evolution in time of the measurements for a specific network element. The top graph represents incoming and the bottom graph represents outgoing data. </p> <p> The next two columns show bandwidth histograms of incoming and outgoing bandwidth for the links and nodes, as well as their maximum and average values.</p> <p> The last column of the table shows the incoming and outgoing data transferred per network element relative to the total incoming and outgoing data transmitted by all the network elements.</p> <p> Note that columns 1, 2 and 5 are aligned for all the network elements to allow fair comparison accross them. Column 3 and 4 are not aligned in order to help users understand the form of the distributions for each network element.</p>";
-				text02 = "<p>The charts below show the bandwidth of the incoming and outgoing transmissions made in the last 3 hours.</p>"
+				text02 = "<p>The charts below show the bandwidth of the incoming and outgoing transmissions made in the period selected. Because all the Network elements are present in the graph is easier to compare differeces betweem elements this way. </p>"
 
 				if(location==="0") return text0;
 				else if(location==="01") return text01;
@@ -568,56 +630,6 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 				else if (location==="13") return text13;
 			}
 		}
-	}
-
-	function calculateIRNCData(query){
-		let network = {'totalData':0,'avg':0,'max':0,'min':0};
-		let max=[], avg=[], min=[];
-		//The input from a link is the output of another so we only iterate the inputs to calculate the values for the whole network
-		for(let i=0;i<query.links.length;i++){
-			max.push(query.links[i].data.input.max);
-			avg.push(query.links[i].data.input.avg);
-			min.push(query.links[i].data.input.min);
-			network.totalData += (query.links[i].data.totalData[0] + query.links[i].data.totalData[1])
-		}
-	    //We store the total data in the network
-	    network.totalData = (network.totalData)/1024/8;
-		network.max = d3.max(max);
-		network.min = d3.min(min);
-		network.avg = d3.mean(avg);
-
-		return network;
-	}
-
-	function drawNetworkSummary(query){
-		//Variables to parse date
-		let parseWeekDay = d3.timeFormat('%A');
-		let parseDayMonthYear = d3.timeFormat('%d-%B-%Y');
-		let parseTime = d3.timeFormat('%H:%M')
-		//Variables to store dates
-		let start = new Date(query.date[0]);
-		let stop = new Date(query.date[1]);
-		let netSummary = d3.select("#AppRegion"+counter)
-	      .append("div")
-	      .attrs({
-	        "id":"topAppRegion"+counter,
-	        "class":"topAppRegion"
-	      })
-	      .styles({
-	      	"height":"34em"
-	      })
-	      .append("div")
-	      .attrs({
-	        "id":"NetworkSummary"+counter,
-	        "class":"NetworkSummary"
-	      })
-	      netSummary.html("<p class='mapTooltipValueType'> <span class='mapTooltipValueTypeIncoming'> <span style='display:inline-block; width: 2.2em;'></span> <span id='mapTooltipMax'>Max</span> <span style='display:inline-block; width: 3.4em;'></span> <span id='mapTooltipAvg'> Avg </span> <span style='display:inline-block; width: 3.4em;'></span> <span id='mapTooltipMin'>Min</span> </p>" +
-           "<p class='valuesLine'> <span style='display:inline-block; width: 1em;'></span> <span class='mapTooltipValue Networkmax'>" + d3.format(".2f")(query.network.max) + "</span> <span style='display:inline-block; width: 4em;'></span> <span class='mapTooltipValue Networkavg'>" + d3.format(".2f")(query.network.avg) + "</span> <span style='display:inline-block; width: 4em;'></span> <span class='mapTooltipValue Networkmin'>" + d3.format(".2f")(query.network.min) + "</span> <span style='display:inline-block; width: 4em;'></span> </span>" +
-           "<p class ='mapTooltipScale'> Gb/s </p> <hr>" +
-           "<p class='mapTooltipDimension' id='mapTooltipTransferDimension'> Total Transferred</p><p class='mapTooltipValue'>" + d3.format(".0f")(query.network.totalData) + " TB </p> <hr>" +
-           "<p class='networkTimeFrame'> <span> " + parseDayMonthYear(start) + "</span> <span style='display:inline-block; width: 1em;'> </span> <span> to </span> <span style='display:inline-block; width: 1em;'></span> <span>" + parseDayMonthYear(stop) + "</span></p>" +
-           "<p class='networkTimeFrame' id='networkTimeFrameHour'> <span> " + parseTime(start) + "</span> <span style='display:inline-block; width: 7em;'></span> <span>" + parseTime(stop) + "</span></p>"+
-           "<p class ='mapTooltipScale'> " + query.locale + "</p>")
 	}
 
 	//Function for TSDS PerfSonar Data

@@ -12,8 +12,8 @@ function lineChart(data){
 	//createLineCharts(nodes,"nodes");
 	function createLineCharts(data,type){
 		var margin = {top: 40, right: 10, bottom: 30, left: 40},
-	    	width = 610 - margin.left - margin.right,
-	    	height = 450 - margin.top - margin.bottom;
+	    	width = 720 - margin.left - margin.right,
+	    	height = 480 - margin.top - margin.bottom;
 
 		//Scales and Colors
 		////Calculate Max values for scales
@@ -60,7 +60,7 @@ function lineChart(data){
 		   			.attr("class","lineChartTitle")
 		   			.attr("transform","translate("+ 10 +", " + 10 + ")")
 		   			.append("text")
-		   			.text("Input for the last 3 hours (Gb/s)")
+		   			.text("Input (Gb/s)")
 
 		  svgInput.append("g")
 		      .attr("class", "x axis")
@@ -123,7 +123,7 @@ function lineChart(data){
 		   			.attr("class","lineChartTitle")
 		   			.attr("transform","translate("+ 10 +", " + 10 + ")")
 		   			.append("text")
-		   			.text("Output for the last 3 hours (Gb/s)")
+		   			.text("Output (Gb/s)")
 
 		  svgOutput.append("g")
 		      .attr("class", "x axis")

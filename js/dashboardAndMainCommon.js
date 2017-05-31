@@ -490,28 +490,25 @@ function queryComposer(date,fromURL,queryFromTab,isDashboard){
 		UTCDateStop = new Date(UTCDateStop.getUTCFullYear(), UTCDateStop.getUTCMonth(), UTCDateStop.getUTCDate(),  UTCDateStop.getUTCHours(), UTCDateStop.getUTCMinutes(), UTCDateStop.getUTCSeconds());
 		console.log(UTCDateStart);
 		console.log(UTCDateStop);
-		if (timeFrame === "time frame") {
-			if (avgOver==undefined) avgOver = 3600; //get avg per each hour. This is the data format the heatmaps are expecting.
-			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
-		}else if (timeFrame === "this year"){
-			if(queryType==="0") avgOver = 86400;
+		let totalTime = Math.floor((UTCDateStop - UTCDateStart) / (1000 * 60 * 60)); //In hours
+		if (totalTime <= 3){
+			if(queryType==="0") avgOver = 180;
 			else if(queryType==="1") avgOver = 3600;
 			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
-		} else if (timeFrame === "this month"){
-			if(queryType==="0") avgOver = 21600;
-			else if(queryType==="1") avgOver = 3600;
-			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
-		} else if (timeFrame === "last 7 days"){
-			if(queryType==="0") avgOver = 10800;
-			if(queryType==="1") avgOver = 3600;
-			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
-		}
-		else if (timeFrame === "today"){
+		}else if (totalTime <= 24){
 			if(queryType==="0") avgOver = 420;
 			if(queryType==="1") avgOver = 3600;
 			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
-		} else if (timeFrame === "now"){
-			if(queryType==="0") avgOver = 180;
+		}else if (totalTime <= 168){
+			if(queryType==="0") avgOver = 10800;
+			if(queryType==="1") avgOver = 3600;
+			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
+		} else if (totalTime <= 5208){
+			if(queryType==="0") avgOver = 21600;
+			else if(queryType ==="1") avgOver = 3600;
+			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
+		}else if (totalTime > 5208){
+			if(queryType==="0") avgOver = 86400;
 			else if(queryType==="1") avgOver = 3600;
 			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
 		}

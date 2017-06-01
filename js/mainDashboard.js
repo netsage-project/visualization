@@ -1,13 +1,15 @@
-//Every 60 seconds we execute the query again
+//Every 5 minutes
 setInterval(main, 300000);
 function main (){
 	$(".querySelector").remove();
 	$(".applicationRegion").remove()
+	// $("#infoDashboardDiv-map").remove();
+	// $("#infoDashboardDiv-table").remove();
+	// $("#infoDashboardDiv-line").remove();
+	$(".tableTooltip").remove();
+	// tableTooltip
 	dashboardForm();
 	$("#queryForm").remove();
-	$("#infoDashboardDiv-map").remove();
-	$("#infoDashboardDiv-table").remove();
-	$("#infoDashboardDiv-line").remove();
 }
 
 function dashboardForm(){

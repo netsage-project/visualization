@@ -15,7 +15,7 @@ function histogramTableGraph(queryData){
 	//sortObjects(queryData.nodes,".data.input.avg");
 	queryData.graphs.table.links = queryData.links;
 	//queryData.graphs.table.nodes = queryData.nodes;
-	columns = ["Links","Bandwidth Distribution (Gb/s)","Evolution in Time (Gb/s)","(A to Z) Bandwidth (Gb/s)", "(Z to A) Bandwidth (Gb/s)","Total Data (TB)"];
+	columns = ["Links","Bandwidth Distribution (Gb/s)","Traffic Volume (Gb/s)","(A to Z) Bandwidth (Gb/s)", "(Z to A) Bandwidth (Gb/s)","Total Data (TB)"];
     startTable("links-"+counter,queryData.graphs.table.links);
     //columns = ["Nodes","Incoming Bandwidth (Gb/s)", "Outgoing Bandwidth (Gb/s)","Total Data (TB)"];
     //startTable("nodes-"+counter,queryData.graphs.table.nodes);

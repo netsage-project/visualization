@@ -174,12 +174,12 @@ body{
   left:6.6em;
 }
 .mainInfo{
-  position: absolute;
-  top: -4.1em;
-  left: 15em;
-  -ms-transform: scale(2);
-  -webkit-transform: scale(2);
-  transform: scale(1.5);
+    position: absolute;
+    top: -7.5em;
+    left: 11em;
+    -ms-transform: scale(0.15);
+    -webkit-transform: scale(0.15);
+    transform: scale(0.15);
 }
 
 .mainInFoText{
@@ -204,13 +204,22 @@ body{
     float: left;
 }
 
-.applicationRegion .ui-icon-info{
-    -ms-transform: scale(1.5);
-    -webkit-transform: scale(1.5);
-    transform: scale(1.5);
-    position: relative;
-    left: -21em;
-    top: 0.6em;
+.applicationRegion .askNetSageInfo{
+    position: absolute;
+    top: 18.2em;
+    left: -0.8em;
+    -ms-transform: scale(0.15);
+    -webkit-transform: scale(0.15);
+    transform: scale(0.15);
+}
+
+.applicationRegion .askNetSageInfoDashBoard{
+    position: absolute;
+    top: -17em;
+    left: 17em;
+    -ms-transform: scale(0.15);
+    -webkit-transform: scale(0.15);
+    transform: scale(0.15);
 }
 
 .queryTextAppRegion{
@@ -285,22 +294,21 @@ body{
 
 #infoDashboardDiv-line{
   position: absolute;
-  top: 116em;
-  width: 26em;
-  left: 32.5em;
-  background: rgba(247, 201, 132, 1);
-  border: 1px solid black;
-  padding: 5px;
+    top: 135em;
+    width: 26em;
+    left: 5.5em;
+    background: rgba(247, 201, 132, 1);
+    border: 1px solid black;
+    padding: 5px;
 }
 
 .NetworkSummary{
     float: left;
     position: relative;
     margin-left: 2em;
-    margin-right: 2em;
     border: solid 1px black;
     margin: 0em;
-    height: 31.3em;
+    height: 31.25em;
 }
 
 .NetworkSummary .mapTooltipname{
@@ -607,7 +615,7 @@ body{
   /*width:1215px;*/
   height:500px;
   display: inline-block;
-  float:left;
+  margin-left: 1em;
 }
 .map path {
   stroke: black;

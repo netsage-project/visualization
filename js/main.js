@@ -117,19 +117,20 @@ function mainQueryForm(){
 				})
 				.html("Ask NetSage...");
 		//We add the info button only present in Main view
-		fieldset.append("span")
+		fieldset.append("img")
 					.attrs({
-						class:"ui-icon ui-icon-info mainInfo noShowInfo"
+						class:"mainInfo noShowInfo",
+						"src":"question-mark.png"
 					})
 					.on("click",function(){
-						if(this.classList[3]==="showInfo"){
+						if(this.classList[1]==="showInfo"){
 							d3.select(this)
-						  	  .attr("class","ui-icon ui-icon-info mainInfo noShowInfo")
+						  	  .attr("class","mainInfo noShowInfo")
 						}else{
 							d3.select(this)
-						  	  .attr("class","ui-icon ui-icon-info mainInfo showInfo")
+						  	  .attr("class","mainInfo showInfo")
 						}
-						if(this.classList[3]==="showInfo")
+						if(this.classList[1]==="showInfo")
 						{
 							d3.select("#fieldset").append("span")
 							.attrs({

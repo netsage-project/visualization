@@ -4,16 +4,18 @@ function histogramTableGraph(queryData){
 	//Hold the initial link color before selection
 	var linkColor;
 	var columns;
+	var xTooltipDisplacement = 20;
+	var yTooltipDisplacement = 30;
 	// Create margins
     var margin = {top: 2, right: 5, bottom: 16, left:15, nameLeft:30, histogramLeft: 0},
-    	width = 237 - margin.left - margin.right,
+    	width = 245 - margin.left - margin.right,
    		height = 120 - margin.top - margin.bottom;
 	//Order the data and launch tables
 	sortObjects(queryData.links,".data.input.avg");
 	//sortObjects(queryData.nodes,".data.input.avg");
 	queryData.graphs.table.links = queryData.links;
 	//queryData.graphs.table.nodes = queryData.nodes;
-	columns = ["Links","Bandwidth Distribution (Gb/s)","Evolution in time (Gb/s)","Total Data (TB)","Incoming Bandwidth (Gb/s)", "Outgoing Bandwidth (Gb/s)"];
+	columns = ["Links","Bandwidth Distribution (Gb/s)","Evolution in Time (Gb/s)","(A to Z) Bandwidth (Gb/s)", "(Z to A) Bandwidth (Gb/s)","Total Data (TB)"];
     startTable("links-"+counter,queryData.graphs.table.links);
     //columns = ["Nodes","Incoming Bandwidth (Gb/s)", "Outgoing Bandwidth (Gb/s)","Total Data (TB)"];
     //startTable("nodes-"+counter,queryData.graphs.table.nodes);
@@ -210,7 +212,7 @@ function histogramTableGraph(queryData){
 		    			destination =link['z_endpoint.name']
 		    			linkSize = "100GE"
 		    		}
-		    		return "<p class = 'histogramRowName'>" + name + "</p> <p class = 'histogramOriginDestination'>" + origin + " to " + destination + "</p>"
+		    		return "<p class = 'histogramRowName'>" + name + "</p> <p class = 'histogramOriginDestination'>" + origin + " to " + destination + "</p> <p class = 'histogramOriginDestination'> (A to Z) </p>"
 		    	});
 		}else{
 			var names = d3.selectAll("." + tableName + "-" + group + "-col" + 0)
@@ -254,8 +256,8 @@ function histogramTableGraph(queryData){
 			}
 			let description;
 			let linkSize;
-			let xPos = d3.mouse(d3.select('body').node())[0];
-        	let yPos = d3.mouse(d3.select('body').node())[1];
+			let xPos = d3.mouse(d3.select('body').node())[0] + xTooltipDisplacement;
+        	let yPos = d3.mouse(d3.select('body').node())[1] + yTooltipDisplacement;
         	var type = this.parentElement.classList[1].split('-')[1];
 			var linkID = this.parentElement.classList[1].split('-')[3];
 			let link = eval("queryObjects[0].links[" + linkID + "]");
@@ -283,7 +285,7 @@ function histogramTableGraph(queryData){
 				typeSelector = " .outputDataPlaceholder";
 				description = description.split(":")[1].split("to")[1]
 			}
-			d3.selectAll(".lineChartHistogram"+linkID+ " " + typeSelector+changedot )
+			d3.selectAll(".lineChartHistogram"+linkID+ " " + typeSelector + changedot )
 				.transition()
 				.duration(600)
 				.attr("r","0.5em")
@@ -402,7 +404,7 @@ function histogramTableGraph(queryData){
 	    var graph = svg.append("g")
 	        .attrs({
 	        	"class": "sampleData",
-	        	"transform": "translate(" + margin.left + "," + (-10) + ")"
+	        	"transform": "translate(" + margin.left + "," + (0) + ")"
 	        })
 	    //Creates incoming Data bar
 	    var incoming = graph.append("g")
@@ -485,8 +487,8 @@ function histogramTableGraph(queryData){
     	function handleMouseOver(d,i){
 			let description;
 			let linkSize;
-        	let xPos = d3.mouse(d3.select('body').node())[0];
-        	let yPos = d3.mouse(d3.select('body').node())[1];
+        	let xPos = d3.mouse(d3.select('body').node())[0] + xTooltipDisplacement;
+        	let yPos = d3.mouse(d3.select('body').node())[1] + yTooltipDisplacement;
     		var type = this.children[0].id.split("-")[1]; // 0 = input; 1= output
     		var linkID = +this.parentElement.parentElement.id;
     		var circles = d3.select(this).selectAll(".dataPlaceholder");
@@ -777,8 +779,8 @@ function histogramTableGraph(queryData){
     		let link = eval("queryObjects[" + this.classList[0].split("-")[1] + "].graphs.table." + this.classList[0].split("-")[0] + "[" + this.id.split("-")[3] + "]");
     		let description;
         	let linkSize;
-        	let xPos = d3.mouse(d3.select('body').node())[0];
-        	let yPos = d3.mouse(d3.select('body').node())[1];
+        	let xPos = d3.mouse(d3.select('body').node())[0] + xTooltipDisplacement;
+        	let yPos = d3.mouse(d3.select('body').node())[1] + yTooltipDisplacement;
 	        if(link.description.split('100GE').length > 1){
 	          description = link.description.split('100GE')[0]
 	          linkSize = "100GE"
@@ -851,7 +853,7 @@ function histogramTableGraph(queryData){
 	    var xAxis = d3.axisBottom()
 	        .scale(x);
 
-	    var svg=d3.selectAll("." + tableName + "-" + group + "-col" + "3").append("svg")
+	    var svg=d3.selectAll("." + tableName + "-" + group + "-col" + "5").append("svg")
 	   		.attrs({
 	      		"width": svgWidth,
 	      		"height": height + margin.top + margin.bottom,
@@ -1014,9 +1016,9 @@ function histogramTableGraph(queryData){
 		      	.scale(yOutgoing[j]));
 		    }
 		    //Input
-		    fillHistogramColumn(tableName,"." + tableName + "-" + group + "-col4","inputDataLayouts","input",inputDataLayouts,outputDataLayouts,xIncoming,xOutgoing,yIncoming,yOutgoing,xAxisIncoming,xAxisOutgoing,yAxisIncoming,yAxisOutgoing,data);
+		    fillHistogramColumn(tableName,"." + tableName + "-" + group + "-col3","inputDataLayouts","input",inputDataLayouts,outputDataLayouts,xIncoming,xOutgoing,yIncoming,yOutgoing,xAxisIncoming,xAxisOutgoing,yAxisIncoming,yAxisOutgoing,data);
 		    //Output
-		    fillHistogramColumn(tableName,"." + tableName + "-" + group + "-col5","outputDataLayouts","output",inputDataLayouts,outputDataLayouts,xIncoming,xOutgoing,yIncoming,yOutgoing,xAxisIncoming,xAxisOutgoing,yAxisIncoming,yAxisOutgoing,data);
+		    fillHistogramColumn(tableName,"." + tableName + "-" + group + "-col4","outputDataLayouts","output",inputDataLayouts,outputDataLayouts,xIncoming,xOutgoing,yIncoming,yOutgoing,xAxisIncoming,xAxisOutgoing,yAxisIncoming,yAxisOutgoing,data);
 	}
 	//############### function to draw the histogram Column ###############
     function fillHistogramColumn(tableName,colName,colData,legend,inputDataLayouts,outputDataLayouts,xIncoming,xOutgoing,yIncoming,yOutgoing,xAxisIncoming,xAxisOutgoing,yAxisIncoming,yAxisOugoing,data){
@@ -1027,8 +1029,8 @@ function histogramTableGraph(queryData){
 			let link = eval("queryObjects[0].links[" + linkNumber + "]");
 			let description;
 			let linkSize;
-        	let xPos = d3.mouse(d3.select('body').node())[0];
-        	let yPos = d3.mouse(d3.select('body').node())[1];
+        	let xPos = d3.mouse(d3.select('body').node())[0] + xTooltipDisplacement;
+        	let yPos = d3.mouse(d3.select('body').node())[1] + yTooltipDisplacement;
         	let column = this.parentElement.parentElement.parentElement.parentElement.parentElement.classList[1];
         	let direction;
         	if(link.description.split('100GE').length > 1){

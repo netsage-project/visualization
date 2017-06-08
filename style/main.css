@@ -10,6 +10,10 @@ body{
   /*rgba(230, 108, 0, 1.0) same color as logo bu button is different*/
 }
 
+.querySelector{
+  min-width: 46em;
+}
+
 .querySelector img{
   float:left;
 }
@@ -110,6 +114,10 @@ body{
   width: 3em;
 }
 
+.querySelector button:focus {
+  outline: none;
+}
+
 .querySelector .ui-selectmenu-button{
   border:none;
   background: white;
@@ -191,13 +199,18 @@ body{
 /*************************** END query Style *****************************/
 
 /***************************Application Region Style **********************************/
+.applicationRegion{
+    margin-left: 2em;
+    float: left;
+}
+
 .applicationRegion .ui-icon-info{
-    -ms-transform: scale(2);
-    -webkit-transform: scale(2);
-    transform: scale(2);
+    -ms-transform: scale(1.5);
+    -webkit-transform: scale(1.5);
+    transform: scale(1.5);
     position: relative;
-    left: -12.5em;
-    top: 1em;
+    left: -21em;
+    top: 0.6em;
 }
 
 .queryTextAppRegion{
@@ -281,11 +294,13 @@ body{
 }
 
 .NetworkSummary{
-  float:left;
-  position: relative;
-  top:6em;
-  margin-left: 2em;
-  margin-right: 2em;
+    float: left;
+    position: relative;
+    margin-left: 2em;
+    margin-right: 2em;
+    border: solid 1px black;
+    margin: 0em;
+    height: 31.3em;
 }
 
 .NetworkSummary .mapTooltipname{
@@ -360,7 +375,6 @@ body{
 /*************************** END Application Region Style *****************************/
 /*************************** Histogram Style *****************************/
 .multipleHistogram{
-    margin-left: 2em;
     position: relative;
     text-align: center;
     max-width: 94em;
@@ -441,7 +455,7 @@ body{
   stroke:rgba(52, 100, 222, 1);
 }
 .multipleHistogram .sampleData line{
-  stroke-width:0.3em;
+  stroke-width:0.1em;
 }
 
 .multipleHistogram .histoLegend{

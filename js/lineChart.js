@@ -193,6 +193,8 @@ function lineChart(data){
 			}
 		}
 		function handleMouseOver(d,i){
+			let xPos = d3.mouse(d3.select('body').node())[0];
+        	let yPos = d3.mouse(d3.select('body').node())[1];
 			div = d3.select('#tooltip')
 			div.transition()
 	       	   .duration(500)
@@ -200,8 +202,8 @@ function lineChart(data){
 	        if(type=="links") div.html("<p id ='mapTooltipname'> name: " + d.description + "</p>");
 	        else div.html("<p id ='mapTooltipname'> name: " + d.node + "</p>");
 	        div.style("position","absolute")
-	           .style("left", (d3.event.pageX - 50) + "px")
-	           .style("top", (d3.event.pageY -1200) + "px");
+	           .style("left", (xPos - 40) + "px")
+	           .style("top", (yPos - 2100) + "px");
 		}
 		function handleMouseOut(d,i){
 			div = d3.select('#tooltip')

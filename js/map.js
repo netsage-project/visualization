@@ -75,7 +75,7 @@ function mapGraph(data){
            "<p class='mapTooltipValueType'> <span class='mapTooltipValueTypeOutgoing'> <span id='mapTooltipMax'>Max</span> <span style='display:inline-block; width: 1.5em;'></span> <span id='mapTooltipAvg'> Avg </span> <span style='display:inline-block; width: 1.8em;'></span> <span id='mapTooltipMin'>Min</span> </span> <span class='mapTooltipValueTypeIncoming'> <span style='display:inline-block; width: 0.2em;'></span> <span id='mapTooltipMax'>Max</span> <span style='display:inline-block; width: 1.5em;'></span> <span id='mapTooltipAvg'> Avg </span> <span style='display:inline-block; width: 1.8em;'></span> <span id='mapTooltipMin'>Min</span> <span style='display:inline-block; width: 2.7em;'></span> </span> </p>" +
            "<p> <span class='mapTooltipValueOutgoing'> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.input.max) + " </span> <span style='display:inline-block; width: 1em;'></span> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.input.avg) + " </span> <span style='display:inline-block; width: 1em;'></span> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.input.min) + " </span> </span>" +  " <span style='display:inline-block; width: 0.3em;'></span> <span class='mapTooptipValueIncoming'> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.output.max) + "</span> <span style='display:inline-block; width: 1em;'></span> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.output.avg) + "</span> <span style='display:inline-block; width: 1em;'></span> <span class='mapTooltipValue'>" + d3.format(".2f")(data.links[i].data.output.min) + "</span> <span style='display:inline-block; width: 4em;'></span> </span>" +
            "<p class ='mapTooltipScale'> Gb/s </p> <hr>" +
-           "<p id='mapTooltipTransferDimension'> Total Transferred</p><p class='mapTooltipValue'>" + d3.format(".2f")((data.links[i].data.totalData[0] + data.links[i].data.totalData[1])/1024/8) + " TB </p>")
+           "<p id='mapTooltipTransferDimension'> Total Transferred</p><p class='mapTooltipValue'>" + d3.format(".2f")((data.links[i].data.totalData[0] + data.links[i].data.totalData[1])/1024/8) + " </p> <p class ='mapTooltipScale' > TB </p>")
            .style("left", xPos + "px")
            .style("top", yPos + "px");
       }else{
@@ -230,8 +230,8 @@ function mapGraph(data){
     var maxDataLinks=[];
     var maxDataNodes=[];
     for(var each in eval("queryObjects["+counter+"].links")){
-      maxDataLinks.push(eval("d3.max([queryObjects["+counter+"].links[each].data.input.avg,queryObjects["+counter+"].links[each].data.output.avg])"));
-      maxDataNodes.push(eval("d3.max([queryObjects["+counter+"].nodes[each].data.input.avg,queryObjects["+counter+"].nodes[each].data.output.avg])"));
+      maxDataLinks.push(eval("d3.max([queryObjects["+counter+"].links[each].data.input.max,queryObjects["+counter+"].links[each].data.output.max])"));
+      maxDataNodes.push(eval("d3.max([queryObjects["+counter+"].nodes[each].data.input.max,queryObjects["+counter+"].nodes[each].data.output.max])"));
     }
     maxDataLinks = d3.max(maxDataLinks);
     maxDataNodes = d3.max(maxDataNodes);
@@ -282,7 +282,7 @@ function mapGraph(data){
           "stroke-width": function(d,i){
             return ((data.links[i].max_bandwidth/10000000000) + 2 )}, //Transform to Terabyte and adjust size
           "stroke": function(d,i){
-            return colorLinks(d3.mean([data.links[i].data.input.avg,data.links[i].data.output.avg]))} //We are coloring links based on avg use
+            return colorLinks(d3.mean([data.links[i].data.input.max,data.links[i].data.output.max]))} //We are coloring links based on max use
         })
         .on("mouseover", handleMouseOver)
         .on("mouseout",handleMouseOut);

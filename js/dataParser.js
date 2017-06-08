@@ -477,9 +477,9 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 		let max=[], avg=[], min=[];
 		//The input from a link is the output of another so we only iterate the inputs to calculate the values for the whole network
 		for(let i=0;i<query.links.length;i++){
-			max.push(query.links[i].data.input.max);
-			avg.push(query.links[i].data.input.avg);
-			min.push(query.links[i].data.input.min);
+			max.push(d3.max([query.links[i].data.input.max,query.links[i].data.output.max]));
+			avg.push(d3.mean([query.links[i].data.input.avg,query.links[i].data.output.avg]));
+			min.push(d3.min([query.links[i].data.input.min,query.links[i].data.output.min]));
 			network.totalData += (query.links[i].data.totalData[0] + query.links[i].data.totalData[1])
 		}
 	    //We store the total data in the network
@@ -527,7 +527,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 	      netSummary.html("<p class='mapTooltipValueType'> <span class='mapTooltipValueTypeIncoming'> <span style='display:inline-block; width: 2em;'></span> <span id='mapTooltipMax'>Max</span> <span style='display:inline-block; width: 3.3em;'></span> <span id='mapTooltipAvg'> Avg </span> <span style='display:inline-block; width: 3.3em;'></span> <span id='mapTooltipMin'>Min</span> </p>" +
            "<p class='valuesLine'> <span style='display:inline-block; width: 0.5em;'></span> <span class='mapTooltipValue Networkmax'>" + d3.format(".2f")(query.network.max) + "</span> <span style='display:inline-block; width: 2.2em;'></span> <span class='mapTooltipValue Networkavg'>" + d3.format(".2f")(query.network.avg) + "</span> <span style='display:inline-block; width: 2.2em;'></span> <span class='mapTooltipValue Networkmin'>" + d3.format(".2f")(query.network.min) + "</span> <span style='display:inline-block; width: 4em;'></span> </span>" +
            "<p class ='mapTooltipScale'> Gb/s </p> <hr>" +
-           "<p class='mapTooltipDimension' id='mapTooltipTransferDimension'> Total Transferred</p><p class='mapTooltipValue'>" + d3.format(".0f")(query.network.totalData) + " TB </p> <hr>" +
+           "<p class='mapTooltipDimension' id='mapTooltipTransferDimension'> Total Transferred</p><p class='mapTooltipValue'>" + d3.format(".0f")(query.network.totalData) + " </p>  <p class ='mapTooltipScale' > TB </p> <hr>" +
            "<p class='networkTimeFrame'> <span> " + parseDayMonthYear(start) + "</span> <span style='display:inline-block; width: 1em;'> </span> <span> to </span> <span style='display:inline-block; width: 1em;'></span> <span>" + parseDayMonthYear(stop) + "</span></p>" +
            "<p class='networkTimeFrame' id='networkTimeFrameHour'> <span> " + parseTime(start) + "</span> <span style='display:inline-block; width: 7em;'></span> <span>" + parseTime(stop) + "</span></p>"+
            "<p class ='mapTooltipScale'> " + query.locale + "</p>")

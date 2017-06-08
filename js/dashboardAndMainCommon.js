@@ -62,6 +62,7 @@ function Query(query,locale,date,avgOver,queryType,queryMeasure,queryValue){
 
 //Function to fill up and create the necesarry datePickers depending on the selected TimeFrame
 function createDatePickers(startDate,stopDate,isNow){
+	let thisLocale = "(" + new Date().toString().match(/\(([A-Za-z\s].*)\)/)[1] + ")";
 	var dayFormat = d3.timeFormat("%m/%d/%Y");
 	var timeFormat = d3.timeFormat("%H:%M");
 	$('#dateHourDiv').remove();
@@ -80,14 +81,14 @@ function createDatePickers(startDate,stopDate,isNow){
 		.attrs({
 			"type":"text",
 			"id": "datePickerStart",
-			"class": "datePicker"
+			"class": "datePicker dateSelector"
 		});
 	dateHourDiv.append("span")
 					 .html(" at: ")
 	var timeSelect = dateHourDiv.append("select")
 						.attrs({
 							"id":"timeStart",
-							"class":"timePicker"
+							"class":"timePicker dateSelector"
 						});
 	for (var each in hoursSelectionStart){
 		timeSelect.append("option")
@@ -108,19 +109,26 @@ function createDatePickers(startDate,stopDate,isNow){
 		.attrs({
 			"type":"text",
 			"id": "datePickerEnd",
-			"class": "datePicker"
+			"class": "datePicker dateSelector"
 		});
 	dateHourDiv.append("span")
 				 .html(" at: ")
 	var timeSelect = dateHourDiv.append("select")
 					.attrs({
 						"id":"timeStop",
-						"class":"timePicker"
+						"class":"timePicker dateSelector"
 					});
 	for (var each in hoursSelectionStop){
 		timeSelect.append("option")
 			.html(hoursSelectionStop[each]);
 	}
+	dateHourDiv.append("span")
+					 .styles({
+					 	'display':'inline-block',
+					 	'width': '1em'
+					 })
+	dateHourDiv.append("span")
+					 .html(thisLocale)
 	//Options for datePickers
 	$( "#datePickerStart" ).datepicker({
 		firstDay:1,
@@ -131,6 +139,12 @@ function createDatePickers(startDate,stopDate,isNow){
 	//Set the days of the datePickers for timeFrames
 	$( "#datePickerStart" ).datepicker("setDate",StartDateFormated);
 	$( "#datePickerEnd" ).datepicker("setDate",StopDateFormated);
+	//If we click the div change the fast time selector to timeFrame
+	d3.selectAll(".dateSelector")
+	  .on("click", function() {
+	  		$('#queryTimeFrame').val('time frame');
+			$("#queryTimeFrame").selectmenu("refresh");
+	   });
 }
 
 //Function to create URL to add to a new tab with the query.

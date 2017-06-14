@@ -1,5 +1,5 @@
 //Every 5 minutes
-setInterval(main, 300000);
+setInterval(main, 600000);
 function main (){
 	$(".querySelector").remove();
 	$(".applicationRegion").remove()
@@ -7,6 +7,7 @@ function main (){
 	// $("#infoDashboardDiv-table").remove();
 	// $("#infoDashboardDiv-line").remove();
 	$(".tableTooltip").remove();
+	$(".infoDiv").remove();
 	// tableTooltip
 	dashboardForm();
 	$("#queryForm").remove();

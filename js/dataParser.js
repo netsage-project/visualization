@@ -310,6 +310,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 		if(queryValue==="0"){//IRNC LINKS
 			//Query to retrieve metadata values
 			url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get node, intf,  link_name as description, a_endpoint.name, a_endpoint.latitude, a_endpoint.longitude, z_endpoint.name, z_endpoint.latitude, z_endpoint.longitude, max_bandwidth between( "' + date[0] + '", "' + date[1] + '" ) by node, intf from interface where a_endpoint != null and z_endpoint != null';
+			console.log(url)
 			d3.json(url)
 			.on("beforesend", function (request) {request.withCredentials = true;})
 			.get(function(error,data)
@@ -321,6 +322,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 					if (each != links.length-1) url = url + '( node = "' + links[each].node + '" and intf = "' + links[each].intf + '") or ';
 					else url = url + '( node = "' + links[each].node + '" and intf = "' + links[each].intf + '") )';
 				}
+				console.log(url)
 				d3.json(url)
 				.on("beforesend", function (request) {request.withCredentials = true;})
 				.get(function(error,data)
@@ -530,7 +532,8 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 			  	.on("click",handleClick);
 		  }
 
-	      netSummary.html("<p class='mapTooltipValueType'> <span class='mapTooltipValueTypeIncoming'> <span style='display:inline-block; width: 2em;'></span> <span id='mapTooltipMax'>Max</span> <span style='display:inline-block; width: 3.3em;'></span> <span id='mapTooltipAvg'> Avg </span> <span style='display:inline-block; width: 3.3em;'></span> <span id='mapTooltipMin'>Min</span> </p>" +
+	      netSummary.html("<p id='networkSummaryTitle'> <b> Current Network Status </b> </p>" +
+	       "<p class='mapTooltipValueType'> <span class='mapTooltipValueTypeIncoming'> <span style='display:inline-block; width: 2em;'></span> <span id='mapTooltipMax'>Max</span> <span style='display:inline-block; width: 3.3em;'></span> <span id='mapTooltipAvg'> Avg </span> <span style='display:inline-block; width: 3.3em;'></span> <span id='mapTooltipMin'>Min</span> </p>" +
            "<p class='valuesLine'> <span style='display:inline-block; width: 0.5em;'></span> <span class='mapTooltipValue Networkmax'>" + d3.format(".2f")(query.network.max) + "</span> <span style='display:inline-block; width: 2.2em;'></span> <span class='mapTooltipValue Networkavg'>" + d3.format(".2f")(query.network.avg) + "</span> <span style='display:inline-block; width: 2.2em;'></span> <span class='mapTooltipValue Networkmin'>" + d3.format(".2f")(query.network.min) + "</span> <span style='display:inline-block; width: 4em;'></span> </span>" +
            "<p class ='mapTooltipScale'> Gb/s </p> <hr>" +
            "<p class='mapTooltipDimension' id='mapTooltipTransferDimension'> Total Transferred</p><p class='mapTooltipValue'>" + d3.format(".0f")(query.network.totalData) + " </p>  <p class ='mapTooltipScale' > TB </p> <hr>" +
@@ -553,39 +556,56 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 				if(queryObjects[0].queryType==="1"){
 					d3.select("body").append("div")
 			  		.attrs({
-			  			"id": "infoDiv-map"
+			  			"id": "infoDiv-map",
+			  			"class":"infoDiv"
 			  		})
 					.html(text);
 				}else{
 					d3.select("body").append("div")
 				  		.attrs({
-				  			"id": "infoDiv-map"
+				  			"id": "infoDiv-map",
+				  			"class":"infoDiv"
 				  		})
 						.html(text);
-					text = createInfoText("12");
+					text = createInfoText("21");
 					d3.select("body").append("div")
 				  		.attrs({
-				  			"id": "infoDiv-table"
+				  			"id": "infoDiv-table-col1",
+				  			"class":"infoDiv"
+				  		})
+						.html(text);
+					text = createInfoText("22");
+					d3.select("body").append("div")
+				  		.attrs({
+				  			"id": "infoDiv-table-col2",
+				  			"class":"infoDiv"
+				  		})
+						.html(text);
+					text = createInfoText("23");
+					d3.select("body").append("div")
+				  		.attrs({
+				  			"id": "infoDiv-table-col3",
+				  			"class":"infoDiv"
+				  		})
+						.html(text);
+					text = createInfoText("24");
+					d3.select("body").append("div")
+				  		.attrs({
+				  			"id": "infoDiv-table-col4",
+				  			"class":"infoDiv"
 				  		})
 						.html(text);
 					text = createInfoText("13");
-					d3.select("body").append("div")
-				  		.attrs({
-				  			"id": "infoDiv-networkSummary"
-				  		})
-						.html(text);
+					// d3.select("body").append("div")
+				 //  		.attrs({
+				 //  			"id": "infoDiv-networkSummary",
+				 //  			"class":"infoDiv"
+				 //  		})
+					// 	.html(text);
 				}
 			}else{
-				$("#infoDashboardDiv-map").remove();
-				$("#infoDashboardDiv-table").remove();
-				$("#infoDashboardDiv-line").remove();
-				$("#infoDashboardDiv-line").remove();
-				$("#infoDashboardDiv-networkSummary").remove();
-				$("#infoDiv-map").remove();
-				$("#infoDiv-table").remove();
-				$("#infoDiv-networkSummary").remove();
+				 $(".infoDiv").remove();
 			}
-
 		}
 
 		function handleClickDashboard(){
@@ -602,59 +622,99 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 					text = createInfoText("0");
 					d3.select("body").append("div")
 				  		.attrs({
-				  			"id": "infoDashboardDiv-map"
+				  			"id": "infoDashboardDiv-main",
+				  			"class":"infoDiv"
 				  		})
 						.html(text);
-						text = createInfoText("01");
+					text = createInfoText("1");
 					d3.select("body").append("div")
 				  		.attrs({
-				  			"id": "infoDashboardDiv-table"
+				  			"id": "infoDashboardDiv-map",
+				  			"class":"infoDiv"
 				  		})
 						.html(text);
-						text = createInfoText("02");
+					text = createInfoText("21");
 					d3.select("body").append("div")
 				  		.attrs({
-				  			"id": "infoDashboardDiv-line"
+				  			"id": "infoDashboardDiv-table-col1",
+				  			"class":"infoDiv"
 				  		})
 						.html(text);
-					text = createInfoText("13");
-						d3.select("body").append("div")
-					  		.attrs({
-					  			"id": "infoDashboardDiv-networkSummary"
-					  		})
+					text = createInfoText("22");
+					d3.select("body").append("div")
+				  		.attrs({
+				  			"id": "infoDashboardDiv-table-col2",
+				  			"class":"infoDiv"
+				  		})
 						.html(text);
+					text = createInfoText("23");
+					d3.select("body").append("div")
+				  		.attrs({
+				  			"id": "infoDashboardDiv-table-col3",
+				  			"class":"infoDiv"
+				  		})
+						.html(text);
+					text = createInfoText("24");
+					d3.select("body").append("div")
+				  		.attrs({
+				  			"id": "infoDashboardDiv-table-col4",
+				  			"class":"infoDiv"
+				  		})
+						.html(text);
+					text = createInfoText("3");
+					d3.select("body").append("div")
+				  		.attrs({
+				  			"id": "infoDashboardDiv-line",
+				  			"class":"infoDiv"
+				  		})
+						.html(text);
+					// text = createInfoText("13");
+					// d3.select("body").append("div")
+				 //  		.attrs({
+				 //  			"id": "infoDashboardDiv-networkSummary"
+				 //  		})
+					// .html(text);
 			}else{
-				$("#infoDashboardDiv-map").remove();
-				$("#infoDashboardDiv-table").remove();
-				$("#infoDashboardDiv-line").remove();
-				$("#infoDashboardDiv-line").remove();
-				$("#infoDashboardDiv-networkSummary").remove();
-				$("#infoDiv-map").remove();
-				$("#infoDiv-table").remove();
-				$("#infoDiv-networkSummary").remove();
+				 $(".infoDiv").remove();
 			}
 		}
 
 		function createInfoText(location){
+			//Locations
+				//0 Dashboard Info
+				//1 Map
+				//2x Table
+				//3 LineCharts
+				//4 Heatmaps
 			var text0,text01,text02;
 			var text1,text12;
-			if(queryObjects[0].queryType==="1"){
-				text1= "<p>This query tries to visualize if any pattern exists for the selected measurement in the selected time period.</p><p>The visualization in the left shows heatmaps for the incoming and outcoming selected measurement values first for the IRNC links and then the IRNC nodes. On the y Axis time is represented as 1 hour steps showing the 24 hour period, the x Axis is represented as 1 day steps. Each square is colored using a blue scale based on the average measurement value for an hour H at a day D.</p><p> The visualizations in the right also show heatmaps of the selected measurement, but this time clustered by day of the week, the y Axis again represents the 24 hours in 1 hour steps, but in this visualization the x Axis represents each day of the week. Each square is colored using a blue scale based on the average measurement value for an hour H at an specific weekday W</p><p>Visualizations will appear incrementally <b>it is possible that it takes a bit of time to get all the visualizations</b> specially for long periods of time (longer than a few months) </p>";
-			}else{
-				text1 = "<p>The map visualization shows the states of the links and nodes, where the size of the links represent the relative size of the connection. Links are colored in a blue scale while nodes are colored using an orange scale, gray links and white nodes have no data for the selected time frame.</p> ";
-				text12 = "<p>The table below shows more detailed information about the links and nodes.</p> <p> The first column shows the distribution of measurements for a specific link. Where the width of the rectangle represents the maximun and minimun measurements for the period selected. The top rectangle represents incoming data and the bottom rectangle represents outgoing data. Each vertical line represents a measurement for that specific link. The more measurements in the same region the darker it shows in the diagram. Allowing users to detect the operating regime for the specific network element </p> <p> The next column, shows the evolution in time of the measurements for a specific network element. The top graph represents incoming and the bottom graph represents outgoing data. </p> <p> The next two columns show bandwidth histograms of incoming and outgoing bandwidth for the links and nodes, as well as their maximum and average values.</p> <p> The last column of the table shows the incoming and outgoing data transferred per network element relative to the total incoming and outgoing data transmitted by all the network elements.</p> <p> Note that columns 1, 2 and 5 are aligned for all the network elements to allow fair comparison accross them. Column 3 and 4 are not aligned in order to help users understand the form of the distributions for each network element.</p>";
-				text13 = "<p>The Network Summary Table. Shows the maximum, average and minimun values for the whole IRNC network. As well as the total transferred data through the whole IRNC network in the selected period of time. </p>"
-			}
-			text0 = "<p>The NetSage dashboard updates every 30 seconds showing the last 3 hours of information about IRNC Network. Click on Ask NetSage above to perform a custom query.</p> <p>The map shows the state of the links and nodes, where the size of the links represent the relative bandwidth of the connection. Links are colored in a blue scale while nodes are colored using an orange scale, gray links and white nodes have no data for the last 3 hours.</p>";
+			//heatmaps
+			text4= "<p>This query tries to visualize if any pattern exists for the selected measurement in the selected time period.</p><p>The visualization in the left shows heatmaps for the incoming and outcoming selected measurement values first for the IRNC links and then the IRNC nodes. On the y Axis time is represented as 1 hour steps showing the 24 hour period, the x Axis is represented as 1 day steps. Each square is colored using a blue scale based on the average measurement value for an hour H at a day D.</p><p> The visualizations in the right also show heatmaps of the selected measurement, but this time clustered by day of the week, the y Axis again represents the 24 hours in 1 hour steps, but in this visualization the x Axis represents each day of the week. Each square is colored using a blue scale based on the average measurement value for an hour H at an specific weekday W</p><p>Visualizations will appear incrementally <b>it is possible that it takes a bit of time to get all the visualizations</b> specially for long periods of time (longer than a few months) </p>";
+			//Map
+			text1 = "<p>The map shows the states of the links and nodes - the size of the links represent the relative size of the connection. Links are colored in a blue scale while nodes are colored using an orange scale, gray links and white nodes have no data for the selected time frame.</p> ";
+			//Table
+			text20 = "<p> Note that columns 1, 2 and 5 are aligned for all the network elements to allow fair comparison accross them. Column 3 and 4 are not aligned in order to help users understand the form of the distributions for each network element.</p>"
+			text21 = "<p> Distribution of measurements for a specific link- The width of the rectangle represents the maximun and minimun measurements for the period selected. The top rectangle represents incoming data and the bottom rectangle represents outgoing data. Each vertical line represents a measurement for that specific link. The more measurements in the same region the darker it shows in the diagram. Allowing users to detect the operating regime for the specific network element </p>";
+			text22 = " <p> Traffic Volume of the measurements for a specific network element. The top graph represents incoming and the bottom graph represents outgoing data. </p>";
+			text23 = " <p> This two columns show bandwidth histograms of incoming and outgoing bandwidth for the links and nodes, as well as their maximum and average values. Note that this columns are the only ones that are not aligned to enhance histogram distributions comparisons</p>";
+			text24 = "<p>  Incoming and outgoing data transferred per network element relative to the total incoming and outgoing data transmitted by all the network elements.</p>";
+			//What to do wirth summary
+			text13 = "<p>The Network Summary Table. Shows the maximum, average and minimun values for the whole IRNC network. As well as the total transferred data through the whole IRNC network in the selected period of time. </p>"
+			//Dashboard Info
+			text0 = "<p>The NetSage dashboard updates every 60 seconds showing the last 3 hours of information about IRNC Network. Click on Ask NetSage on the left to perform a custom query.</p>";
 			text01 = "<p>The table below shows more detailed information about the links and nodes.</p> <p> The first column shows the distribution of measurements for a specific link. Where the width of the rectangle represents the maximun and minimun measurements for the period selected. The top rectangle represents incoming data and the bottom rectangle represents outgoing data. Each vertical line represents a measurement for that specific link. The more measurements in the same region the darker it shows in the diagram. Allowing users to detect the operating regime for the specific network element </p> <p> The next column, shows the evolution in time of the measurements for a specific network element. The top graph represents incoming and the bottom graph represents outgoing data. </p> <p> The next two columns show bandwidth histograms of incoming and outgoing bandwidth for the links and nodes, as well as their maximum and average values.</p> <p> The last column of the table shows the incoming and outgoing data transferred per network element relative to the total incoming and outgoing data transmitted by all the network elements.</p> <p> Note that columns 1, 2 and 5 are aligned for all the network elements to allow fair comparison accross them. Column 3 and 4 are not aligned in order to help users understand the form of the distributions for each network element.</p>";
-			text02 = "<p>The charts below show the bandwidth of the incoming and outgoing transmissions made in the period selected. Because all the Network elements are present in the graph is easier to compare differeces betweem elements this way. </p>"
+			//LineChart
+			text3 = "<p>The charts below show the bandwidth of the incoming and outgoing transmissions made in the period selected. Because all the Network elements are present in the graph is easier to compare differeces betweem elements this way. </p>"
 
 			if(location==="0") return text0;
-			else if(location==="01") return text01;
-			else if(location==="02") return text02;
-			else if(location==="12") return text12;
-			else if (location==="1") return text1;
-			else if (location==="13") return text13;
+			else if(location==="1") return text1;
+			else if(location==="20") return text20;
+			else if(location==="21") return text21;
+			else if(location==="22") return text22;
+			else if(location==="23") return text23;
+			else if(location==="24") return text24;
+			else if (location==="4") return text4;
+			else if (location==="3") return text3;
 		}
 	}
 

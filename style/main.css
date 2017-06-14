@@ -184,11 +184,17 @@ body{
 
 .mainInFoText{
   position:absolute;
-  top: 1.4em;
-  left: 35em;
-  width:60em;
-  background-color:rgba(255, 153, 0, 0.4);
-  padding:5px;
+  top: -3.6em;
+  left: 32em;
+  width: 43em;
+  background: rgba(255, 120, 120, 0.98);
+  border: 0px;
+  border-radius: 15px;
+  padding: 5px;
+  text-align: left;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+  color: white;
 }
 
 .arrowGoBack{
@@ -215,8 +221,8 @@ body{
 
 .applicationRegion .askNetSageInfoDashBoard{
     position: absolute;
-    top: -17em;
-    left: 17em;
+    top: -3em;
+    left: -3em;
     -ms-transform: scale(0.15);
     -webkit-transform: scale(0.15);
     transform: scale(0.15);
@@ -233,23 +239,45 @@ body{
 }
 
 #infoDiv-map{
-  position: absolute;
-  top: 43.4em;
-  width: 26em;
+  top: 14.4em;
+  width: 40em;
   left: 42.2em;
-  background: rgba(247, 201, 132, 1);
-  border: 1px solid black;
-  padding: 5px;
 }
 
-#infoDiv-table{
-    position: absolute;
-    top: 57.5em;
-    width: 26em;
-    left: 2.6em;
-    background: rgba(247, 201, 132, 1);
-    border: 1px solid black;
-    padding: 5px;
+#infoDiv-table-col1{
+  top: 43em;
+  left: 1.8em;
+  width: 23em;
+}
+
+#infoDiv-table-col2{
+  top: 49.8em;
+  left: 26.2em;
+  width: 18.5em;
+}
+
+#infoDiv-table-col3{
+  top: 48.7em;
+  left: 46.2em;
+  width: 24.5em;
+}
+
+#infoDiv-table-col4{
+  top: 51em;
+  left: 72em;
+  width: 23.5em;
+}
+
+.infoDiv{
+  position: absolute;
+  background: rgba(255, 120, 120, 0.98);
+  border: 0px;
+  border-radius: 15px;
+  padding: 5px;
+  text-align: left;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+  color: white;
 }
 
 #infoDiv-networkSummary{
@@ -262,44 +290,52 @@ body{
     padding: 5px;
 }
 
+#infoDashboardDiv-main{
+  top: 1.4em;
+  width: 57em;
+  left: 25.2em;
+}
+
 #infoDashboardDiv-map{
-    position: absolute;
-    top: 1.4em;
+    top: 7.7em;
     width: 57em;
-    left: 25.2em;
-    background: rgba(247, 201, 132, 1);
-    border: 1px solid black;
-    padding: 5px;
+    left: 29.9em;
 }
 
 #infoDashboardDiv-networkSummary{
-    position: absolute;
     top: 37.3em;
     width: 20em;
     left: 2.6em;
-    background: rgba(247, 201, 132, 1);
-    border: 1px solid black;
-    padding: 5px;
 }
 
-#infoDashboardDiv-table{
-  position: absolute;
-  top: 50.3em;
-  width: 26em;
-  left: 2.6em;
-  background: rgba(247, 201, 132, 1);
-  border: 1px solid black;
-  padding: 5px;
+#infoDashboardDiv-table-col1{
+  top: 36em;
+  left: 1.8em;
+  width: 23em;
+}
+
+#infoDashboardDiv-table-col2{
+  top: 42.7em;
+  left: 26.2em;
+  width: 18.5em;
+}
+
+#infoDashboardDiv-table-col3{
+  top: 41.56em;
+  left: 46.2em;
+  width: 24.5em;
+}
+
+#infoDashboardDiv-table-col4{
+    top: 43.7em;
+    left: 72em;
+    width: 23.5em;
 }
 
 #infoDashboardDiv-line{
-  position: absolute;
-    top: 135em;
-    width: 26em;
-    left: 5.5em;
-    background: rgba(247, 201, 132, 1);
-    border: 1px solid black;
-    padding: 5px;
+  top: 135em;
+  width: 26em;
+  left: 5.5em;
 }
 
 .NetworkSummary{
@@ -309,6 +345,11 @@ body{
     border: solid 1px black;
     margin: 0em;
     height: 31.25em;
+}
+
+#networkSummaryTitle{
+  text-align: center;
+  font-size: 1.5em;
 }
 
 .NetworkSummary .mapTooltipname{

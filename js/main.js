@@ -137,7 +137,7 @@ function mainQueryForm(){
 								"class": "mainInFoText",
 								"id":"mainInFoText"
 							})
-							.html("<p>From this page you can customize your query by simply clicking on the different dropdown menus.</p><p> Firstly select the question you want to get an answer to, secondly select the type of measurement you want to get, thirdly select the elements you want the measurements from and lastly select from the fast time range selector or your own customized range.</p><p>After you create your first query the following queries open in a new browser tab, this way we allow users to make different queries and visualize them side by side by undocking the tabs and arranging them in the screen.</p>")
+							.html("<p>From this page you can customize your query using the dropdown menus on the left.</p><p> 1. Select the question you want to ask </p> <p> 2. Select the type of measurement you want (Bandwidth, Loss, ...) </p> <p> 3. Choose the Networks </p> <p> 4. Select the Time Range </p> <p> Note that subsequent queries open in a new browser tab, this way we allow users to make different queries and visualize them side by side by undocking the tabs and arranging them in the screen.</p>")
 						}else{
 							$("#mainInFoText").remove();
 						}

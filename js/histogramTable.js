@@ -294,7 +294,7 @@ function histogramTableGraph(queryData){
    				.duration(600)
    				.style("opacity", 1);
 			div.html("<p class ='mapTooltipname'> <span class='mapTooltipDescription'>To " + description + "</span> <span style='display:inline-block; width: 6em;'> </span> <span class='mapTooltipSize'>" + linkSize + " </span> </p> <hr>" +
-					 "<p class = 'mapTooltipValue'>"+ d + " Gb/s" )
+					 "<p class = 'mapTooltipValue'>"+ d + "</p> <p class ='mapTooltipScale' > Gb/s </p>" )
 		       .style("left", xPos + "px")
 		       .style("top", yPos + "px");
 		}
@@ -418,7 +418,7 @@ function histogramTableGraph(queryData){
 			})
 		//Creates a line per sample in the data inside the bar
 		 var sample = graph.append("g")
-	        .attr("class", function(d,i){ return "sampleLineIncoming sampleLine-Incoming-Group-" +i })
+	        .attr("class", function(d,i){ return "sampleLineIncoming sampleLine-Incoming-Group-" + i })
 	        .selectAll(".sampleLineIncoming")
 	        .data(function(d,i){
 	        	return eval(data[i].data.input.histogram);
@@ -447,7 +447,7 @@ function histogramTableGraph(queryData){
 			})
 		//Creates a line per sample in the data inside the bar
 		 var sample = graph.append("g")
-	         .attr("class", function(d,i){ return "sampleLineOutgoing sampleLine-Outgoing-Group-" +i })
+	         .attr("class", function(d,i){ return "sampleLineOutgoing sampleLine-Outgoing-Group-" + i })
 	        .selectAll(".sampleLineOutgoing")
 	        .data(function(d,i){
 	        	return eval(data[i].data.output.histogram);
@@ -560,7 +560,7 @@ function histogramTableGraph(queryData){
    						 "<p class='.textTotalData'>" + parseWeekDay(dataPoints[index][0]) +" </p> <hr>" +
    						 "<p class='textTotalData'> <span>" + parseDay(dataPoints[index][0]) + "</span> <span>" + parseMonth(dataPoints[index][0]) + "</span> <span>" + parseYear(dataPoints[index][0]) + "</span> <p>" +
    						 "<p class='textTotalData'> " + parseTime(dataPoints[index][0]) + " </p> <hr>" +
-   						 "<p class='mapTooltipValue'> " + dataPoints[index][1] + " Gb/s </p>")
+   						 "<p class='mapTooltipValue'> " + dataPoints[index][1] + "</p> <p class ='mapTooltipScale' > Gb/s </p>")
 		       .style("left", xPos + "px")
 		       .style("top", yPos + "px");
 			}
@@ -798,13 +798,13 @@ function histogramTableGraph(queryData){
    				.style("opacity", 1);
    			if(this.classList[1]=="iData"){
    				div.html("<p class ='mapTooltipname'> <span class='mapTooltipDescription'>" + description + "</span> <span style='display:inline-block; width: 0em;'> </span> <span class='mapTooltipSize'>" + linkSize + " </span> </p> <hr>" +
-   						 "<p class='mapTooltipValue'>" + (link.data.totalData[0]/1024/8).toFixed(1) + " TB</p> " +
+   						 "<p class='mapTooltipValue'>" + (link.data.totalData[0]/1024/8).toFixed(1) + "<span class = 'tableTooltipScale'> TB <span> </p> " +
    						 "<p> <span class='totalDataPercentageValue'>" + (100 * eval("queryObjects[" + this.classList[0].split("-")[1] + "].graphs.table." + this.classList[0].split("-")[0]+"[" + this.id.split("-")[3] + "].data.totalData[0]")/totalDataIn).toFixed(2) + " % </span> <span class='textTotalData'> of </span>  <span style='display:inline-block; width: 0em;'> </span> <span> " + (totalDataIn/1024/8).toFixed(1) + " TB" + " </span> <p>" )
 		       .style("left", xPos + "px")
 		       .style("top", yPos + "px");
 		   }else{
 		   		div.html("<p class ='mapTooltipname'> <span class='mapTooltipDescription'>" + description + "</span> <span style='display:inline-block; width: 0em;'> </span> <span class='mapTooltipSize'>" + linkSize + " </span> </p> <hr>" +
-   						 "<p class='mapTooltipValue'>" + (link.data.totalData[1]/1024/8).toFixed(1) + " TB</p> " +
+   						 "<p class='mapTooltipValue'>" + (link.data.totalData[1]/1024/8).toFixed(1) + "<span class = 'tableTooltipScale'> TB <span> </p> " +
    						 "<p> <span class='totalDataPercentageValue'>" + (100 * eval("queryObjects[" + this.classList[0].split("-")[1] + "].graphs.table." + this.classList[0].split("-")[0]+"[" + this.id.split("-")[3] + "].data.totalData[0]")/totalDataOut).toFixed(2) + " % </span> <span class='textTotalData'> of </span> <span style='display:inline-block; width: 0em;'> </span> <span> " + (totalDataOut/1024/8).toFixed(1) + " TB" + " </span> <p>" )
 		   		.style("left", xPos + "px")
 		       	.style("top", yPos + "px");
@@ -1057,7 +1057,7 @@ function histogramTableGraph(queryData){
    						 "<p> <span class='textTotalData'> " + d.length + " elements</span> <span style='display:inline-block; width: 4em;'></span> <span>" + d3.min(d) + "-" + d3.max(d) + " Gb/s</span> <hr> </p>" +
    						// "<p class='textTotalData'>" + d.length + " elements</p> <hr> " +
    						 "<p>Avg:<p>"+
-   						 "<p><span class='mapTooltipValue'>" + d3.mean(d).toFixed(2) + " Gb/s </span></p>")
+   						 "<p><span class='mapTooltipValue'>" + d3.mean(d).toFixed(2) + "<span class = 'tableTooltipScale'> Gb/s <span> </p>")
 		       .style("left", xPos + "px")
 		       .style("top", yPos + "px");
 		}

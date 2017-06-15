@@ -557,6 +557,10 @@ body{
     min-width: 17em;
 }
 
+.tableTooltipScale {
+  font-weight: normal;
+}
+
 .tableTooltip .mapTooltipname{
   font-weight: bold;
   font-size: 1em;

@@ -309,7 +309,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 		//We see what user wants to visualize
 		if(queryValue==="0"){//IRNC LINKS
 			//Query to retrieve metadata values
-			url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get node, intf,  link_name as description, a_endpoint.name, a_endpoint.latitude, a_endpoint.longitude, z_endpoint.name, z_endpoint.latitude, z_endpoint.longitude, max_bandwidth between( "' + date[0] + '", "' + date[1] + '" ) by node, intf from interface where a_endpoint != null and z_endpoint != null';
+			url = 'https://netsage-demo:d3m0!d3m0!@netsage-archive.grnoc.iu.edu/tsds/services-basic/query.cgi?method=query;query=get node, intf,  link_name as description, a_endpoint.name, a_endpoint.latitude, a_endpoint.longitude, z_endpoint.name, z_endpoint.latitude, z_endpoint.longitude, max_bandwidth between( "' + date[0] + '", "' + date[1] + '" ) by node, intf from interface where a_endpoint != null and z_endpoint != null and link_name != null';
 			console.log(url)
 			d3.json(url)
 			.on("beforesend", function (request) {request.withCredentials = true;})

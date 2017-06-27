@@ -44,10 +44,19 @@ function mapGraph(data){
           if(data.links[i].description.split('100GE').length > 1){
             description = data.links[i].description.split('100GE')[0]
             linkSize = "100GE"
+            origin = description.split(":")[1].split("to")[0]
+            destination = description.split(":")[1].split("to")[1]
           }
           else if(data.links[i].description.split('10GE').length > 1){
             description = data.links[i].description.split('10GE')[0]
             linkSize = "10GE"
+            origin = description.split(":")[1].split("to")[0]
+            destination = description.split(":")[1].split("to")[1]
+          }else if(data.links[i].description.split('30GE').length > 1){
+            description = data.links[i].description.split('30GE')[0]
+            linkSize = "30GE"
+            origin = "Washington"
+            destination="Frankfurt"
           }else{
             description = link[i].description;
             linkSize ="";
@@ -66,8 +75,6 @@ function mapGraph(data){
             linkSize ="";
           }
         }
-        origin = description.split(":")[1].split("to")[0]
-        destination = description.split(":")[1].split("to")[1]
       //If Mouseover Link with Data
       if(this.classList[0]==="links"){
         div.html("<p class ='mapTooltipname'> <span class='mapTooltipDescription'>" + description + "</span> <span style='display:inline-block; width: 14em;'> </span> <span class='mapTooltipSize'>" + linkSize + " </span> </p> <hr>" +

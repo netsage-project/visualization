@@ -60,7 +60,7 @@ function lineChart(data){
 		   			.attr("class","lineChartTitle")
 		   			.attr("transform","translate("+ 10 +", " + 10 + ")")
 		   			.append("text")
-		   			.text("Input (Gb/s)")
+		   			.text("Z to A (Gb/s)")
 
 		  svgInput.append("g")
 		      .attr("class", "x axis")
@@ -123,7 +123,7 @@ function lineChart(data){
 		   			.attr("class","lineChartTitle")
 		   			.attr("transform","translate("+ 10 +", " + 10 + ")")
 		   			.append("text")
-		   			.text("Output (Gb/s)")
+		   			.text("A to Z (Gb/s)")
 
 		  svgOutput.append("g")
 		      .attr("class", "x axis")

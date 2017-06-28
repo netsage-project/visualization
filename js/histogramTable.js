@@ -15,7 +15,7 @@ function histogramTableGraph(queryData){
 	//sortObjects(queryData.nodes,".data.input.avg");
 	queryData.graphs.table.links = queryData.links;
 	//queryData.graphs.table.nodes = queryData.nodes;
-	columns = ["Links","Bandwidth Distribution (Gb/s)","Traffic Volume (Gb/s)","(A to Z) Bandwidth (Gb/s)", "(Z to A) Bandwidth (Gb/s)","Total Data (TB)"];
+	columns = ["Links","Bandwidth Distribution (Gb/s)","Traffic Volume (Gb/s)","(Z to A) Bandwidth (Gb/s)", "(A to Z) Bandwidth (Gb/s)","Total Data (TB)"];
     startTable("links-"+counter,queryData.graphs.table.links);
     //columns = ["Nodes","Incoming Bandwidth (Gb/s)", "Outgoing Bandwidth (Gb/s)","Total Data (TB)"];
     //startTable("nodes-"+counter,queryData.graphs.table.nodes);
@@ -1049,9 +1049,9 @@ function histogramTableGraph(queryData){
 					.duration(200)
 					.style("opacity", 1);
 			if(column==='col4'){
-				direction = description.split(":")[1].split("to")[0]
-			}else{
 				direction = description.split(":")[1].split("to")[1]
+			}else{
+				direction = description.split(":")[1].split("to")[0]
 			}
 		   	div.html("<p class='mapTooltipname'> <span class='mapTooltipDescription'> To " + direction + "</span> <span style='display:inline-block; width: 7em;'> </span> <span class='mapTooltipSize'>" + linkSize + " </span> </p> <hr>" +
    						 "<p> <span class='textTotalData'> " + d.length + " elements</span> <span style='display:inline-block; width: 4em;'></span> <span>" + d3.min(d) + "-" + d3.max(d) + " Gb/s</span> <hr> </p>" +

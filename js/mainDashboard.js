@@ -1,5 +1,5 @@
 //Every 5 minutes
-setInterval(main, 600000);
+setInterval(main, 3200000);
 function main (){
 	$(".querySelector").remove();
 	$(".applicationRegion").remove()

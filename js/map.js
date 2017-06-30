@@ -56,7 +56,7 @@ function mapGraph(data){
             description = data.links[i].description.split('30GE')[0]
             linkSize = "30GE"
             origin = "Washington"
-            destination="Frankfurt"
+            destination=" Frankfurt"
           }else{
             description = link[i].description;
             linkSize ="";
@@ -132,7 +132,7 @@ function mapGraph(data){
     //Add max and minimum value to link Legend
     legend.append("text")
             .attrs({
-              "transform": "translate(" + (-40) + "," + 10 + ")"
+              "transform": "translate(" + (-43) + "," + 10 + ")"
             })
             .text(Math.ceil(maxDataLinks) + " Gb/s")
     legend.append("text")
@@ -277,7 +277,8 @@ function mapGraph(data){
         .enter()
         .append("path")
         .datum( function(d){
-            return {type: "LineString", coordinates: [[d["a_endpoint.longitude"], d["a_endpoint.latitude"]], [d["z_endpoint.longitude"],d["z_endpoint.latitude"]]]};
+            if(d.node !== "sw.net.wix.internet2.edu") return {type: "LineString", coordinates: [[d["a_endpoint.longitude"], d["a_endpoint.latitude"]], [d["z_endpoint.longitude"],d["z_endpoint.latitude"]]]};
+            else return {type: "LineString", coordinates: [[d["a_endpoint.longitude"], d["a_endpoint.latitude"]], [-65,35] , [-55,33.2], [-50,32], [-40,31.5], [-30,32] , [-18,34.70], [-8.88,37.25], [-3.68,40.61], [0.695767,42.755750], [d["z_endpoint.longitude"],d["z_endpoint.latitude"]]]}
         })
         .attrs({
           class:"links",

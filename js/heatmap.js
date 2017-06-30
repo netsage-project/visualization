@@ -58,11 +58,11 @@ function periodicPattern(data){
 		for(var element in data.links){
 			setTimeout(function(){
 				var start = new Date().getTime();
-				drawElementText("Input: " + data.links[arrayIndexLinks].description);
+				drawElementText(data.links[arrayIndexLinks].description + "<b> ( Z to A )</b>");
 				heatmapData = data.links[arrayIndexLinks].data.input.values;
 				heatmap(heatmapData,maxValueLinks,maxDate,minDate,data.queryMeasure);
 				weekHeatmap(data.links[arrayIndexLinks].data.input.weekData,maxWeekDataLinks,data.queryMeasure);
-				drawElementText("Output: " + data.links[arrayIndexLinks].description);
+				drawElementText(data.links[arrayIndexLinks].description + "<b> ( A to Z )</b>");
 				heatmapData = data.links[arrayIndexLinks].data.output.values;
 				heatmap(heatmapData,maxValueLinks,maxDate,minDate,data.queryMeasure);
 				weekHeatmap(data.links[arrayIndexLinks].data.output.weekData,maxWeekDataLinks,data.queryMeasure);
@@ -76,11 +76,11 @@ function periodicPattern(data){
 			for(var element in data.nodes){
 				setTimeout(function(){
 					var start = new Date().getTime();
-					drawElementText("Input: " + data.nodes[arrayIndexNodes].node);
+					drawElementText(data.nodes[arrayIndexNodes].node + "<b> ( Z to A )</b>");
 					heatmapData = data.nodes[arrayIndexNodes].data.input.values;
 					heatmap(heatmapData,maxValueNodes,maxDate,minDate,data.queryMeasure);
 					weekHeatmap(data.nodes[arrayIndexNodes].data.input.weekData,maxWeekDataNodes,data.queryMeasure);
-					drawElementText("Output: " + data.nodes[arrayIndexNodes].node);
+					drawElementText(data.nodes[arrayIndexNodes].node + "<b> ( A to Z )</b>");
 					heatmapData = data.nodes[arrayIndexNodes].data.output.values;
 					heatmap(heatmapData,maxValueNodes,maxDate,minDate,data.queryMeasure);
 					weekHeatmap(data.nodes[arrayIndexNodes].data.output.weekData,maxWeekDataNodes,data.queryMeasure);

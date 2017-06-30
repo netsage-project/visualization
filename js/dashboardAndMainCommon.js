@@ -489,7 +489,7 @@ function queryComposer(date,fromURL,queryFromTab,isDashboard){
 		}
 		//Read TimeFrame
 		if (isDashboard==false) timeFrame = $("#queryTimeFrame")[0].value;
-		else timeFrame = "today";
+		else timeFrame = "today";2
 		//Read average over from URL
 		if(getUrlParameter("avgOver")!=undefined && fromURL===true) var avgOver = parseInt(getUrlParameter("avgOver"),10);
 		else var avgOver; //We set avgOver to be null so that it doesnt get changed in the if else below.
@@ -497,44 +497,55 @@ function queryComposer(date,fromURL,queryFromTab,isDashboard){
 		////Read Dates
 		var UTCDateStart;
 		var UTCDateStop;
+		var todayDate = new Date()
 		queryDateLocalTime = [d3.select("#datePickerStart")._groups[0][0].value + " at " + d3.select("#timeStart")._groups[0][0].value , d3.select("#datePickerEnd")._groups[0][0].value + " at " + d3.select("#timeStop")._groups[0][0].value]
 		UTCDateStart = new Date(d3.select("#datePickerStart")._groups[0][0].value + " " + d3.select("#timeStart")._groups[0][0].value )
 		UTCDateStart = new Date(UTCDateStart.getUTCFullYear(), UTCDateStart.getUTCMonth(), UTCDateStart.getUTCDate(),  UTCDateStart.getUTCHours(), UTCDateStart.getUTCMinutes(), UTCDateStart.getUTCSeconds());
 		UTCDateStop = new Date(d3.select("#datePickerEnd")._groups[0][0].value + " " + d3.select("#timeStop")._groups[0][0].value )
 		UTCDateStop = new Date(UTCDateStop.getUTCFullYear(), UTCDateStop.getUTCMonth(), UTCDateStop.getUTCDate(),  UTCDateStop.getUTCHours(), UTCDateStop.getUTCMinutes(), UTCDateStop.getUTCSeconds());
+		UTCTodayDate = new Date(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), todayDate.getUTCDate(),  todayDate.getUTCHours(), todayDate.getUTCMinutes(), todayDate.getUTCSeconds())
 		console.log(UTCDateStart);
 		console.log(UTCDateStop);
-		let totalTime = Math.floor((UTCDateStop - UTCDateStart) / (1000 * 60 * 60)); //In hours
-		if (totalTime <= 3){
-			if(queryType==="0") avgOver = 180;
-			else if(queryType==="1") avgOver = 3600;
-			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
-		}else if (totalTime <= 24){
-			if(queryType==="0") avgOver = 420;
-			if(queryType==="1") avgOver = 3600;
-			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
-		}else if (totalTime <= 168){
-			if(queryType==="0") avgOver = 10800;
-			if(queryType==="1") avgOver = 3600;
-			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
-		} else if (totalTime <= 5208){
-			if(queryType==="0") avgOver = 21600;
-			else if(queryType ==="1") avgOver = 3600;
-			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
-		}else if (totalTime > 5208){
-			if(queryType==="0") avgOver = 86400;
-			else if(queryType==="1") avgOver = 3600;
-			queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
-		}
-		queryObjects.push(new Query(queryName + " " + queryMeasureText + " " + queryValueText + " " + timeFrame + ": From " + queryDateLocalTime[0] + ", to " + queryDateLocalTime[1], "(" + new Date().toString().match(/\(([A-Za-z\s].*)\)/)[1] + ")", queryDate, avgOver, queryType,queryMeasure,queryValue))
-		//when we make a second query in the same page we open a new tab.
-		if($("#query0")[0]!==undefined){
+		//If Date selector is wrong pop up alert and do not query
+		if(UTCDateStop - UTCDateStart <= 0 || UTCTodayDate - UTCDateStop < 0){
+			alert("Please select a proper Time Frame:  \n"
+				+ "Make sure that your start date happened before than your stop date \n"
+				+ "Make sure that you are not asking for data from the future!!");
 			$("#whiteButtonImg").remove();
 			$("#queryButtonImg").remove();
-			url = getQuery(queryDate,avgOver,queryType,queryName,queryMeasure,queryValue);
-			myWindow = window.open(url,'_blank');
-			myWindow.focus();
-		}else{
-			LoadData(queryObjects[counter].date,queryObjects[counter].queryText,queryObjects[counter].avgOver,queryObjects[counter].queryType,queryObjects[counter].queryMeasure,queryObjects[counter].queryValue);
+		}else{ //We costruct and send the query to Dataparser
+			let totalTime = Math.floor((UTCDateStop - UTCDateStart) / (1000 * 60 * 60)); //In hours
+			if (totalTime <= 3){
+				if(queryType==="0") avgOver = 180;
+				else if(queryType==="1") avgOver = 3600;
+				queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
+			}else if (totalTime <= 24){
+				if(queryType==="0") avgOver = 420;
+				if(queryType==="1") avgOver = 3600;
+				queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
+			}else if (totalTime <= 168){
+				if(queryType==="0") avgOver = 10800;
+				if(queryType==="1") avgOver = 3600;
+				queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
+			} else if (totalTime <= 5208){
+				if(queryType==="0") avgOver = 21600;
+				else if(queryType ==="1") avgOver = 3600;
+				queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
+			}else if (totalTime > 5208){
+				if(queryType==="0") avgOver = 86400;
+				else if(queryType==="1") avgOver = 3600;
+				queryDate = [dayFormat(UTCDateStart) + " " + timeFormat(UTCDateStart) + " UTC" ,dayFormat(UTCDateStop) + " " + timeFormat(UTCDateStop) + " UTC"];
+			}
+			queryObjects.push(new Query(queryName + " " + queryMeasureText + " " + queryValueText + " " + timeFrame + ": From " + queryDateLocalTime[0] + ", to " + queryDateLocalTime[1], "(" + new Date().toString().match(/\(([A-Za-z\s].*)\)/)[1] + ")", queryDate, avgOver, queryType,queryMeasure,queryValue))
+			//when we make a second query in the same page we open a new tab.
+			if($("#query0")[0]!==undefined){
+				$("#whiteButtonImg").remove();
+				$("#queryButtonImg").remove();
+				url = getQuery(queryDate,avgOver,queryType,queryName,queryMeasure,queryValue);
+				myWindow = window.open(url,'_blank');
+				myWindow.focus();
+			}else{
+				LoadData(queryObjects[counter].date,queryObjects[counter].queryText,queryObjects[counter].avgOver,queryObjects[counter].queryType,queryObjects[counter].queryMeasure,queryObjects[counter].queryValue);
+			}
 		}
 }

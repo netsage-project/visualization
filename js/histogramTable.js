@@ -191,27 +191,30 @@ function histogramTableGraph(queryData){
 		    		let origin;
 		    		let destination;
 		    		let linkSize;
-		    		if(link.description){
-		    			name = link.description.split(':')[0]
-		    			origin = link.description.split(':')[1].split('to')[0]
-		    			destination = link.description.split(':')[1].split('to')[1]
-		    			if(link.description.split('100GE').length > 1){
-					        destination = link.description.split(':')[1].split('to')[1].split('100GE')[0]
-					          linkSize = "100GE"
-					        }
-				        else if(link.description.split('10GE').length > 1){
-					        destination = link.description.split(':')[1].split('to')[1].split('10GE')[0]
-					        linkSize = "10GE"
-				        }else{
-				          description = link.description;
-				          linkSize ="";
-				        }
-		    		}else{
-		    			name = link.node;
-		    			origin = link['a_endpoint.name']
-		    			destination =link['z_endpoint.name']
-		    			linkSize = "100GE"
-		    		}
+		    		// if(link.description){
+		    		// 	name = link.description.split(':')[0]
+		    		// 	origin = link['a_endpoint.name']
+		    		// 	destination = link['z_endpoint.name']
+		    		// 	if(link.description.split('100GE').length > 1){
+					   //      destination = link.description.split(':')[1].split('to')[1].split('100GE')[0]
+					   //        linkSize = "100GE"
+					   //      }
+				    //     else if(link.description.split('10GE').length > 1){
+					   //      destination = link['z_endpoint.name']
+					   //      linkSize = "10GE"
+				    //     }else{
+				    //       description = link.description;
+				    //       linkSize ="";
+				    //     }
+		    		// }else{
+		    		// 	name = link.node;
+		    		// 	origin = link['a_endpoint.name']
+		    		// 	destination =link['z_endpoint.name']
+		    		// 	linkSize = "100GE"
+		    		// }
+		    		name = link.description.split(':')[0]
+		    		origin = link['a_endpoint.name']
+		    		destination= link['z_endpoint.name']
 		    		return "<p class = 'histogramRowName'>" + name + "</p> <p class = 'histogramOriginDestination'>" + origin + " to " + destination + "</p> <p class = 'histogramOriginDestination'> (A to Z) </p>"
 		    	});
 		}else{
@@ -262,14 +265,11 @@ function histogramTableGraph(queryData){
 			var linkID = this.parentElement.classList[1].split('-')[3];
 			let link = eval("queryObjects[0].links[" + linkID + "]");
         	if(link.description.split('100GE').length > 1){
-	          description = link.description.split('100GE')[0]
 	          linkSize = "100GE"
 	        }
 	        else if(link.description.split('10GE').length > 1){
-	          description = link.description.split('10GE')[0]
 	          linkSize = "10GE"
 	        }else{
-	          description = link.description;
 	          linkSize ="";
 	        }
 			div = d3.select(".tableTooltip");
@@ -280,10 +280,10 @@ function histogramTableGraph(queryData){
 			if(type==="Incoming"){
 				//Dont forget the space
 				typeSelector = " .inputDataPlaceholder";
-				description = description.split(":")[1].split("to")[0]
+				description = link['a_endpoint.name'].split('DC')[0]
 			}else if (type==="Outgoing"){
 				typeSelector = " .outputDataPlaceholder";
-				description = description.split(":")[1].split("to")[1]
+				description = link['z_endpoint.name']
 			}
 			d3.selectAll(".lineChartHistogram"+linkID+ " " + typeSelector + changedot )
 				.transition()
@@ -549,9 +549,9 @@ function histogramTableGraph(queryData){
 	    		}
 	    		index = d3.bisectLeft(circlesCX,mouseX);
 	    		if(direction==="In"){
-	    			description = description.split(":")[1].split("to")[0]
+	    			description = link['a_endpoint.name'].split('DC')[0]
 	    		}else{
-	    			description = description.split(":")[1].split("to")[1]
+	    			description = link['z_endpoint.name']
 	    		}
 				div.transition()
 	   				.duration(200)
@@ -882,7 +882,7 @@ function histogramTableGraph(queryData){
 	      		"x": width/2 - 90,
 	      		"y": 0,
 	      	})
-	      	.text(function(d,i) { return "To " + queryObjects[0].links[i]["a_endpoint.name"]; });
+	      	.text(function(d,i) { return "To " + queryObjects[0].links[i]["a_endpoint.name"].split('DC')[0]; });
 	      	//.text("Incoming")
 	    graph.append("text")
 	      	.attrs({
@@ -1040,18 +1040,23 @@ function histogramTableGraph(queryData){
 	        else if(link.description.split('10GE').length > 1){
 	          description = link.description.split('10GE')[0]
 	          linkSize = "10GE"
+	        }else if(link.description.split('30GE').length > 1){
+	            description = link.description.split('30GE')[0]
+	            linkSize = "30GE"
 	        }else{
 	          description = link.description;
 	          linkSize ="";
 	        }
+	        origin = link['a_endpoint.name'].split('DC')[0]
+		    destination= link['z_endpoint.name']
 			div = d3.select(".tableTooltip");
 			div.transition()
 					.duration(200)
 					.style("opacity", 1);
 			if(column==='col4'){
-				direction = description.split(":")[1].split("to")[1]
+				direction = origin
 			}else{
-				direction = description.split(":")[1].split("to")[0]
+				direction = destination
 			}
 		   	div.html("<p class='mapTooltipname'> <span class='mapTooltipDescription'> To " + direction + "</span> <span style='display:inline-block; width: 7em;'> </span> <span class='mapTooltipSize'>" + linkSize + " </span> </p> <hr>" +
    						 "<p> <span class='textTotalData'> " + d.length + " elements</span> <span style='display:inline-block; width: 4em;'></span> <span>" + d3.min(d) + "-" + d3.max(d) + " Gb/s</span> <hr> </p>" +

@@ -25,7 +25,7 @@ var isChrome = !!window.chrome && !!window.chrome.webstore;
 //////************** END Global Variables ********************////////
 
 //We check if browser is Firefox if it is we display an alert saying better to user chrome or IE or Safary
-if(isFirefox) window.alert("We are sorry but the NetSage Project uses features that are currently not supported on Firefox. The NetSage portal has full support on Chrome, but is also supported in Safary and Internet Explorer. Please switch to any of these browsers and then visit this URL again. Sorry for the inconvenience");
+if(isFirefox || isIE) window.alert("We are sorry but the NetSage Project uses features that are currently not supported on this browser. The NetSage portal has full support on Chrome, but is also supported in Safary. Please switch to any of these browsers and then visit this URL again. Sorry for the inconvenience");
 
 //Query Object Prototype
 function Query(query,locale,date,avgOver,queryType,queryMeasure,queryValue){

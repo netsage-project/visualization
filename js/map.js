@@ -224,8 +224,14 @@ function mapGraph(data){
     var projection = d3.geoMercator()
     	  .scale(215)
     	  .rotate([-240,-1]);
+    var projection1 = d3.geoMercator()
+    .scale(215)
+    .translate([439,-127])
+    .rotate([-240,-180]);
     var path = d3.geoPath()
     	  .projection(projection);
+    var path1 = d3.geoPath()
+    	  .projection(projection1);
     map.append("path")
         .datum(subunits)
         .attrs({
@@ -277,12 +283,16 @@ function mapGraph(data){
         .enter()
         .append("path")
         .datum( function(d){
-            if(d.node !== "sw.net.wix.internet2.edu") return {type: "LineString", coordinates: [[d["a_endpoint.longitude"], d["a_endpoint.latitude"]], [d["z_endpoint.longitude"],d["z_endpoint.latitude"]]]};
-            else return {type: "LineString", coordinates: [[d["a_endpoint.longitude"], d["a_endpoint.latitude"]], [-65,35] , [-55,33.2], [-50,32], [-40,31.5], [-30,32] , [-18,34.70], [-8.88,37.25], [-3.68,40.61], [0.695767,42.755750], [d["z_endpoint.longitude"],d["z_endpoint.latitude"]]]}
+            // if(d.node !== "sw.net.wix.internet2.edu") 
+            return {type: "LineString", coordinates: [[d["a_endpoint.longitude"], d["a_endpoint.latitude"]], [d["z_endpoint.longitude"],d["z_endpoint.latitude"]]]};
+            // else return {type: "LineString", coordinates: [[d["a_endpoint.longitude"], d["a_endpoint.latitude"]], [-65,35] , [-55,33.2], [-50,32], [-40,31.5], [-30,32] , [-18,34.70], [-8.88,37.25], [-3.68,40.61], [0.695767,42.755750], [d["z_endpoint.longitude"],d["z_endpoint.latitude"]]]}
         })
         .attrs({
           class:"links",
-          d:path,
+          d:function(d,i){
+            if(queryObjects[0].links[i].node !== "sw.net.wix.internet2.edu") return path(d);
+            else return path1(d);
+          },
           id: function (d,i) {
             return "links-"+ counter+ i ; }
         })

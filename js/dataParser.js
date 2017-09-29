@@ -145,14 +145,14 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 			//change this to the d3 assignment forEach
 			for (each in dataPoint.input){
 				if(dataPoint.input[each][1]!=null){
-					dataPoint.input[each][1] = precise_round(dataPoint.input[each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
+					dataPoint.input[each][1] = precise_round(dataPoint.input[each][1]/1000/1000/1000,2); // bit/Kbs/Mbs/Gbs
 					inputClean.push(dataPoint.input[each][1]);
 				}else{
 					dataPoint.input[each][1] = null;
 					//inputClean.push(0);
 				}
 				if(dataPoint.output[each][1]!=null){
-					dataPoint.output[each][1] = precise_round(dataPoint.output[each][1]/1024/1024/1024,2);
+					dataPoint.output[each][1] = precise_round(dataPoint.output[each][1]/1000/1000/1000,2);
 					outputClean.push(dataPoint.output[each][1]);
 				} else{
 					dataPoint.output[each][1] = null;
@@ -201,7 +201,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 			var values=[];
 			for(each in dataPoint.input){
 				if(dataPoint.input[each][1]!=null){
-					dataPoint.input[each][1] = precise_round(dataPoint.input[each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
+					dataPoint.input[each][1] = precise_round(dataPoint.input[each][1]/1000/1000/1000,2); // bit/Kbs/Mbs/Gbs
 					dataClean.push(dataPoint.input[each][1]);
 				}else{
 					dataPoint.input[each][1] = 0;
@@ -218,7 +218,7 @@ function LoadData(queryDate,queryText,avgOver,queryType,queryMeasure,queryValue)
 			var values=[];
 			for(each in dataPoint["values.bits"]){
 				if(dataPoint["values.bits"][each][1]!=null){
-					dataPoint["values.bits"][each][1] = precise_round(dataPoint["values.bits"][each][1]/1024/1024/1024,2); // bit/Kbs/Mbs/Gbs
+					dataPoint["values.bits"][each][1] = precise_round(dataPoint["values.bits"][each][1]/1000/1000/1000,2); // bit/Kbs/Mbs/Gbs
 					dataClean.push(dataPoint["values.bits"][each][1]);
 				}else{
 					dataPoint["values.bits"][each][1] = null;
